@@ -17,6 +17,10 @@ class MainActivity : AppCompatActivity(), ProvideViewModel {
 
         val viewModel = viewModel(MainViewModel::class.java)
 
+        viewModel.liveData().observe(this) {
+            it.show(binding.root.id, supportFragmentManager)
+        }
+
         viewModel.init(isFirstRun = savedInstanceState == null)
     }
 
