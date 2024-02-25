@@ -5,6 +5,6 @@ import retrofit2.http.GET
 
 interface CurrenciesService {
 
-    @GET
-    suspend fun currencies(): Call<HashMap<String, String>>
+    @GET("/currencies")
+    fun currencies(): Call<HashMap<String, String>>
 }

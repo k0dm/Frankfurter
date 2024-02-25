@@ -13,7 +13,7 @@ class BaseCurrenciesRepository(
 
 ) : CurrenciesRepository {
 
-    override fun currencies() = cacheDataSource.currencies().map { it.currency }
+    override suspend fun currencies() = cacheDataSource.currencies().map { it.currency }
 
     override suspend fun loadCurrencies(): LoadCurrenciesResult {
         return try {

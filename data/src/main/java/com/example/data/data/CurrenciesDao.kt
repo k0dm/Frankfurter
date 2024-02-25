@@ -12,5 +12,5 @@ interface CurrenciesDao {
     suspend fun saveCurrencies(currency: CurrencyEntity)
 
     @Query("SELECT * FROM currencies")
-    fun currencies(): List<CurrencyEntity>
+    suspend fun currencies(): List<CurrencyEntity>
 }

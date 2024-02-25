@@ -25,7 +25,7 @@ class MainActivity : AppCompatActivity(), ProvideViewModel {
     }
 
     override fun <T : ViewModel> viewModel(clazz: Class<out T>): T {
-        TODO("Not yet implemented")
+        return (application as ProvideViewModel).viewModel(clazz)
     }
 }
 

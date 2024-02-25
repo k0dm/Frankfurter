@@ -7,7 +7,6 @@ import com.example.presentation.core.FakeNavigation
 import com.example.presentation.core.FakeRunAsync
 import com.example.presentation.core.FakeUpdateNavigation
 import com.example.presentation.dashboard.DashboardScreen
-import com.example.presentation.main.Navigation
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
@@ -38,6 +37,8 @@ class LoadingCurrenciesViewModelTest {
     @Test
     fun testFirstRunAndSuccess() {
         viewModel.init()
+
+        runAsync.pingResult()
         communication.checkUiState(LoadingCurrenciesUiState.Loading)
         repository.checkLoadCurrenciesCalledCount(1)
 
@@ -55,10 +56,12 @@ class LoadingCurrenciesViewModelTest {
     }
 
     @Test
-    fun testFirstRunAndError(){
+    fun testFirstRunAndError() {
         repository.loadSuccess = false
 
         viewModel.init()
+
+        runAsync.pingResult()
         communication.checkUiState(LoadingCurrenciesUiState.Loading)
 
         runAsync.pingResult()
@@ -78,8 +81,8 @@ private class FakeRepository: CurrenciesRepository{
 
     private var actualCurrencies = emptyList<String>()
 
-    override fun currencies(): List<String> {
-        return  actualCurrencies
+    override suspend fun currencies(): List<String> {
+        return actualCurrencies
     }
 
     fun setCacheCurrencies() {

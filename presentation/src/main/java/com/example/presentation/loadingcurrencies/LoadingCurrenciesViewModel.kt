@@ -20,10 +20,14 @@ class LoadingCurrenciesViewModel(
 ) : BaseViewModel(runAsync), ProvideLiveData<LoadingCurrenciesUiState> {
 
     fun init() {
-        if (repository.currencies().isEmpty()) {
-            loadCurrencies()
-        } else {
-            navigation.updateUi(DashboardScreen)
+        runAsync({
+            repository.currencies().isEmpty()
+        }) { isEmpty ->
+            if (isEmpty) {
+                loadCurrencies()
+            } else {
+                navigation.updateUi(DashboardScreen)
+            }
         }
     }
 
