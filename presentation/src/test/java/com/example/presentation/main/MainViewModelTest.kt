@@ -1,8 +1,7 @@
 package com.example.presentation.main
 
-import androidx.lifecycle.LiveData
+import com.example.presentation.core.FakeNavigation
 import com.example.presentation.loadingcurrencies.LoadingCurrenciesScreen
-import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
 
@@ -30,19 +29,3 @@ class MainViewModelTest {
     }
 }
 
-private class FakeNavigation: Navigation.Mutable {
-
-    private var actualScreen: Screen = Screen.Empty
-
-    override fun updateUi(value: Screen) {
-        actualScreen =  value
-    }
-
-    fun checkScreen(expectedScreen: Screen) {
-        assertEquals(expectedScreen, actualScreen)
-    }
-
-    override fun liveData(): LiveData<Screen> {
-        throw IllegalStateException("don't use in UnitTest")
-    }
-}
