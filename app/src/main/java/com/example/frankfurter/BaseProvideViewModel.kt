@@ -1,13 +1,14 @@
 package com.example.frankfurter
 
 import android.content.Context
-import androidx.lifecycle.ViewModel
 import androidx.room.Room
 import com.example.data.loadcurrencies.BaseLoadCurrenciesRepository
 import com.example.data.loadcurrencies.cloud.CurrenciesService
 import com.example.data.loadcurrencies.cloud.LoadCurrenciesCloudDataSource
 import com.example.data.loadcurrencies.data.CurrenciesCacheDataSource
 import com.example.data.loadcurrencies.data.CurrenciesDatabase
+import com.example.presentation.core.ClearViewModel
+import com.example.presentation.core.CustomViewModel
 import com.example.presentation.core.ProvideViewModel
 import com.example.presentation.core.RunAsync
 import com.example.presentation.loadingcurrencies.LoadingCurrenciesCommunication
@@ -20,7 +21,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 @Suppress("UNCHECKED_CAST")
-class BaseProvideViewModel(context: Context) : ProvideViewModel {
+class BaseProvideViewModel(context: Context, private val clear: ClearViewModel) : ProvideViewModel {
 
     private val navigation = Navigation.Base()
     private val runAsync = RunAsync.Base()
@@ -52,7 +53,7 @@ class BaseProvideViewModel(context: Context) : ProvideViewModel {
         provideResources = provideResources
     )
 
-    override fun <T : ViewModel> viewModel(clazz: Class<out T>) = when (clazz) {
+    override fun <T : CustomViewModel> viewModel(clazz: Class<out T>) = when (clazz) {
         MainViewModel::class.java -> MainViewModel(
             navigation = navigation
         )
@@ -61,9 +62,9 @@ class BaseProvideViewModel(context: Context) : ProvideViewModel {
             navigation = navigation,
             communication = LoadingCurrenciesCommunication.Base(),
             repository = repository,
-            runAsync = runAsync
+            runAsync = runAsync,
+            clearViewModel = clear
         )
-
 
         else -> throw IllegalStateException("No such viewModel with class: $clazz")
     } as T

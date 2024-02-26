@@ -1,11 +1,10 @@
 package com.example.presentation.core
 
-import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 
-abstract class BaseViewModel(private val runAsync: RunAsync) : ViewModel() {
+abstract class BaseViewModel(private val runAsync: RunAsync) : CustomViewModel {
 
     private val viewModelScope = CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate)
 

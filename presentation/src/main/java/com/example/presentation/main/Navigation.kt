@@ -10,5 +10,5 @@ interface Navigation {
 
     interface Mutable: Update, ProvideLiveData<Screen>
 
-    class Base : Mutable, LiveDataWrapper.Abstract<Screen>()
+    class Base : Mutable, LiveDataWrapper.Single<Screen>()
 }
