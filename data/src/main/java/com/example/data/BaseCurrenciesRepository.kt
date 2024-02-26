@@ -13,12 +13,12 @@ class BaseCurrenciesRepository(
 
 ) : CurrenciesRepository {
 
-    override suspend fun currencies() = cacheDataSource.currencies().map { it.currency }
-
     override suspend fun loadCurrencies(): LoadCurrenciesResult {
         return try {
-            cloudDataSource.currencies().execute().body()!!.keys.forEach {
-                cacheDataSource.saveCurrencies(CurrencyEntity(it))
+            if (cacheDataSource.currencies().isEmpty()) {
+                cloudDataSource.currencies().execute().body()!!.keys.forEach {
+                    cacheDataSource.saveCurrencies(CurrencyEntity(it))
+                }
             }
             LoadCurrenciesResult.Success
         } catch (e: Exception) {

@@ -36,7 +36,7 @@ class LoadingCurrenciesViewModelTest {
 
     @Test
     fun testFirstRunAndSuccess() {
-        viewModel.init()
+        viewModel.init(true)
 
         runAsync.pingResult()
         communication.checkUiState(LoadingCurrenciesUiState.Loading)
@@ -50,7 +50,7 @@ class LoadingCurrenciesViewModelTest {
     fun testNotFirstRun(){
         repository.setCacheCurrencies()
 
-        viewModel.init()
+        viewModel.init(false)
         repository.checkLoadCurrenciesCalledCount(0)
         navigation.updateUi(DashboardScreen)
     }
@@ -59,9 +59,7 @@ class LoadingCurrenciesViewModelTest {
     fun testFirstRunAndError() {
         repository.loadSuccess = false
 
-        viewModel.init()
-
-        runAsync.pingResult()
+        viewModel.init(true)
         communication.checkUiState(LoadingCurrenciesUiState.Loading)
 
         runAsync.pingResult()
@@ -81,10 +79,6 @@ private class FakeRepository: CurrenciesRepository{
 
     private var actualCurrencies = emptyList<String>()
 
-    override suspend fun currencies(): List<String> {
-        return actualCurrencies
-    }
-
     fun setCacheCurrencies() {
         actualCurrencies = listOf("USD", "EUR", "UAH")
     }
@@ -92,6 +86,7 @@ private class FakeRepository: CurrenciesRepository{
     private var loadCurrenciesCalledCount = 0
 
     override suspend fun loadCurrencies(): LoadCurrenciesResult {
+
         loadCurrenciesCalledCount++
 
         return if (loadSuccess) {

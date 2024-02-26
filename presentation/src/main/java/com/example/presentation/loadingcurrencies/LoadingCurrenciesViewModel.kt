@@ -5,7 +5,6 @@ import com.example.domain.LoadCurrenciesResult
 import com.example.presentation.core.BaseViewModel
 import com.example.presentation.core.ProvideLiveData
 import com.example.presentation.core.RunAsync
-import com.example.presentation.dashboard.DashboardScreen
 import com.example.presentation.main.Navigation
 
 class LoadingCurrenciesViewModel(
@@ -19,16 +18,8 @@ class LoadingCurrenciesViewModel(
     )
 ) : BaseViewModel(runAsync), ProvideLiveData<LoadingCurrenciesUiState> {
 
-    fun init() {
-        runAsync({
-            repository.currencies().isEmpty()
-        }) { isEmpty ->
-            if (isEmpty) {
-                loadCurrencies()
-            } else {
-                navigation.updateUi(DashboardScreen)
-            }
-        }
+    fun init(isFirstRun: Boolean) {
+        if (isFirstRun) loadCurrencies()
     }
 
     fun loadCurrencies() {

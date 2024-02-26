@@ -2,8 +2,6 @@ package com.example.domain
 
 interface CurrenciesRepository {
 
-    suspend fun currencies(): List<String>
-
     suspend fun loadCurrencies(): LoadCurrenciesResult
 }
 

@@ -35,7 +35,7 @@ class LoadingCurrenciesFragment : Fragment() {
             viewModel.loadCurrencies()
         }
 
-        viewModel.init()
+        viewModel.init(isFirstRun = savedInstanceState == null)
     }
 
     override fun onDestroyView() {
