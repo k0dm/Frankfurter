@@ -1,10 +1,17 @@
 *.iml
 .gradle
 /local.properties
-/idea
+/.idea
 .DS_Store
 /build
 /captures
 .externalNativeBuild
 .cxx
 local.properties
+
+# Project exclude paths
+/data/build/
+/data/build/intermediates/javac/debug/classes/
+/domain/build/
+/presentation/build/
+/presentation/build/intermediates/javac/debug/classes/
