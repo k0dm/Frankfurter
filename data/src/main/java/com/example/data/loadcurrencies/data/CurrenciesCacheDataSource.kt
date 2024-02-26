@@ -13,9 +13,7 @@ interface CurrenciesCacheDataSource {
         }
 
         override suspend fun saveCurrencies(currencies: List<String>) {
-            currencies.forEach {
-                dao.saveCurrencies(CurrencyEntity(it))
-            }
+            dao.saveCurrencies(currencies.map { CurrencyEntity(it) })
         }
     }
 }

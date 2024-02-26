@@ -9,7 +9,7 @@ import androidx.room.Query
 interface CurrenciesDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun saveCurrencies(currency: CurrencyEntity)
+    suspend fun saveCurrencies(currencies: List<CurrencyEntity>)
 
     @Query("SELECT * FROM currencies")
     suspend fun currencies(): List<CurrencyEntity>

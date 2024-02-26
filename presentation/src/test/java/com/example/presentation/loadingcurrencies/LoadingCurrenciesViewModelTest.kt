@@ -25,7 +25,6 @@ class LoadingCurrenciesViewModelTest {
         communication = FakeCommunication()
         repository = FakeRepositoryLoad()
         runAsync = FakeRunAsync()
-
         viewModel = LoadingCurrenciesViewModel(
             navigation = navigation,
             communication = communication,
@@ -48,7 +47,7 @@ class LoadingCurrenciesViewModelTest {
 
     @Test
     fun testNotFirstRun(){
-        repository.setCacheCurrencies()
+        repository.hasCacheCurrencies()
 
         viewModel.init(false)
         repository.checkLoadCurrenciesCalledCount(0)
@@ -79,7 +78,7 @@ private class FakeRepositoryLoad : LoadCurrenciesRepository {
 
     private var actualCurrencies = emptyList<String>()
 
-    fun setCacheCurrencies() {
+    fun hasCacheCurrencies() {
         actualCurrencies = listOf("USD", "EUR", "UAH")
     }
 
