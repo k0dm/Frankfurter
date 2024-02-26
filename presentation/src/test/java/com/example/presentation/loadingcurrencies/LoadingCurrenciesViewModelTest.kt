@@ -1,7 +1,7 @@
 package com.example.presentation.loadingcurrencies
 
 import androidx.lifecycle.LiveData
-import com.example.domain.CurrenciesRepository
+import com.example.domain.LoadCurrenciesRepository
 import com.example.domain.LoadCurrenciesResult
 import com.example.presentation.core.FakeNavigation
 import com.example.presentation.core.FakeRunAsync
@@ -16,16 +16,15 @@ class LoadingCurrenciesViewModelTest {
     private lateinit var viewModel: LoadingCurrenciesViewModel
     private lateinit var navigation: FakeUpdateNavigation
     private lateinit var communication: FakeCommunication
-    private lateinit var repository: FakeRepository
+    private lateinit var repository: FakeRepositoryLoad
     private lateinit var runAsync: FakeRunAsync
 
     @Before
     fun setUp(){
         navigation = FakeNavigation()
         communication = FakeCommunication()
-        repository = FakeRepository()
+        repository = FakeRepositoryLoad()
         runAsync = FakeRunAsync()
-
         viewModel = LoadingCurrenciesViewModel(
             navigation = navigation,
             communication = communication,
@@ -48,7 +47,7 @@ class LoadingCurrenciesViewModelTest {
 
     @Test
     fun testNotFirstRun(){
-        repository.setCacheCurrencies()
+        repository.hasCacheCurrencies()
 
         viewModel.init(false)
         repository.checkLoadCurrenciesCalledCount(0)
@@ -73,13 +72,13 @@ class LoadingCurrenciesViewModelTest {
     }
 }
 
-private class FakeRepository: CurrenciesRepository{
+private class FakeRepositoryLoad : LoadCurrenciesRepository {
 
     var loadSuccess = true
 
     private var actualCurrencies = emptyList<String>()
 
-    fun setCacheCurrencies() {
+    fun hasCacheCurrencies() {
         actualCurrencies = listOf("USD", "EUR", "UAH")
     }
 

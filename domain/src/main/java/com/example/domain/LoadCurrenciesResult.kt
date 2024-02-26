@@ -1,10 +1,5 @@
 package com.example.domain
 
-interface CurrenciesRepository {
-
-    suspend fun loadCurrencies(): LoadCurrenciesResult
-}
-
 interface LoadCurrenciesResult {
 
     fun map(mapper: Mapper)

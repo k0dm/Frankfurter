@@ -1,4 +1,4 @@
-package com.example.data.cloud
+package com.example.data.loadcurrencies.cloud
 
 import retrofit2.Call
 import retrofit2.http.GET

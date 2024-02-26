@@ -3,9 +3,11 @@ package com.example.frankfurter
 import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.room.Room
-import com.example.data.BaseCurrenciesRepository
-import com.example.data.cloud.CurrenciesService
-import com.example.data.data.CurrenciesDatabase
+import com.example.data.loadcurrencies.BaseLoadCurrenciesRepository
+import com.example.data.loadcurrencies.cloud.CurrenciesService
+import com.example.data.loadcurrencies.cloud.LoadCurrenciesCloudDataSource
+import com.example.data.loadcurrencies.data.CurrenciesCacheDataSource
+import com.example.data.loadcurrencies.data.CurrenciesDatabase
 import com.example.presentation.core.ProvideViewModel
 import com.example.presentation.core.RunAsync
 import com.example.presentation.loadingcurrencies.LoadingCurrenciesCommunication
@@ -42,9 +44,12 @@ class BaseProvideViewModel(context: Context) : ProvideViewModel {
         "currencies_db"
     ).build().currenciesDao()
 
-    private val repository = BaseCurrenciesRepository(
-        cloudDataSource = currenciesService,
-        cacheDataSource = currenciesDao
+    private val provideResources = BaseProvideResources(context)
+
+    private val repository = BaseLoadCurrenciesRepository(
+        cloudDataSource = LoadCurrenciesCloudDataSource.Base(currenciesService),
+        cacheDataSource = CurrenciesCacheDataSource.Base(currenciesDao),
+        provideResources = provideResources
     )
 
     override fun <T : ViewModel> viewModel(clazz: Class<out T>) = when (clazz) {

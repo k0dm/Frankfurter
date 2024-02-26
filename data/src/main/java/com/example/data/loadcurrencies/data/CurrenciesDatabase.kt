@@ -1,4 +1,4 @@
-package com.example.data.data
+package com.example.data.loadcurrencies.data
 
 import androidx.room.Database
 import androidx.room.RoomDatabase
