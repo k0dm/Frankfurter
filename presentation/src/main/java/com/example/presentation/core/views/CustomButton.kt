@@ -3,15 +3,15 @@ package com.example.presentation.core.views
 import android.content.Context
 import android.os.Parcelable
 import android.util.AttributeSet
-import com.google.android.material.button.MaterialButton
+import androidx.appcompat.widget.AppCompatButton
 
 class CustomButton @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0,
-) : MaterialButton(context, attrs, defStyleAttr), ChangeVisibility {
+) : AppCompatButton(context, attrs, defStyleAttr), ChangeVisibility {
 
     override fun onSaveInstanceState(): Parcelable {
         super.onSaveInstanceState().let {
-            val state = VisibilitySavedState(it)
+            val state = VisibilitySavedState(it!!)
             state.save(this)
             return state
         }
