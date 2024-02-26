@@ -1,7 +1,7 @@
 package com.example.presentation.loadingcurrencies
 
 import androidx.lifecycle.LiveData
-import com.example.domain.CurrenciesRepository
+import com.example.domain.LoadCurrenciesRepository
 import com.example.domain.LoadCurrenciesResult
 import com.example.presentation.core.FakeNavigation
 import com.example.presentation.core.FakeRunAsync
@@ -16,14 +16,14 @@ class LoadingCurrenciesViewModelTest {
     private lateinit var viewModel: LoadingCurrenciesViewModel
     private lateinit var navigation: FakeUpdateNavigation
     private lateinit var communication: FakeCommunication
-    private lateinit var repository: FakeRepository
+    private lateinit var repository: FakeRepositoryLoad
     private lateinit var runAsync: FakeRunAsync
 
     @Before
     fun setUp(){
         navigation = FakeNavigation()
         communication = FakeCommunication()
-        repository = FakeRepository()
+        repository = FakeRepositoryLoad()
         runAsync = FakeRunAsync()
 
         viewModel = LoadingCurrenciesViewModel(
@@ -73,7 +73,7 @@ class LoadingCurrenciesViewModelTest {
     }
 }
 
-private class FakeRepository: CurrenciesRepository{
+private class FakeRepositoryLoad : LoadCurrenciesRepository {
 
     var loadSuccess = true
 

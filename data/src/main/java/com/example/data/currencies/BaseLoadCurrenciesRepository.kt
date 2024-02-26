@@ -1,17 +1,18 @@
-package com.example.data
+package com.example.data.currencies
 
-import com.example.data.cloud.CurrenciesService
-import com.example.data.data.CurrenciesDao
-import com.example.data.data.CurrencyEntity
-import com.example.domain.CurrenciesRepository
+import com.example.data.core.ProvideResources
+import com.example.data.currencies.cloud.CurrenciesService
+import com.example.data.currencies.data.CurrenciesDao
+import com.example.data.currencies.data.CurrencyEntity
+import com.example.domain.LoadCurrenciesRepository
 import com.example.domain.LoadCurrenciesResult
 import java.net.UnknownHostException
 
-class BaseCurrenciesRepository(
+class BaseLoadCurrenciesRepository(
     private val cloudDataSource: CurrenciesService,
-    private val cacheDataSource: CurrenciesDao
-
-) : CurrenciesRepository {
+    private val cacheDataSource: CurrenciesDao,
+    private val provideResources: ProvideResources
+) : LoadCurrenciesRepository {
 
     override suspend fun loadCurrencies(): LoadCurrenciesResult {
         return try {
@@ -23,9 +24,9 @@ class BaseCurrenciesRepository(
             LoadCurrenciesResult.Success
         } catch (e: Exception) {
             val message = if (e is UnknownHostException) {
-                "No internet connection"
+                provideResources.noInternetConnectionMessage()
             } else {
-                "Service unavailable"
+                provideResources.serviceUnavailableMessage()
             }
             LoadCurrenciesResult.Error(message = message)
         }

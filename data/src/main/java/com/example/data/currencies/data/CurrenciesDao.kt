@@ -1,4 +1,4 @@
-package com.example.data.data
+package com.example.data.currencies.data
 
 import androidx.room.Dao
 import androidx.room.Insert

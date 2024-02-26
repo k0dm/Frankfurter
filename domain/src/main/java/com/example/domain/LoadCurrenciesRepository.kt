@@ -1,6 +1,6 @@
 package com.example.domain
 
-interface CurrenciesRepository {
+interface LoadCurrenciesRepository {
 
     suspend fun loadCurrencies(): LoadCurrenciesResult
 }
