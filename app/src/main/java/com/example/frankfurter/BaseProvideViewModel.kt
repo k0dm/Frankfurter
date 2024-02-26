@@ -3,9 +3,11 @@ package com.example.frankfurter
 import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.room.Room
-import com.example.data.currencies.BaseLoadCurrenciesRepository
-import com.example.data.currencies.cloud.CurrenciesService
-import com.example.data.currencies.data.CurrenciesDatabase
+import com.example.data.loadcurrencies.BaseLoadCurrenciesRepository
+import com.example.data.loadcurrencies.cloud.CurrenciesService
+import com.example.data.loadcurrencies.cloud.LoadCurrenciesCloudDataSource
+import com.example.data.loadcurrencies.data.CurrenciesCacheDataSource
+import com.example.data.loadcurrencies.data.CurrenciesDatabase
 import com.example.presentation.core.ProvideViewModel
 import com.example.presentation.core.RunAsync
 import com.example.presentation.loadingcurrencies.LoadingCurrenciesCommunication
@@ -45,8 +47,8 @@ class BaseProvideViewModel(context: Context) : ProvideViewModel {
     private val provideResources = BaseProvideResources(context)
 
     private val repository = BaseLoadCurrenciesRepository(
-        cloudDataSource = currenciesService,
-        cacheDataSource = currenciesDao,
+        cloudDataSource = LoadCurrenciesCloudDataSource.Base(currenciesService),
+        cacheDataSource = CurrenciesCacheDataSource.Base(currenciesDao),
         provideResources = provideResources
     )
 

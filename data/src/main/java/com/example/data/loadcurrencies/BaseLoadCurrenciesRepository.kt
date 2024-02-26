@@ -1,25 +1,22 @@
-package com.example.data.currencies
+package com.example.data.loadcurrencies
 
 import com.example.data.core.ProvideResources
-import com.example.data.currencies.cloud.CurrenciesService
-import com.example.data.currencies.data.CurrenciesDao
-import com.example.data.currencies.data.CurrencyEntity
+import com.example.data.loadcurrencies.cloud.LoadCurrenciesCloudDataSource
+import com.example.data.loadcurrencies.data.CurrenciesCacheDataSource
 import com.example.domain.LoadCurrenciesRepository
 import com.example.domain.LoadCurrenciesResult
 import java.net.UnknownHostException
 
 class BaseLoadCurrenciesRepository(
-    private val cloudDataSource: CurrenciesService,
-    private val cacheDataSource: CurrenciesDao,
+    private val cloudDataSource: LoadCurrenciesCloudDataSource,
+    private val cacheDataSource: CurrenciesCacheDataSource,
     private val provideResources: ProvideResources
 ) : LoadCurrenciesRepository {
 
     override suspend fun loadCurrencies(): LoadCurrenciesResult {
         return try {
             if (cacheDataSource.currencies().isEmpty()) {
-                cloudDataSource.currencies().execute().body()!!.keys.forEach {
-                    cacheDataSource.saveCurrencies(CurrencyEntity(it))
-                }
+                cacheDataSource.saveCurrencies(cloudDataSource.currencies())
             }
             LoadCurrenciesResult.Success
         } catch (e: Exception) {

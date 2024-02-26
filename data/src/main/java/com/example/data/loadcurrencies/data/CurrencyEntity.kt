@@ -1,4 +1,4 @@
-package com.example.data.currencies.data
+package com.example.data.loadcurrencies.data
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
