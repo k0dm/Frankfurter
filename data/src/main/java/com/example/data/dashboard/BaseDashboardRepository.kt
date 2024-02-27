@@ -1,6 +1,7 @@
 package com.example.data.dashboard
 
 import com.example.data.core.ProvideResources
+import com.example.data.dashboard.cache.CurrencyPairEntity
 import com.example.data.dashboard.cache.FavoriteCurrenciesCacheDataSource
 import com.example.data.dashboard.cloud.CurrencyConverterCloudDataSource
 import com.example.domain.dashboard.DashBoardResult
@@ -10,7 +11,7 @@ import java.net.UnknownHostException
 
 class BaseDashboardRepository(
     private val cacheDataSource: FavoriteCurrenciesCacheDataSource.Mutable,
-    private val currencyConverter: CurrencyConverterCloudDataSource,
+    private val currencyConverterCloudDataSource: CurrencyConverterCloudDataSource,
     private val provideResources: ProvideResources
 ) : DashboardRepository {
 
@@ -23,8 +24,19 @@ class BaseDashboardRepository(
         } else {
             try {
                 val dashboardItems = favoriteCurrencies.map {
-                    val rates = if (it.rates == null || !it.sameDate()) {
-                        currencyConverter.exchangeRate(it.fromCurrency, it.toCurrency)
+                    val rates = if (it.isInvalidRate()) {
+                        val newRates = currencyConverterCloudDataSource.exchangeRate(
+                            it.fromCurrency,
+                            it.toCurrency
+                        )
+                        cacheDataSource.save(
+                            CurrencyPairEntity(
+                                it.fromCurrency,
+                                it.toCurrency,
+                                newRates
+                            )
+                        )
+                        newRates
                     } else {
                         it.rates
                     }

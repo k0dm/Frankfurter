@@ -12,12 +12,14 @@ data class CurrencyPairEntity(
     @ColumnInfo("to")
     val toCurrency: String,
     @ColumnInfo("rates")
-    val rates: Double? = null,
+    val rates: Double = -1.0,
     @ColumnInfo("data")
     val date: String = DateFormatter.date()
 ) {
 
-    fun sameDate(): Boolean = date == DateFormatter.date()
+    fun isInvalidRate(): Boolean {
+        return rates == -1.0 || date != DateFormatter.date()
+    }
 }
 
 object DateFormatter {
