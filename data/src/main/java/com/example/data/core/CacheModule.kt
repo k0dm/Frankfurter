@@ -2,14 +2,11 @@ package com.example.data.core
 
 import android.content.Context
 import androidx.room.Room
-import com.example.data.loadcurrencies.data.CurrenciesDao
 import com.example.data.loadcurrencies.data.CurrenciesDatabase
 
 interface CacheModule {
 
     fun database(): CurrenciesDatabase
-
-    fun currenciesDao(): CurrenciesDao
 
     class Base(context: Context) : CacheModule {
 
@@ -20,7 +17,5 @@ interface CacheModule {
         ).build()
 
         override fun database() = db
-
-        override fun currenciesDao() = db.currenciesDao()
     }
 }

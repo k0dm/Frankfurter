@@ -3,7 +3,6 @@ package com.example.frankfurter
 import android.content.Context
 import com.example.data.core.CacheModule
 import com.example.data.core.ProvideResources
-import com.example.data.loadcurrencies.data.CurrenciesDao
 import com.example.presentation.core.ClearViewModel
 import com.example.presentation.core.RunAsync
 import com.example.presentation.main.Navigation
@@ -18,7 +17,7 @@ interface Core {
 
     fun provideResources(): ProvideResources
 
-    fun currenciesDao(): CurrenciesDao
+    fun cacheModule(): CacheModule
 
     class Base(context: Context, private val clearViewModel: ClearViewModel) : Core {
 
@@ -35,6 +34,6 @@ interface Core {
 
         override fun provideResources() = provideResources
 
-        override fun currenciesDao() = cacheModule.currenciesDao()
+        override fun cacheModule() = cacheModule
     }
 }

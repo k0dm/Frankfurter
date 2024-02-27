@@ -14,7 +14,9 @@ class LoadingCurrenciesModule(private val core: Core) : Module<LoadingCurrencies
         communication = LoadingCurrenciesCommunication.Base(),
         repository = BaseLoadCurrenciesRepository(
             cloudDataSource = LoadCurrenciesCloudDataSource.Base(),
-            cacheDataSource = CurrenciesCacheDataSource.Base(core.currenciesDao()),
+            cacheDataSource = CurrenciesCacheDataSource.Base(
+                core.cacheModule().database().currenciesDao()
+            ),
             provideResources = core.provideResources()
         ),
         runAsync = core.runAsync(),
