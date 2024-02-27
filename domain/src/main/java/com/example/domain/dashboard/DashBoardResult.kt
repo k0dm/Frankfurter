@@ -7,12 +7,16 @@ interface DashBoardResult {
         fun mapSuccess(listOfItems: List<DashboardItem>)
 
         fun mapError(message: String)
+
+        fun mapEmpty()
     }
 
     fun map(mapper: Mapper)
 
     object Empty : DashBoardResult {
-        override fun map(mapper: Mapper) = Unit
+        override fun map(mapper: Mapper) {
+            mapper.mapEmpty()
+        }
     }
 
     data class Error(private val message: String) : DashBoardResult {
