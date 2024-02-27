@@ -11,7 +11,11 @@ class FrankfurterApp : Application(), ProvideViewModel, ClearViewModel {
 
     override fun onCreate() {
         super.onCreate()
-        factory = ViewModelFactory(BaseProvideViewModel(this, this))
+        factory = ViewModelFactory(
+            BaseProvideViewModel(
+                ProvideModule.Base(Core.Base(this, this))
+            )
+        )
     }
 
     override fun <T : CustomViewModel> viewModel(clazz: Class<out T>) = factory.viewModel(clazz)
