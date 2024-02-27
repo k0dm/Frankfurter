@@ -1,8 +1,8 @@
 package com.example.presentation.loadingcurrencies
 
 import androidx.lifecycle.LiveData
-import com.example.domain.LoadCurrenciesRepository
-import com.example.domain.LoadCurrenciesResult
+import com.example.domain.loadcurrencies.LoadCurrenciesRepository
+import com.example.domain.loadcurrencies.LoadCurrenciesResult
 import com.example.presentation.core.FakeClear
 import com.example.presentation.core.FakeNavigation
 import com.example.presentation.core.FakeRunAsync

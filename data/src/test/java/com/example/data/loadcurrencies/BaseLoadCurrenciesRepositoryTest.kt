@@ -3,8 +3,8 @@ package com.example.data.loadcurrencies
 import com.example.data.core.ProvideResources
 import com.example.data.loadcurrencies.cloud.LoadCurrenciesCloudDataSource
 import com.example.data.loadcurrencies.data.CurrenciesCacheDataSource
-import com.example.domain.LoadCurrenciesRepository
-import com.example.domain.LoadCurrenciesResult
+import com.example.domain.loadcurrencies.LoadCurrenciesRepository
+import com.example.domain.loadcurrencies.LoadCurrenciesResult
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
 import org.junit.Before
