@@ -1,4 +1,4 @@
-package com.example.data.loadcurrencies.data
+package com.example.data.loadcurrencies.cache
 
 import androidx.room.Dao
 import androidx.room.Insert
