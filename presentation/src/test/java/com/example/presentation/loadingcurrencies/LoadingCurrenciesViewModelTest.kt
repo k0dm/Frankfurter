@@ -3,6 +3,7 @@ package com.example.presentation.loadingcurrencies
 import androidx.lifecycle.LiveData
 import com.example.domain.LoadCurrenciesRepository
 import com.example.domain.LoadCurrenciesResult
+import com.example.presentation.core.FakeClear
 import com.example.presentation.core.FakeNavigation
 import com.example.presentation.core.FakeRunAsync
 import com.example.presentation.core.FakeUpdateNavigation
@@ -18,6 +19,7 @@ class LoadingCurrenciesViewModelTest {
     private lateinit var communication: FakeCommunication
     private lateinit var repository: FakeRepositoryLoad
     private lateinit var runAsync: FakeRunAsync
+    private lateinit var clear: FakeClear
 
     @Before
     fun setUp(){
@@ -25,23 +27,24 @@ class LoadingCurrenciesViewModelTest {
         communication = FakeCommunication()
         repository = FakeRepositoryLoad()
         runAsync = FakeRunAsync()
+        clear = FakeClear()
         viewModel = LoadingCurrenciesViewModel(
             navigation = navigation,
             communication = communication,
             repository = repository,
-            runAsync = runAsync
+            runAsync = runAsync,
+            clearViewModel = clear
         )
     }
 
     @Test
     fun testFirstRunAndSuccess() {
         viewModel.init(true)
-
-        runAsync.pingResult()
         communication.checkUiState(LoadingCurrenciesUiState.Loading)
-        repository.checkLoadCurrenciesCalledCount(1)
 
         runAsync.pingResult()
+        repository.checkLoadCurrenciesCalledCount(1)
+        clear.checkClearCalled(listOf(LoadingCurrenciesViewModel::class.java))
         navigation.updateUi(DashboardScreen)
     }
 
@@ -51,7 +54,7 @@ class LoadingCurrenciesViewModelTest {
 
         viewModel.init(false)
         repository.checkLoadCurrenciesCalledCount(0)
-        navigation.updateUi(DashboardScreen)
+        clear.checkClearCalled(emptyList())
     }
 
     @Test
@@ -68,7 +71,7 @@ class LoadingCurrenciesViewModelTest {
         communication.checkUiState(LoadingCurrenciesUiState.Loading)
 
         runAsync.pingResult()
-        navigation.updateUi(DashboardScreen)
+        communication.checkUiState(LoadingCurrenciesUiState.Error(message = "Service unavailable"))
     }
 }
 

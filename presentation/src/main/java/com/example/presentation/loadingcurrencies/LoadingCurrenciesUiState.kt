@@ -1,32 +1,44 @@
 package com.example.presentation.loadingcurrencies
 
-import android.view.View
-import com.example.presentation.databinding.FragmentLoadingCurrenciesBinding
+import com.example.presentation.core.views.ChangeVisibility
+import com.example.presentation.core.views.ErrorText
 
 interface LoadingCurrenciesUiState {
 
-    fun show(binding: FragmentLoadingCurrenciesBinding)
+    fun show(progressBar: ChangeVisibility, errorTextView: ErrorText, retryButton: ChangeVisibility)
 
     object Loading : LoadingCurrenciesUiState {
 
-        override fun show(binding: FragmentLoadingCurrenciesBinding) = with(binding) {
-            progressBar.visibility = View.VISIBLE
-            errorText.visibility = View.GONE
-            retryButton.visibility = View.GONE
+        override fun show(
+            progressBar: ChangeVisibility,
+            errorTextView: ErrorText,
+            retryButton: ChangeVisibility
+        ) {
+            progressBar.show()
+            errorTextView.hide()
+            retryButton.hide()
         }
     }
 
     data class Error(private val message: String) : LoadingCurrenciesUiState {
 
-        override fun show(binding: FragmentLoadingCurrenciesBinding) = with(binding) {
-            progressBar.visibility = View.GONE
-            errorText.visibility = View.VISIBLE
-            errorText.text = message
-            retryButton.visibility = View.VISIBLE
+        override fun show(
+            progressBar: ChangeVisibility,
+            errorTextView: ErrorText,
+            retryButton: ChangeVisibility
+        ) {
+            progressBar.hide()
+            errorTextView.show()
+            errorTextView.changeText(message)
+            retryButton.show()
         }
     }
 
     object Empty : LoadingCurrenciesUiState {
-        override fun show(binding: FragmentLoadingCurrenciesBinding) = Unit
+        override fun show(
+            progressBar: ChangeVisibility,
+            errorTextView: ErrorText,
+            retryButton: ChangeVisibility
+        ) = Unit
     }
 }

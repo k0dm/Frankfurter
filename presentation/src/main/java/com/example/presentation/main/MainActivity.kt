@@ -2,7 +2,7 @@ package com.example.presentation.main
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.ViewModel
+import com.example.presentation.core.CustomViewModel
 import com.example.presentation.core.ProvideViewModel
 import com.example.presentation.databinding.ActivityMainBinding
 
@@ -24,7 +24,7 @@ class MainActivity : AppCompatActivity(), ProvideViewModel {
         viewModel.init(isFirstRun = savedInstanceState == null)
     }
 
-    override fun <T : ViewModel> viewModel(clazz: Class<out T>): T {
+    override fun <T : CustomViewModel> viewModel(clazz: Class<out T>): T {
         return (application as ProvideViewModel).viewModel(clazz)
     }
 }

@@ -4,23 +4,17 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.Fragment
+import com.example.presentation.core.BaseFragment
 import com.example.presentation.core.ProvideViewModel
 import com.example.presentation.databinding.FragmentLoadingCurrenciesBinding
 
-class LoadingCurrenciesFragment : Fragment() {
+class LoadingCurrenciesFragment : BaseFragment<FragmentLoadingCurrenciesBinding>() {
 
-    private var _binding: FragmentLoadingCurrenciesBinding? = null
-    private val binding get() = _binding!!
-
-    override fun onCreateView(
+    override fun inflate(
         inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        _binding = FragmentLoadingCurrenciesBinding.inflate(inflater, container, false)
-        return binding.root
-    }
+        container: ViewGroup?
+    ) = FragmentLoadingCurrenciesBinding.inflate(inflater, container, false)
+
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -28,7 +22,7 @@ class LoadingCurrenciesFragment : Fragment() {
             (activity as ProvideViewModel).viewModel(LoadingCurrenciesViewModel::class.java)
 
         viewModel.liveData().observe(viewLifecycleOwner) { uiState ->
-            uiState.show(binding)
+            uiState.show(binding.progressBar, binding.errorText, binding.retryButton)
         }
 
         binding.retryButton.setOnClickListener {
@@ -36,10 +30,5 @@ class LoadingCurrenciesFragment : Fragment() {
         }
 
         viewModel.init(isFirstRun = savedInstanceState == null)
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
     }
 }
