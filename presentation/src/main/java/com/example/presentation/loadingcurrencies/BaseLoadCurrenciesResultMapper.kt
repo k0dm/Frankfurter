@@ -1,6 +1,6 @@
 package com.example.presentation.loadingcurrencies
 
-import com.example.domain.LoadCurrenciesResult
+import com.example.domain.loadcurrencies.LoadCurrenciesResult
 import com.example.presentation.core.ClearViewModel
 import com.example.presentation.dashboard.DashboardScreen
 import com.example.presentation.main.Navigation

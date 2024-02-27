@@ -1,7 +1,7 @@
 package com.example.presentation.loadingcurrencies
 
-import com.example.domain.LoadCurrenciesRepository
-import com.example.domain.LoadCurrenciesResult
+import com.example.domain.loadcurrencies.LoadCurrenciesRepository
+import com.example.domain.loadcurrencies.LoadCurrenciesResult
 import com.example.presentation.core.BaseViewModel
 import com.example.presentation.core.ClearViewModel
 import com.example.presentation.core.ProvideLiveData
