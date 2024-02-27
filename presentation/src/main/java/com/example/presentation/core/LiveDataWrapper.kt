@@ -6,7 +6,7 @@ interface LiveDataWrapper<T : Any> : UpdateUi<T>, ProvideLiveData<T> {
 
     abstract class Abstract<T : Any> : LiveDataWrapper<T> {
 
-        abstract val liveData: MutableLiveData<T>
+        protected abstract val liveData: MutableLiveData<T>
 
         override fun updateUi(value: T) {
             liveData.value = value

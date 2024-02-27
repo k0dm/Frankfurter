@@ -29,7 +29,6 @@ class BaseProvideViewModel(context: Context, private val clear: ClearViewModel) 
     private val currenciesService = Retrofit.Builder()
         .baseUrl("https://api.frankfurter.app/")
         .addConverterFactory(GsonConverterFactory.create())
-
         .client(
             OkHttpClient.Builder()
                 .addInterceptor(HttpLoggingInterceptor().apply {

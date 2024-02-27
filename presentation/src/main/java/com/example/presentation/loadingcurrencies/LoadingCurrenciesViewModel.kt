@@ -14,7 +14,7 @@ class LoadingCurrenciesViewModel(
     private val repository: LoadCurrenciesRepository,
     runAsync: RunAsync,
     private val clearViewModel: ClearViewModel,
-    private val mapper: LoadCurrenciesResult.Mapper = BaseLoadCurrenciesResult(
+    private val mapper: LoadCurrenciesResult.Mapper = BaseLoadCurrenciesResultMapper(
         communication,
         navigation,
         clearViewModel
