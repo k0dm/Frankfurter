@@ -1,7 +1,9 @@
 package com.example.frankfurter
 
 import android.content.Context
+import com.example.data.core.CacheModule
 import com.example.data.core.ProvideResources
+import com.example.data.loadcurrencies.data.CurrenciesDao
 import com.example.presentation.core.ClearViewModel
 import com.example.presentation.core.RunAsync
 import com.example.presentation.main.Navigation
@@ -16,13 +18,14 @@ interface Core {
 
     fun provideResources(): ProvideResources
 
-    fun context(): Context
+    fun currenciesDao(): CurrenciesDao
 
-    class Base(private val context: Context, private val clearViewModel: ClearViewModel) : Core {
+    class Base(context: Context, private val clearViewModel: ClearViewModel) : Core {
 
         private val navigation: Navigation.Mutable = Navigation.Base()
         private val runAsync = RunAsync.Base()
         private val provideResources: ProvideResources = BaseProvideResources(context)
+        private val cacheModule: CacheModule = CacheModule.Base(context)
 
         override fun navigation() = navigation
 
@@ -32,6 +35,6 @@ interface Core {
 
         override fun provideResources() = provideResources
 
-        override fun context() = context
+        override fun currenciesDao() = cacheModule.currenciesDao()
     }
 }
