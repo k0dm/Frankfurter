@@ -6,7 +6,7 @@ import com.example.data.dashboard.cache.FavoriteCurrenciesCacheDataSource
 import com.example.data.dashboard.cloud.CurrencyConverterCloudDataSource
 import com.example.domain.dashboard.DashboardItem
 
-interface DashboardItemMapper {
+interface DashboardItemsDatasource {
 
     suspend fun map(favoriteCurrencies: List<CurrencyPairEntity>): List<DashboardItem>
 
@@ -14,7 +14,7 @@ interface DashboardItemMapper {
         private val currencyConverterCloudDataSource: CurrencyConverterCloudDataSource,
         private val favoriteCacheDataSource: FavoriteCurrenciesCacheDataSource.Save,
         private val currentDate: CurrentDate
-    ) : DashboardItemMapper {
+    ) : DashboardItemsDatasource {
 
         override suspend fun map(favoriteCurrencies: List<CurrencyPairEntity>): List<DashboardItem> {
             return favoriteCurrencies.map {

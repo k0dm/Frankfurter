@@ -25,4 +25,10 @@ class CurrencyPairEntityTest {
         val currencyPairEntity = CurrencyPairEntity("1", "2", 1.0, "27/02/2024")
         assertEquals(currencyPairEntity.isInvalidRate(currentDate), true)
     }
+
+    @Test
+    fun testInvalidRateAndDate() {
+        val currencyPairEntity = CurrencyPairEntity("1", "2", -1.0, "27/02/2024")
+        assertEquals(currencyPairEntity.isInvalidRate(currentDate), true)
+    }
 }

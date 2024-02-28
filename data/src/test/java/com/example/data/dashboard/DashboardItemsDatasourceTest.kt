@@ -12,9 +12,9 @@ import org.junit.Before
 import org.junit.Test
 import java.net.UnknownHostException
 
-class DashboardItemMapperTest {
+class DashboardItemsDatasourceTest {
 
-    private lateinit var mapper: DashboardItemMapper
+    private lateinit var mapper: DashboardItemsDatasource
     private lateinit var favoriteCurrenciesCacheDataSource: FakeFavoriteCurrenciesCacheDataSource
     private lateinit var currencyConverterCloudDataSource: FakeCurrencyConverterCloudDataSource
     private lateinit var currentDate: CurrentDate
@@ -24,7 +24,7 @@ class DashboardItemMapperTest {
         favoriteCurrenciesCacheDataSource = FakeFavoriteCurrenciesCacheDataSource()
         currencyConverterCloudDataSource = FakeCurrencyConverterCloudDataSource()
         currentDate = FakeCurrentDate(date = "1/1/2024")
-        mapper = DashboardItemMapper.Base(
+        mapper = DashboardItemsDatasource.Base(
             currencyConverterCloudDataSource = currencyConverterCloudDataSource,
             favoriteCacheDataSource = favoriteCurrenciesCacheDataSource,
             currentDate = currentDate

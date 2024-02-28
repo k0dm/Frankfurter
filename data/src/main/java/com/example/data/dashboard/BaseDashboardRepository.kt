@@ -7,7 +7,7 @@ import com.example.domain.dashboard.DashboardResult
 
 class BaseDashboardRepository(
     private val favoriteCacheDataSource: FavoriteCurrenciesCacheDataSource.Mutable,
-    private val mapper: DashboardItemMapper,
+    private val dashboardItemsDatasource: DashboardItemsDatasource,
     private val handleError: HandleError
 ) : DashboardRepository {
 
@@ -19,7 +19,8 @@ class BaseDashboardRepository(
             DashboardResult.Empty
         } else {
             try {
-                val listOfItems: List<DashboardItem> = mapper.map(favoriteCurrencies)
+                val listOfItems: List<DashboardItem> =
+                    dashboardItemsDatasource.map(favoriteCurrencies)
                 DashboardResult.Success(listOfItems = listOfItems)
             } catch (e: Exception) {
                 DashboardResult.Error(message = handleError.handle(e))
