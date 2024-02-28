@@ -1,8 +1,8 @@
 package com.example.data.loadcurrencies
 
 import com.example.data.core.ProvideResources
+import com.example.data.loadcurrencies.cache.CurrenciesCacheDataSource
 import com.example.data.loadcurrencies.cloud.LoadCurrenciesCloudDataSource
-import com.example.data.loadcurrencies.data.CurrenciesCacheDataSource
 import com.example.domain.loadcurrencies.LoadCurrenciesRepository
 import com.example.domain.loadcurrencies.LoadCurrenciesResult
 import kotlinx.coroutines.runBlocking

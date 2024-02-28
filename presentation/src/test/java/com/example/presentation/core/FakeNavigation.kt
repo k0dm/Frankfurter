@@ -22,4 +22,4 @@ internal class FakeNavigation: Navigation.Mutable, FakeUpdateNavigation {
     }
 }
 
-interface FakeUpdateNavigation: Navigation.Update
+internal interface FakeUpdateNavigation : Navigation.Update
