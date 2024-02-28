@@ -51,7 +51,7 @@ class BaseDashboardRepositoryTest {
     }
 
     @Test
-    fun testInvalidCurrencyPairAndNoInternet(): Unit = runBlocking {
+    fun testInvalidCurrencyPairAndFail(): Unit = runBlocking {
         favoriteCurrenciesCacheDataSource.hasInvalidCache()
         dashboardItemsDatasource.returnFail()
 
