@@ -1,59 +1,35 @@
 package com.example.data.dashboard
 
 import com.example.data.core.ProvideResources
-import com.example.data.dashboard.cache.CurrencyPairEntity
 import com.example.data.dashboard.cache.FavoriteCurrenciesCacheDataSource
-import com.example.data.dashboard.cloud.CurrencyConverterCloudDataSource
-import com.example.domain.dashboard.DashBoardResult
 import com.example.domain.dashboard.DashboardItem
 import com.example.domain.dashboard.DashboardRepository
+import com.example.domain.dashboard.DashboardResult
 import java.net.UnknownHostException
 
 class BaseDashboardRepository(
-    private val cacheDataSource: FavoriteCurrenciesCacheDataSource.Mutable,
-    private val currencyConverterCloudDataSource: CurrencyConverterCloudDataSource,
-    private val provideResources: ProvideResources
+    private val favoriteCacheDataSource: FavoriteCurrenciesCacheDataSource.Mutable,
+    private val provideResources: ProvideResources,
+    private val mapper: DashboardItemMapper
 ) : DashboardRepository {
 
-    override suspend fun dashboards(): DashBoardResult {
+    override suspend fun dashboards(): DashboardResult {
 
-        val favoriteCurrencies = cacheDataSource.favoriteCurrencies()
+        val favoriteCurrencies = favoriteCacheDataSource.favoriteCurrencies()
 
         return if (favoriteCurrencies.isEmpty()) {
-            DashBoardResult.Empty
+            DashboardResult.Empty
         } else {
             try {
-                val dashboardItems = favoriteCurrencies.map {
-                    val rates = if (it.isInvalidRate()) {
-                        val newRates = currencyConverterCloudDataSource.exchangeRate(
-                            it.fromCurrency,
-                            it.toCurrency
-                        )
-                        cacheDataSource.save(
-                            CurrencyPairEntity(
-                                it.fromCurrency,
-                                it.toCurrency,
-                                newRates
-                            )
-                        )
-                        newRates
-                    } else {
-                        it.rates
-                    }
-                    DashboardItem.Base(
-                        fromCurrency = it.fromCurrency,
-                        toCurrency = it.toCurrency,
-                        rates = rates
-                    )
-                }
-                DashBoardResult.Success(listOfItems = dashboardItems)
+                val listOfItems: List<DashboardItem> = mapper.map(favoriteCurrencies)
+                DashboardResult.Success(listOfItems = listOfItems)
             } catch (e: Exception) {
                 val message = if (e is UnknownHostException) {
                     provideResources.noInternetConnectionMessage()
                 } else {
                     provideResources.serviceUnavailableMessage()
                 }
-                DashBoardResult.Error(message = message)
+                DashboardResult.Error(message = message)
             }
         }
     }

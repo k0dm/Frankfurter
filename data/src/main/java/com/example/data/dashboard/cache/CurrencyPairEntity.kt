@@ -14,15 +14,20 @@ data class CurrencyPairEntity(
     @ColumnInfo("rates")
     val rates: Double = -1.0,
     @ColumnInfo("data")
-    val date: String = DateFormatter.date()
+    val date: String = ""
 ) {
 
-    fun isInvalidRate(): Boolean {
-        return rates == -1.0 || date != DateFormatter.date()
+    fun isInvalidRate(currentDate: CurrentDate): Boolean {
+        return rates == -1.0 || date != currentDate.date()
     }
 }
 
-object DateFormatter {
+interface CurrentDate {
 
-    fun date(): String = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy/MM/dd"))
+    fun date(): String
+
+    class Base() : CurrentDate {
+        override fun date(): String =
+            LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy/MM/dd"))
+    }
 }

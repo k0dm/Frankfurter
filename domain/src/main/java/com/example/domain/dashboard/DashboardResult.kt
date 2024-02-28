@@ -1,6 +1,6 @@
 package com.example.domain.dashboard
 
-interface DashBoardResult {
+interface DashboardResult {
 
     interface Mapper {
 
@@ -13,20 +13,20 @@ interface DashBoardResult {
 
     fun map(mapper: Mapper)
 
-    object Empty : DashBoardResult {
+    object Empty : DashboardResult {
         override fun map(mapper: Mapper) {
             mapper.mapEmpty()
         }
     }
 
-    data class Error(private val message: String) : DashBoardResult {
+    data class Error(private val message: String) : DashboardResult {
 
         override fun map(mapper: Mapper) {
             mapper.mapError(message)
         }
     }
 
-    data class Success(private val listOfItems: List<DashboardItem>) : DashBoardResult {
+    data class Success(private val listOfItems: List<DashboardItem>) : DashboardResult {
 
         override fun map(mapper: Mapper) {
             mapper.mapSuccess(listOfItems)
