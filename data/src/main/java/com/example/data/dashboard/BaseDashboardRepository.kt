@@ -1,16 +1,14 @@
 package com.example.data.dashboard
 
-import com.example.data.core.ProvideResources
 import com.example.data.dashboard.cache.FavoriteCurrenciesCacheDataSource
 import com.example.domain.dashboard.DashboardItem
 import com.example.domain.dashboard.DashboardRepository
 import com.example.domain.dashboard.DashboardResult
-import java.net.UnknownHostException
 
 class BaseDashboardRepository(
     private val favoriteCacheDataSource: FavoriteCurrenciesCacheDataSource.Mutable,
-    private val provideResources: ProvideResources,
-    private val mapper: DashboardItemMapper
+    private val mapper: DashboardItemMapper,
+    private val handleError: HandleError
 ) : DashboardRepository {
 
     override suspend fun dashboards(): DashboardResult {
@@ -24,14 +22,8 @@ class BaseDashboardRepository(
                 val listOfItems: List<DashboardItem> = mapper.map(favoriteCurrencies)
                 DashboardResult.Success(listOfItems = listOfItems)
             } catch (e: Exception) {
-                val message = if (e is UnknownHostException) {
-                    provideResources.noInternetConnectionMessage()
-                } else {
-                    provideResources.serviceUnavailableMessage()
-                }
-                DashboardResult.Error(message = message)
+                DashboardResult.Error(message = handleError.handle(e))
             }
         }
     }
 }
-
