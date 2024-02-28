@@ -1,14 +1,11 @@
 package com.example.data.dashboard.cloud
 
 import kotlinx.coroutines.runBlocking
-import okhttp3.Request
-import okio.Timeout
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 
 class CurrencyConverterCloudDataSourceTest {
 
@@ -17,32 +14,29 @@ class CurrencyConverterCloudDataSourceTest {
 
     @Before
     fun setUp() {
-        cloudDataSource = CurrencyConverterCloudDataSource.Base(service = FakeService())
+        val service = Retrofit.Builder()
+            .baseUrl("https://api.frankfurter.app/")
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+            .create(CurrencyConverterService::class.java)
+        cloudDataSource = CurrencyConverterCloudDataSource.Base(service = service)
     }
 
+    /**
+     * https://api.frankfurter.app/latest?from=GBP&to=USD
+     *
+     * {
+     *     "amount": 1.0,
+     *     "base": "GBP",
+     *     "date": "2024-02-28",
+     *     "rates": {
+     *         "USD": 1.2634
+     *     }
+     * }
+     */
     @Test
     fun test() = runBlocking {
-        val actualResult = cloudDataSource.exchangeRate("A", "B")
-        assertEquals(1.3, actualResult, 0.1)
-    }
-}
-
-private class FakeService : CurrencyConverterService {
-
-    override fun exchangeRate(from: String, to: String) = object : Call<CurrencyRatesCloud> {
-
-        override fun execute() = Response.success(
-            CurrencyRatesCloud(rates = HashMap<String, Double>().apply {
-                put("B", 1.3)
-            })
-        )
-
-        override fun clone(): Call<CurrencyRatesCloud> = TODO("Not yet implemented")
-        override fun isExecuted(): Boolean = false
-        override fun cancel() = Unit
-        override fun isCanceled() = false
-        override fun request(): Request = TODO("Not yet implemented")
-        override fun timeout(): Timeout = TODO("Not yet implemented")
-        override fun enqueue(callback: Callback<CurrencyRatesCloud>) = Unit
+        val actualResult = cloudDataSource.exchangeRate("GBP", "USD")
+        assertEquals(1.2634, actualResult, 0.0001)
     }
 }
