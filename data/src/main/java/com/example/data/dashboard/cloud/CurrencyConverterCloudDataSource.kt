@@ -7,6 +7,6 @@ interface CurrencyConverterCloudDataSource {
     class Base(private val service: CurrencyConverterService) : CurrencyConverterCloudDataSource {
 
         override suspend fun exchangeRate(from: String, to: String): Double =
-            service.exchangeRate(from, to).execute().body()!!.rate(from)
+            service.exchangeRate(from, to).execute().body()!!.rate(to)
     }
 }

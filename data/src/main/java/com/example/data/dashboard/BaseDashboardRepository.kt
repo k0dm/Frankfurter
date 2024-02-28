@@ -20,7 +20,7 @@ class BaseDashboardRepository(
         } else {
             try {
                 val listOfItems: List<DashboardItem> =
-                    dashboardItemsDatasource.map(favoriteCurrencies)
+                    dashboardItemsDatasource.dashboardItems(favoriteCurrencies)
                 DashboardResult.Success(listOfItems = listOfItems)
             } catch (e: Exception) {
                 DashboardResult.Error(message = handleError.handle(e))

@@ -68,11 +68,12 @@ private class FakeDashboardItemsDatasource : DashboardItemsDatasource {
 
     private var returnSuccess = true
 
-    override suspend fun map(favoriteCurrencies: List<CurrencyPairEntity>) = if (returnSuccess) {
-        favoriteCurrencies.map { DashboardItem.Base(it.fromCurrency, it.toCurrency, it.rates) }
-    } else {
-        throw IllegalStateException()
-    }
+    override suspend fun dashboardItems(favoriteCurrencies: List<CurrencyPairEntity>) =
+        if (returnSuccess) {
+            favoriteCurrencies.map { DashboardItem.Base(it.fromCurrency, it.toCurrency, it.rates) }
+        } else {
+            throw IllegalStateException()
+        }
 
     fun returnFail() {
         returnSuccess = false

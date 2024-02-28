@@ -32,7 +32,7 @@ class DashboardItemsDatasourceTest {
 
     @Test
     fun testValidCurrencyPairs(): Unit = runBlocking {
-        val actualList = mapper.map(
+        val actualList = mapper.dashboardItems(
             listOf(
                 CurrencyPairEntity("1", "2", 2.0, "1/1/2024"),
                 CurrencyPairEntity("3", "4", 1.2, "1/1/2024")
@@ -49,7 +49,7 @@ class DashboardItemsDatasourceTest {
 
     @Test
     fun testInvalidCurrencyPairs(): Unit = runBlocking {
-        val actualList = mapper.map(
+        val actualList = mapper.dashboardItems(
             listOf(
                 CurrencyPairEntity("1", "2", 2.0, "4/2/1999"),
                 CurrencyPairEntity("3", "4", -1.0, "")

@@ -9,10 +9,12 @@ interface HandleError {
 
     class Base(private val provideResources: ProvideResources) : HandleError {
 
-        override fun handle(e: Exception) = if (e is UnknownHostException) {
-            provideResources.noInternetConnectionMessage()
-        } else {
-            provideResources.serviceUnavailableMessage()
+        override fun handle(e: Exception) = with(provideResources) {
+            return@with if (e is UnknownHostException) {
+                noInternetConnectionMessage()
+            } else {
+                serviceUnavailableMessage()
+            }
         }
     }
 }

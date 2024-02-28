@@ -8,7 +8,7 @@ import com.example.domain.dashboard.DashboardItem
 
 interface DashboardItemsDatasource {
 
-    suspend fun map(favoriteCurrencies: List<CurrencyPairEntity>): List<DashboardItem>
+    suspend fun dashboardItems(favoriteCurrencies: List<CurrencyPairEntity>): List<DashboardItem>
 
     class Base(
         private val currencyConverterCloudDataSource: CurrencyConverterCloudDataSource,
@@ -16,7 +16,7 @@ interface DashboardItemsDatasource {
         private val currentDate: CurrentDate
     ) : DashboardItemsDatasource {
 
-        override suspend fun map(favoriteCurrencies: List<CurrencyPairEntity>): List<DashboardItem> {
+        override suspend fun dashboardItems(favoriteCurrencies: List<CurrencyPairEntity>): List<DashboardItem> {
             return favoriteCurrencies.map {
                 val rates = if (it.isInvalidRate(currentDate)) {
                     val newRates = currencyConverterCloudDataSource.exchangeRate(
