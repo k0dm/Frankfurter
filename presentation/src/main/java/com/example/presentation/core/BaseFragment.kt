@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.viewbinding.ViewBinding
 
-abstract class BaseFragment<T : ViewBinding> : Fragment() {
+abstract class BaseFragment<T : ViewBinding> : Fragment(), ProvideViewModel {
     private var _binding: T? = null
     protected val binding get() = _binding!!
 
@@ -29,4 +29,7 @@ abstract class BaseFragment<T : ViewBinding> : Fragment() {
         super.onDestroyView()
         _binding = null
     }
+
+    override fun <T : CustomViewModel> viewModel(clazz: Class<out T>): T =
+        (activity as ProvideViewModel).viewModel(clazz)
 }

@@ -3,6 +3,7 @@ package com.example.presentation.dashboard
 import com.example.domain.dashboard.DashboardRepository
 import com.example.domain.dashboard.DashboardResult
 import com.example.presentation.core.BaseViewModel
+import com.example.presentation.core.ClearViewModel
 import com.example.presentation.core.ProvideLiveData
 import com.example.presentation.core.RunAsync
 import com.example.presentation.main.Navigation
@@ -13,6 +14,7 @@ class DashboardViewModel(
     private val communication: DashboardCommunication,
     private val repository: DashboardRepository,
     runAsync: RunAsync,
+    private val clearViewModel: ClearViewModel,
     private val mapper: DashboardResult.Mapper = BaseDashboardResultMapper(communication)
 ) : BaseViewModel(runAsync), ProvideLiveData<DashboardUiState>, RetryClickAction {
 
@@ -25,11 +27,12 @@ class DashboardViewModel(
         }
     }
 
-    fun goToSettings() = navigation.updateUi(SettingsScreen)
+    fun goToSettings() {
+        clearViewModel.clear(DashboardViewModel::class.java)
+        navigation.updateUi(SettingsScreen)
+    }
 
     override fun retry() = init()
 
     override fun liveData() = communication.liveData()
 }
-
-

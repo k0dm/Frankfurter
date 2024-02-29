@@ -5,7 +5,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.example.presentation.core.BaseFragment
-import com.example.presentation.core.ProvideViewModel
 import com.example.presentation.databinding.FragmentLoadingCurrenciesBinding
 
 class LoadingCurrenciesFragment : BaseFragment<FragmentLoadingCurrenciesBinding>() {
@@ -18,8 +17,7 @@ class LoadingCurrenciesFragment : BaseFragment<FragmentLoadingCurrenciesBinding>
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val viewModel =
-            (activity as ProvideViewModel).viewModel(LoadingCurrenciesViewModel::class.java)
+        val viewModel = viewModel(LoadingCurrenciesViewModel::class.java)
 
         viewModel.liveData().observe(viewLifecycleOwner) { uiState ->
             uiState.show(binding.progressBar, binding.errorText, binding.retryButton)

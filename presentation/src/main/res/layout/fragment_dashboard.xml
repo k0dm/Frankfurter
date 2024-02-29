@@ -6,13 +6,14 @@
     android:orientation="vertical"
     android:gravity="center">
 
-    <ImageView
+    <com.example.presentation.core.views.CustomImageButton
         android:id="@+id/settingsImageView"
         android:layout_gravity="end"
-        android:layout_margin="8dp"
+        android:layout_margin="16dp"
         android:contentDescription="@string/go_to_settings_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:background="@color/transparent"
         android:src="@drawable/settings_icon" />
 
     <androidx.recyclerview.widget.RecyclerView

@@ -19,11 +19,11 @@ class DashboardAdapter(
             DashboardTypeUi.Error,
             DashboardTypeUi.CurrencyPair
         )
-) : RecyclerView.Adapter<DashboardViewHolder>() {
+) : RecyclerView.Adapter<DashboardViewHolder>(), UpdateAdapter {
 
     private val dashboardCurrencyPairUis = mutableListOf<DashboardCurrencyPairUi>()
 
-    fun update(newList: List<DashboardCurrencyPairUi>) {
+    override fun update(newList: List<DashboardCurrencyPairUi>) {
         val diffResult =
             DiffUtil.calculateDiff(DashboardDiffUtilCallback(dashboardCurrencyPairUis, newList))
         dashboardCurrencyPairUis.clear()
@@ -37,25 +37,28 @@ class DashboardAdapter(
         types.indexOf(dashboardCurrencyPairUis[position].type())
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
-        types[viewType].viewHolder(parent)
+        types[viewType].viewHolder(parent, viewModel)
 
     override fun onBindViewHolder(holder: DashboardViewHolder, position: Int) {
-        holder.bind(dashboardCurrencyPairUis[position], viewModel)
+        holder.bind(dashboardCurrencyPairUis[position])
     }
 }
 
 abstract class DashboardViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 
-    open fun bind(dashboardItem: DashboardCurrencyPairUi, viewModel: RetryClickAction) = Unit
+    open fun bind(dashboardItem: DashboardCurrencyPairUi) = Unit
 
     class Empty(binding: ViewholderEmptyBinding) : DashboardViewHolder(binding.root)
 
     class Progress(binding: ViewholderProgressBinding) : DashboardViewHolder(binding.root)
 
-    class Error(private val binding: ViewholderErrorBinding) : DashboardViewHolder(binding.root) {
+    class Error(
+        private val binding: ViewholderErrorBinding,
+        private val viewModel: RetryClickAction
+    ) : DashboardViewHolder(binding.root) {
 
-        override fun bind(dashboardItem: DashboardCurrencyPairUi, viewModel: RetryClickAction) {
-            dashboardItem.showText(listOf(binding.errorTextView))
+        override fun bind(dashboardItem: DashboardCurrencyPairUi) {
+            dashboardItem.showError(binding.errorTextView)
             binding.retryButton.setOnClickListener { viewModel.retry() }
         }
     }
@@ -64,14 +67,8 @@ abstract class DashboardViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         private val binding: ViewholderCurrencyPairBinding
     ) : DashboardViewHolder(binding.root) {
 
-        override fun bind(dashboardItem: DashboardCurrencyPairUi, viewModel: RetryClickAction) {
-            dashboardItem.showText(
-                listOf(
-                    binding.fromCurrencyTextView,
-                    binding.toCurrencyTextView,
-                    binding.ratesTextView
-                )
-            )
+        override fun bind(dashboardItem: DashboardCurrencyPairUi) {
+            dashboardItem.showCurrencyPair(binding.currencyPairTextView, binding.ratesTextView)
         }
     }
 }

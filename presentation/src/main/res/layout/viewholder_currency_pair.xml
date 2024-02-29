@@ -4,36 +4,17 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginHorizontal="32dp"
-    android:layout_marginBottom="8dp">
+    android:layout_marginBottom="8dp"
+    android:orientation="horizontal">
 
     <com.example.presentation.core.views.CustomTextView
-        android:id="@+id/fromCurrencyTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="@style/TextAppearance.AppCompat.Title"
-        android:textSize="32sp"
-        tools:text="USD" />
-
-    <com.example.presentation.core.views.CustomTextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="4dp"
-        android:text="/"
-        android:textAppearance="@style/TextAppearance.AppCompat.Title"
-        android:textSize="32sp" />
-
-    <com.example.presentation.core.views.CustomTextView
-        android:id="@+id/toCurrencyTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="@style/TextAppearance.AppCompat.Title"
-        android:textSize="32sp"
-        tools:text="EUR" />
-
-    <com.example.presentation.core.views.CustomTextView
+        android:id="@+id/currencyPairTextView"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_weight="1" />
+        android:layout_weight="1"
+        android:textAppearance="@style/TextAppearance.AppCompat.Title"
+        android:textSize="32sp"
+        tools:text="USD / EUR" />
 
     <com.example.presentation.core.views.CustomTextView
         android:id="@+id/ratesTextView"

@@ -6,20 +6,20 @@ interface DashboardCurrencyPairUi {
 
     fun type(): DashboardTypeUi
 
-    fun showText(views: List<ChangeText>) = Unit
+    fun showError(errorTextView: ChangeText) = Unit
+
+    fun showCurrencyPair(currencyPairText: ChangeText, ratesTextView: ChangeText) = Unit
 
     data class Base(
-        private val fromCurrency: String,
-        private val toCurrency: String,
-        private val rates: Double
+        private val currencyPair: String,
+        private val rates: String
     ) : DashboardCurrencyPairUi {
 
         override fun type() = DashboardTypeUi.CurrencyPair
 
-        override fun showText(views: List<ChangeText>) {
-            views[0].changeText(fromCurrency)
-            views[1].changeText(toCurrency)
-            views[2].changeText(rates.toString()) // todo fix
+        override fun showCurrencyPair(currencyPairText: ChangeText, ratesTextView: ChangeText) {
+            currencyPairText.changeText(currencyPair)
+            currencyPairText.changeText(rates)
         }
     }
 
@@ -32,8 +32,8 @@ interface DashboardCurrencyPairUi {
 
         override fun type() = DashboardTypeUi.Error
 
-        override fun showText(views: List<ChangeText>) {
-            views[0].changeText(message)
+        override fun showError(errorTextView: ChangeText) {
+            errorTextView.changeText(message)
         }
     }
 

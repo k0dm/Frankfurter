@@ -13,27 +13,27 @@ import com.example.presentation.dashboard.DashboardViewModel
 
 class DashboardModule(private val core: Core) : Module<DashboardViewModel> {
 
-    private val favoriteCurrenciesCacheDataSource by lazy {
-        FavoriteCurrenciesCacheDataSource.Base(
-            core.cacheModule().database().favoriteCurrenciesDao()
+
+    override fun viewModel() = FavoriteCurrenciesCacheDataSource.Base(
+        core.cacheModule().database().favoriteCurrenciesDao()
+    ).let {
+        DashboardViewModel(
+            navigation = core.navigation(),
+            communication = DashboardCommunication.Base(),
+            repository = BaseDashboardRepository(
+                favoriteCacheDataSource = it,
+                dashboardItemsDatasource =
+                DashboardItemsDatasource.Base(
+                    currencyConverterCloudDataSource = CurrencyConverterCloudDataSource.Base(
+                        core.retrofit().create(CurrencyConverterService::class.java)
+                    ),
+                    favoriteCacheDataSource = it,
+                    currentDate = CurrentDate.Base()
+                ),
+                handleError = HandleError.Base(core.provideResources())
+            ),
+            runAsync = core.runAsync(),
+            clearViewModel = core.clearViewModel()
         )
     }
-
-    override fun viewModel() = DashboardViewModel(
-        navigation = core.navigation(),
-        communication = DashboardCommunication.Base(),
-        repository = BaseDashboardRepository(
-            favoriteCacheDataSource = favoriteCurrenciesCacheDataSource,
-            dashboardItemsDatasource =
-            DashboardItemsDatasource.Base(
-                currencyConverterCloudDataSource = CurrencyConverterCloudDataSource.Base(
-                    core.retrofit().create(CurrencyConverterService::class.java)
-                ),
-                favoriteCacheDataSource = favoriteCurrenciesCacheDataSource,
-                currentDate = CurrentDate.Base()
-            ),
-            handleError = HandleError.Base(core.provideResources())
-        ),
-        runAsync = core.runAsync()
-    )
 }

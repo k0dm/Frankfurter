@@ -6,7 +6,7 @@ import com.example.presentation.dashboard.adapter.DashboardCurrencyPairUi
 
 class BaseDashboardResultMapper(
     private val communication: DashboardCommunication,
-    private val mapper: DashboardItem.Mapper<DashboardCurrencyPairUi> = BaseDashboardItemMapper
+    private val mapper: DashboardItem.Mapper<DashboardCurrencyPairUi> = BaseDashboardItemMapper()
 ) : DashboardResult.Mapper {
 
     override fun mapSuccess(listOfItems: List<DashboardItem>) {

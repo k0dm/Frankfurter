@@ -2,7 +2,6 @@ package com.example.data.core
 
 import android.content.Context
 import androidx.room.Room
-import com.example.data.loadcurrencies.cache.CurrenciesDatabase
 
 interface CacheModule {
 

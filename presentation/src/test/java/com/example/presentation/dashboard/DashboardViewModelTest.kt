@@ -1,9 +1,9 @@
 package com.example.presentation.dashboard
 
-import androidx.lifecycle.LiveData
 import com.example.domain.dashboard.DashboardItem
 import com.example.domain.dashboard.DashboardRepository
 import com.example.domain.dashboard.DashboardResult
+import com.example.presentation.core.FakeClear
 import com.example.presentation.core.FakeNavigation
 import com.example.presentation.core.FakeRunAsync
 import com.example.presentation.core.FakeUpdateNavigation
@@ -20,6 +20,7 @@ class DashboardViewModelTest {
     private lateinit var dashboardCommunication: FakeDashboardCommunication
     private lateinit var dashboardRepository: FakeDashboardRepository
     private lateinit var runAsync: FakeRunAsync
+    private lateinit var clearViewModel: FakeClear
 
     @Before
     fun setUp() {
@@ -27,16 +28,18 @@ class DashboardViewModelTest {
         dashboardCommunication = FakeDashboardCommunication()
         dashboardRepository = FakeDashboardRepository()
         runAsync = FakeRunAsync()
+        clearViewModel = FakeClear()
         viewModel = DashboardViewModel(
             navigation = navigation,
             communication = dashboardCommunication,
             repository = dashboardRepository,
-            runAsync = runAsync
+            runAsync = runAsync,
+            clearViewModel = clearViewModel
         )
     }
 
     @Test
-    fun testFirstOpening() {
+    fun testNoData() {
         viewModel.init()
         dashboardCommunication.checkUiState(DashboardUiState.Progress)
 
@@ -45,7 +48,7 @@ class DashboardViewModelTest {
     }
 
     @Test
-    fun testUserHasValidFavoriteCurrencyPairs() {
+    fun testPairsAvailable() {
         dashboardRepository.returnSuccess()
 
         viewModel.init()
@@ -55,15 +58,15 @@ class DashboardViewModelTest {
         dashboardCommunication.checkUiState(
             DashboardUiState.Success(
                 currencies = listOf(
-                    DashboardCurrencyPairUi.Base("A", "B", 1.457),
-                    DashboardCurrencyPairUi.Base("C", "D", 2.1132)
+                    DashboardCurrencyPairUi.Base("A / B", "1.46"),
+                    DashboardCurrencyPairUi.Base("C / D", "2.11")
                 )
             )
         )
     }
 
     @Test
-    fun testUserHasInvalidFavoriteCurrencyPairsFirstLoadFailedThenSuccess() {
+    fun failedToLoadPairsAndRatesThenSuccess() {
         dashboardRepository.returnError()
 
         viewModel.init()
@@ -81,8 +84,8 @@ class DashboardViewModelTest {
         dashboardCommunication.checkUiState(
             DashboardUiState.Success(
                 currencies = listOf(
-                    DashboardCurrencyPairUi.Base("A", "B", 1.457),
-                    DashboardCurrencyPairUi.Base("C", "D", 2.1132)
+                    DashboardCurrencyPairUi.Base("A / B", "1.46"),
+                    DashboardCurrencyPairUi.Base("C / D", "2.11")
                 )
             )
         )
@@ -91,6 +94,7 @@ class DashboardViewModelTest {
     @Test
     fun testNavigateToSettings() {
         viewModel.goToSettings()
+        clearViewModel.checkClearCalled(listOf(DashboardViewModel::class.java))
         navigation.checkScreen(SettingsScreen)
     }
 }
@@ -106,9 +110,6 @@ private class FakeDashboardCommunication : DashboardCommunication {
     fun checkUiState(expectedUiState: DashboardUiState) {
         assertEquals(expectedUiState, actualUiState)
     }
-
-    override fun liveData(): LiveData<DashboardUiState> =
-        throw IllegalStateException("Don't use in Unit Test")
 }
 
 private class FakeDashboardRepository : DashboardRepository {
