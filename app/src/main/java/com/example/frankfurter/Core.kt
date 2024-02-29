@@ -6,6 +6,10 @@ import com.example.data.core.ProvideResources
 import com.example.presentation.core.ClearViewModel
 import com.example.presentation.core.RunAsync
 import com.example.presentation.main.Navigation
+import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 
 interface Core {
 
@@ -19,12 +23,24 @@ interface Core {
 
     fun cacheModule(): CacheModule
 
+    fun retrofit(): Retrofit
+
     class Base(context: Context, private val clearViewModel: ClearViewModel) : Core {
 
         private val navigation: Navigation.Mutable = Navigation.Base()
         private val runAsync = RunAsync.Base()
         private val provideResources: ProvideResources = BaseProvideResources(context)
         private val cacheModule: CacheModule = CacheModule.Base(context)
+        private val retrofit = Retrofit.Builder()
+            .baseUrl("https://api.frankfurter.app/")
+            .addConverterFactory(GsonConverterFactory.create())
+            .client(
+                OkHttpClient.Builder()
+                    .addInterceptor(HttpLoggingInterceptor().apply {
+                        setLevel(HttpLoggingInterceptor.Level.BODY)
+                    }).build()
+            )
+            .build()
 
         override fun navigation() = navigation
 
@@ -35,5 +51,7 @@ interface Core {
         override fun provideResources() = provideResources
 
         override fun cacheModule() = cacheModule
+
+        override fun retrofit() = retrofit
     }
 }

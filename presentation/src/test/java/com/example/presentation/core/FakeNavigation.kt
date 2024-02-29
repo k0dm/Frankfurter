@@ -1,6 +1,5 @@
 package com.example.presentation.core
 
-import androidx.lifecycle.LiveData
 import com.example.presentation.main.Navigation
 import com.example.presentation.main.Screen
 import org.junit.Assert
@@ -13,13 +12,12 @@ internal class FakeNavigation: Navigation.Mutable, FakeUpdateNavigation {
         actualScreen =  value
     }
 
-    fun checkScreen(expectedScreen: Screen) {
+    override fun checkScreen(expectedScreen: Screen) {
         Assert.assertEquals(expectedScreen, actualScreen)
-    }
-
-    override fun liveData(): LiveData<Screen> {
-        throw IllegalStateException("don't use in UnitTest")
     }
 }
 
-internal interface FakeUpdateNavigation : Navigation.Update
+internal interface FakeUpdateNavigation : Navigation.Update {
+
+    fun checkScreen(expectedScreen: Screen)
+}

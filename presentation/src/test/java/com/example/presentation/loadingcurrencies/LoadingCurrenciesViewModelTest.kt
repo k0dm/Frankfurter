@@ -1,6 +1,5 @@
 package com.example.presentation.loadingcurrencies
 
-import androidx.lifecycle.LiveData
 import com.example.domain.loadcurrencies.LoadCurrenciesRepository
 import com.example.domain.loadcurrencies.LoadCurrenciesResult
 import com.example.presentation.core.FakeClear
@@ -115,7 +114,4 @@ private class FakeCommunication: LoadingCurrenciesCommunication {
     fun checkUiState(expectedUiState: LoadingCurrenciesUiState) {
         assertEquals(expectedUiState, actualUiState)
     }
-
-    override fun liveData(): LiveData<LoadingCurrenciesUiState> =
-        throw IllegalStateException("don't use in UnitTest")
 }
