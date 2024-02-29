@@ -2,9 +2,9 @@ package com.example.domain.settings
 
 interface SettingsRepository {
 
-    fun allCurrencies(): List<String>
+    suspend fun allCurrencies(): List<String>
 
-    fun getAvailableDestinations(from: String): List<String>
+    suspend fun getAvailableDestinations(from: String): List<String>
 
-    fun save(from: String, to: String)
+    suspend fun save(from: String, to: String)
 }
