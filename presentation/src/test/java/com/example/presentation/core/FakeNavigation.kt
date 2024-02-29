@@ -13,7 +13,7 @@ internal class FakeNavigation: Navigation.Mutable, FakeUpdateNavigation {
         actualScreen =  value
     }
 
-    fun checkScreen(expectedScreen: Screen) {
+    override fun checkScreen(expectedScreen: Screen) {
         Assert.assertEquals(expectedScreen, actualScreen)
     }
 
@@ -22,4 +22,7 @@ internal class FakeNavigation: Navigation.Mutable, FakeUpdateNavigation {
     }
 }
 
-internal interface FakeUpdateNavigation : Navigation.Update
+internal interface FakeUpdateNavigation : Navigation.Update {
+
+    fun checkScreen(expectedScreen: Screen)
+}
