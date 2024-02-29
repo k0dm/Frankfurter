@@ -7,23 +7,17 @@ interface DashboardUiState {
 
     fun show(adapter: UpdateAdapter)
 
-    object Progress : DashboardUiState {
-
-        override fun show(adapter: UpdateAdapter) =
-            adapter.update(listOf(DashboardCurrencyPairUi.Progress))
+    abstract class Abstract(
+        private val dashboardCurrencyPairUi: DashboardCurrencyPairUi
+    ) : DashboardUiState {
+        override fun show(adapter: UpdateAdapter) = adapter.update(listOf(dashboardCurrencyPairUi))
     }
 
-    object Empty : DashboardUiState {
+    object Progress : Abstract(DashboardCurrencyPairUi.Progress)
 
-        override fun show(adapter: UpdateAdapter) =
-            adapter.update(listOf(DashboardCurrencyPairUi.Empty))
-    }
+    object Empty : Abstract(DashboardCurrencyPairUi.Empty)
 
-    data class Error(private val message: String) : DashboardUiState {
-
-        override fun show(adapter: UpdateAdapter) =
-            adapter.update(listOf(DashboardCurrencyPairUi.Error(message)))
-    }
+    data class Error(private val message: String) : Abstract(DashboardCurrencyPairUi.Error(message))
 
     data class Success(private val currencies: List<DashboardCurrencyPairUi>) : DashboardUiState {
 

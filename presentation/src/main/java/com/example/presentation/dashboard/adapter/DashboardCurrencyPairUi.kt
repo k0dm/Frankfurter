@@ -19,7 +19,7 @@ interface DashboardCurrencyPairUi {
 
         override fun showCurrencyPair(currencyPairText: ChangeText, ratesTextView: ChangeText) {
             currencyPairText.changeText(currencyPair)
-            currencyPairText.changeText(rates)
+            ratesTextView.changeText(rates)
         }
     }
 

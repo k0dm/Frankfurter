@@ -73,7 +73,7 @@ class DashboardViewModelTest {
         dashboardCommunication.checkUiState(DashboardUiState.Progress)
 
         runAsync.pingResult()
-        dashboardCommunication.checkUiState(DashboardUiState.Error(message = "Houston we have a problem"))
+        dashboardCommunication.checkUiState(DashboardUiState.Error(message = "No internet connection"))
 
         dashboardRepository.returnSuccess()
 
@@ -130,6 +130,6 @@ private class FakeDashboardRepository : DashboardRepository {
     }
 
     fun returnError() {
-        dashboardResult = DashboardResult.Error(message = "Houston we have a problem")
+        dashboardResult = DashboardResult.Error(message = "No internet connection")
     }
 }

@@ -7,5 +7,5 @@
     android:gravity="center"
     android:paddingHorizontal="32dp"
     android:text="@string/go_to_settings_and_add_new_pair"
-    android:textAppearance="@style/TextAppearance.AppCompat.Title"
+    android:textStyle="bold"
     android:textSize="36sp" />

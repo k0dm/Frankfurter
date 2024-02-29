@@ -13,8 +13,7 @@ interface CacheModule {
             context,
             CurrenciesDatabase::class.java,
             "currencies_db"
-        )
-            .fallbackToDestructiveMigration().build()
+        ).build()
 
         override fun database() = db
     }

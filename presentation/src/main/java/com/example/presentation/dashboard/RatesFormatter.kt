@@ -6,10 +6,10 @@ interface RatesFormatter {
 
     fun format(rates: Double): String
 
-    class Base(
-        private val pattern: String = "#.##"
-    ) : RatesFormatter {
+    class Base(pattern: String = "#.##") : RatesFormatter {
 
-        override fun format(rates: Double): String = DecimalFormat(pattern).format(rates)
+        private val decimalFormat = DecimalFormat(pattern)
+
+        override fun format(rates: Double): String = decimalFormat.format(rates)
     }
 }

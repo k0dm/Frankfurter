@@ -21,27 +21,25 @@ class DashboardAdapter(
         )
 ) : RecyclerView.Adapter<DashboardViewHolder>(), UpdateAdapter {
 
-    private val dashboardCurrencyPairUis = mutableListOf<DashboardCurrencyPairUi>()
+    private val pairUiList = mutableListOf<DashboardCurrencyPairUi>()
 
     override fun update(newList: List<DashboardCurrencyPairUi>) {
-        val diffResult =
-            DiffUtil.calculateDiff(DashboardDiffUtilCallback(dashboardCurrencyPairUis, newList))
-        dashboardCurrencyPairUis.clear()
-        dashboardCurrencyPairUis.addAll(newList)
+        val diffResult = DiffUtil.calculateDiff(DashboardDiffUtilCallback(pairUiList, newList))
+        pairUiList.clear()
+        pairUiList.addAll(newList)
         diffResult.dispatchUpdatesTo(this)
     }
 
-    override fun getItemCount() = dashboardCurrencyPairUis.size
+    override fun getItemCount() = pairUiList.size
 
     override fun getItemViewType(position: Int) =
-        types.indexOf(dashboardCurrencyPairUis[position].type())
+        types.indexOf(pairUiList[position].type())
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
         types[viewType].viewHolder(parent, viewModel)
 
-    override fun onBindViewHolder(holder: DashboardViewHolder, position: Int) {
-        holder.bind(dashboardCurrencyPairUis[position])
-    }
+    override fun onBindViewHolder(holder: DashboardViewHolder, position: Int) =
+        holder.bind(pairUiList[position])
 }
 
 abstract class DashboardViewHolder(view: View) : RecyclerView.ViewHolder(view) {

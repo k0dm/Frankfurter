@@ -9,7 +9,7 @@ import com.example.data.loadcurrencies.cache.CurrencyEntity
 
 @Database(
     version = 1,
-    exportSchema = true,
+    exportSchema = false,
     entities = [CurrencyEntity::class, CurrencyPairEntity::class],
 )
 abstract class CurrenciesDatabase : RoomDatabase() {

@@ -7,17 +7,18 @@ import android.view.ViewGroup
 import com.example.presentation.core.BaseFragment
 import com.example.presentation.databinding.FragmentLoadingCurrenciesBinding
 
-class LoadingCurrenciesFragment : BaseFragment<FragmentLoadingCurrenciesBinding>() {
+class LoadingCurrenciesFragment :
+    BaseFragment<FragmentLoadingCurrenciesBinding, LoadingCurrenciesViewModel>(
+        LoadingCurrenciesViewModel::class.java
+    ) {
 
     override fun inflate(
-        inflater: LayoutInflater,
-        container: ViewGroup?
+        inflater: LayoutInflater, container: ViewGroup?
     ) = FragmentLoadingCurrenciesBinding.inflate(inflater, container, false)
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val viewModel = viewModel(LoadingCurrenciesViewModel::class.java)
 
         viewModel.liveData().observe(viewLifecycleOwner) { uiState ->
             uiState.show(binding.progressBar, binding.errorText, binding.retryButton)
