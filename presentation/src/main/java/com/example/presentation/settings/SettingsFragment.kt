@@ -22,7 +22,7 @@ class SettingsFragment
             viewModel.chooseFrom(currency)
         }
         val currencyToAdapter = CurrencyAdapter { currency ->
-            viewModel.chooseTo(currency)
+            viewModel.chooseTo(currencyFromAdapter.selected(), currency)
         }
 
         requireActivity().onBackPressedDispatcher.addCallback(
@@ -32,6 +32,8 @@ class SettingsFragment
                     viewModel.goToDashboard()
                 }
             })
+
+        viewModel.save(currencyFromAdapter.selected(), currencyToAdapter.selected())
 
         viewModel.liveData().observe(viewLifecycleOwner) { settingsUiState ->
             settingsUiState.show(currencyFromAdapter, currencyToAdapter)

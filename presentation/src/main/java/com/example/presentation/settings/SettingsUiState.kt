@@ -1,6 +1,7 @@
 package com.example.presentation.settings
 
 import com.example.presentation.core.UpdateAdapter
+import com.example.presentation.core.views.ChangeVisibility
 
 interface SettingsUiState {
 
@@ -9,12 +10,16 @@ interface SettingsUiState {
         currencyToAdapter: UpdateAdapter<CurrencyUi>
     )
 
+    fun show(saveButton: ChangeVisibility) = saveButton.hide()
+
     object Empty : SettingsUiState {
 
         override fun show(
             currencyFromAdapter: UpdateAdapter<CurrencyUi>,
             currencyToAdapter: UpdateAdapter<CurrencyUi>
-        ) = Unit
+        ) {
+            currencyToAdapter.update(listOf(CurrencyUi.Empty))
+        }
     }
 
     data class Initial(private val fromCurrencies: List<CurrencyUi>) : SettingsUiState {
@@ -48,6 +53,10 @@ interface SettingsUiState {
             currencyToAdapter: UpdateAdapter<CurrencyUi>
         ) {
             currencyToAdapter.update(toCurrencies)
+        }
+
+        override fun show(saveButton: ChangeVisibility) {
+            saveButton.show()
         }
     }
 }

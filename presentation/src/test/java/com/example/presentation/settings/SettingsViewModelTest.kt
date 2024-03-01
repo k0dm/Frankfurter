@@ -1,7 +1,6 @@
 package com.example.presentation.settings
 
 import com.example.domain.settings.SettingsRepository
-import com.example.presentation.core.ClearViewModel
 import com.example.presentation.core.FakeClear
 import com.example.presentation.core.FakeNavigation
 import com.example.presentation.core.FakeRunAsync
@@ -18,7 +17,7 @@ class SettingsViewModelTest {
     private lateinit var communication: FakeSettingsCommunication
     private lateinit var repository: FakeSettingsRepository
     private lateinit var runAsync: FakeRunAsync
-    private lateinit var clearViewModel: ClearViewModel
+    private lateinit var clearViewModel: FakeClear
 
     @Before
     fun setUp() {
@@ -43,11 +42,9 @@ class SettingsViewModelTest {
         communication.checkUiState(
             SettingsUiState.Initial(
                 fromCurrencies = listOf(
-                    CurrencyUi(value = "USD"),
-                    CurrencyUi(value = "EUR"),
-                    CurrencyUi(value = "JPY"),
-                    CurrencyUi(value = "AUD"),
-                    CurrencyUi(value = "BRL")
+                    CurrencyUi.Base(value = "USD"),
+                    CurrencyUi.Base(value = "EUR"),
+                    CurrencyUi.Base(value = "JPY"),
                 )
             )
         )
@@ -57,37 +54,32 @@ class SettingsViewModelTest {
         communication.checkUiState(
             SettingsUiState.AvailableDestinations(
                 fromCurrencies = listOf(
-                    CurrencyUi(value = "USD", chosen = true),
-                    CurrencyUi(value = "EUR"),
-                    CurrencyUi(value = "JPY"),
-                    CurrencyUi(value = "AUD"),
-                    CurrencyUi(value = "BRL")
+                    CurrencyUi.Base(value = "USD", chosen = true),
+                    CurrencyUi.Base(value = "EUR"),
+                    CurrencyUi.Base(value = "JPY"),
                 ),
                 toCurrencies = listOf(
-                    CurrencyUi(value = "EUR"),
-                    CurrencyUi(value = "JPY"),
-                    CurrencyUi(value = "AUD"),
-                    CurrencyUi(value = "BRL")
+                    CurrencyUi.Base(value = "EUR"),
+                    CurrencyUi.Base(value = "JPY"),
                 )
             )
         )
 
-        viewModel.chooseTo(currency = "EUR")
+        viewModel.chooseTo(from = "USD", to = "EUR")
+        runAsync.pingResult()
         communication.checkUiState(
             SettingsUiState.ReadyToSave(
                 toCurrencies = listOf(
-                    CurrencyUi(value = "EUR", chosen = true),
-                    CurrencyUi(value = "JPY"),
-                    CurrencyUi(value = "AUD"),
-                    CurrencyUi(value = "BRL")
+                    CurrencyUi.Base(value = "EUR", chosen = true),
+                    CurrencyUi.Base(value = "JPY"),
                 )
             )
         )
 
-        viewModel.save()
+        viewModel.save(from = "USD", to = "EUR")
         runAsync.pingResult()
         repository.checkSavedCurrencyPairs(Pair("USD", "EUR"))
-        clearViewModel.clear(SettingsViewModel::class.java)
+        clearViewModel.checkClearCalled(listOf(SettingsViewModel::class.java))
         navigation.checkScreen(DashboardScreen)
     }
 
@@ -99,11 +91,9 @@ class SettingsViewModelTest {
         communication.checkUiState(
             SettingsUiState.Initial(
                 fromCurrencies = listOf(
-                    CurrencyUi(value = "USD"),
-                    CurrencyUi(value = "EUR"),
-                    CurrencyUi(value = "JPY"),
-                    CurrencyUi(value = "AUD"),
-                    CurrencyUi(value = "BRL")
+                    CurrencyUi.Base(value = "USD"),
+                    CurrencyUi.Base(value = "EUR"),
+                    CurrencyUi.Base(value = "JPY"),
                 )
             )
         )
@@ -113,16 +103,12 @@ class SettingsViewModelTest {
         communication.checkUiState(
             SettingsUiState.AvailableDestinations(
                 fromCurrencies = listOf(
-                    CurrencyUi(value = "USD", chosen = true),
-                    CurrencyUi(value = "EUR"),
-                    CurrencyUi(value = "JPY"),
-                    CurrencyUi(value = "AUD"),
-                    CurrencyUi(value = "BRL")
+                    CurrencyUi.Base(value = "USD", chosen = true),
+                    CurrencyUi.Base(value = "EUR"),
+                    CurrencyUi.Base(value = "JPY"),
                 ),
                 toCurrencies = listOf(
-                    CurrencyUi(value = "JPY"),
-                    CurrencyUi(value = "AUD"),
-                    CurrencyUi(value = "BRL")
+                    CurrencyUi.Base(value = "JPY"),
                 )
             )
         )
@@ -132,44 +118,95 @@ class SettingsViewModelTest {
         communication.checkUiState(
             SettingsUiState.AvailableDestinations(
                 fromCurrencies = listOf(
-                    CurrencyUi(value = "USD"),
-                    CurrencyUi(value = "EUR", chosen = true),
-                    CurrencyUi(value = "JPY"),
-                    CurrencyUi(value = "AUD"),
-                    CurrencyUi(value = "BRL")
+                    CurrencyUi.Base(value = "USD"),
+                    CurrencyUi.Base(value = "EUR", chosen = true),
+                    CurrencyUi.Base(value = "JPY"),
                 ),
                 toCurrencies = listOf(
-                    CurrencyUi(value = "USD"),
-                    CurrencyUi(value = "JPY"),
-                    CurrencyUi(value = "AUD"),
-                    CurrencyUi(value = "BRL")
+                    CurrencyUi.Base(value = "USD"),
+                    CurrencyUi.Base(value = "JPY"),
                 )
             )
         )
 
-        viewModel.chooseTo(currency = "JPY")
+        viewModel.chooseTo(from = "EUR", to = "JPY")
+        runAsync.pingResult()
         communication.checkUiState(
             SettingsUiState.ReadyToSave(
                 toCurrencies = listOf(
-                    CurrencyUi(value = "USD"),
-                    CurrencyUi(value = "JPY", chosen = true),
-                    CurrencyUi(value = "AUD"),
-                    CurrencyUi(value = "BRL")
+                    CurrencyUi.Base(value = "USD"),
+                    CurrencyUi.Base(value = "JPY", chosen = true),
                 )
             )
         )
 
-        viewModel.goToDashboard()
-        clearViewModel.clear(SettingsViewModel::class.java)
-        navigation.checkScreen(DashboardScreen)
+        viewModel.chooseFrom(currency = "USD")
+        runAsync.pingResult()
+        communication.checkUiState(
+            SettingsUiState.AvailableDestinations(
+                fromCurrencies = listOf(
+                    CurrencyUi.Base(value = "USD", chosen = true),
+                    CurrencyUi.Base(value = "EUR"),
+                    CurrencyUi.Base(value = "JPY"),
+                ),
+                toCurrencies = listOf(
+                    CurrencyUi.Base(value = "JPY"),
+                )
+            )
+        )
 
-        repository.checkSavedCurrencyPairs(Pair("USD", "EUR"))
+        viewModel.chooseTo(from = "USD", to = "JPY")
+        runAsync.pingResult()
+        communication.checkUiState(
+            SettingsUiState.ReadyToSave(
+                toCurrencies = listOf(
+                    CurrencyUi.Base(value = "JPY", chosen = true),
+                )
+            )
+        )
+
+        viewModel.save(from = "USD", to = "JPY")
+        runAsync.pingResult()
+        clearViewModel.checkClearCalled(
+            listOf(SettingsViewModel::class.java, SettingsViewModel::class.java)
+        )
+        navigation.checkScreen(DashboardScreen)
+        repository.checkSavedCurrencyPairs(Pair("USD", "EUR"), Pair("USD", "JPY"))
+    }
+
+    @Test
+    fun testEmptyAvailableDestinationCurrencies() {
+        testUserAlreadySavedCurrencyPairAndCheckPairAfterComeback()
+        viewModel.init()
+        runAsync.pingResult()
+        communication.checkUiState(
+            SettingsUiState.Initial(
+                fromCurrencies = listOf(
+                    CurrencyUi.Base(value = "USD"),
+                    CurrencyUi.Base(value = "EUR"),
+                    CurrencyUi.Base(value = "JPY"),
+                )
+            )
+        )
+
+        viewModel.chooseFrom("USD")
+        runAsync.pingResult()
+        communication.checkUiState(
+            SettingsUiState.AvailableDestinations(
+                fromCurrencies = listOf(
+                    CurrencyUi.Base(value = "USD", chosen = true),
+                    CurrencyUi.Base(value = "EUR"),
+                    CurrencyUi.Base(value = "JPY"),
+                ),
+                toCurrencies = listOf(CurrencyUi.Empty)
+            )
+        )
     }
 }
 
 private class FakeSettingsRepository : SettingsRepository {
 
-    private val allCurrencies = listOf("USD", "EUR", "JPY", "AUD", "BRL")
+    private val allCurrencies = listOf("USD", "EUR", "JPY")
 
     override suspend fun allCurrencies() = allCurrencies
 

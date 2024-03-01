@@ -16,45 +16,44 @@ class SettingsViewModel(
     private val clearViewModel: ClearViewModel
 ) : BaseViewModel(runAsync), ProvideLiveData<SettingsUiState> {
 
-    private var currencyPair = CurrencyPair()
-    private var allCurrencies = listOf<String>()
-    private var availableDestinations = listOf<String>()
 
     fun init() = runAsync({
-        repository.allCurrencies().also { allCurrencies = it }
+        repository.allCurrencies()
     }) { currencies ->
         communication.updateUi(
-            SettingsUiState.Initial(fromCurrencies = currencies.map { CurrencyUi(value = it) })
+            SettingsUiState.Initial(fromCurrencies = currencies.map { CurrencyUi.Base(value = it) })
         )
     }
 
     fun chooseFrom(currency: String) = runAsync({
-        currencyPair.from = currency
-        repository.availableDestinations(currency).also { availableDestinations = it }
-    }) { currencies ->
-        communication.updateUi(
-            SettingsUiState.AvailableDestinations(
-                fromCurrencies = allCurrencies.map {
-                    CurrencyUi(value = it, chosen = it == currency)
-                },
-                toCurrencies = currencies.map { CurrencyUi(value = it) }
-            )
+        val currencies = repository.availableDestinations(currency)
+        SettingsUiState.AvailableDestinations(
+            fromCurrencies = repository.allCurrencies().map {
+                CurrencyUi.Base(value = it, chosen = it == currency)
+            },
+            toCurrencies = currencies.run {
+                if (isEmpty()) listOf(CurrencyUi.Empty)
+                else map { CurrencyUi.Base(value = it) }
+            }
         )
+
+    }) { uiState ->
+
+        communication.updateUi(uiState)
     }
 
-    fun chooseTo(currency: String) {
-        currencyPair.to = currency
-        communication.updateUi(
-            SettingsUiState.ReadyToSave(
-                toCurrencies = availableDestinations.map {
-                    CurrencyUi(value = it, chosen = it == currency)
-                }
-            )
+    fun chooseTo(from: String, to: String) = runAsync({
+        SettingsUiState.ReadyToSave(
+            toCurrencies = repository.availableDestinations(from).map {
+                CurrencyUi.Base(value = it, chosen = it == to)
+            }
         )
+    }) { uiState ->
+        communication.updateUi(uiState)
     }
 
-    fun save() = runAsync({
-        repository.save(currencyPair.from, currencyPair.to)
+    fun save(from: String, to: String) = runAsync({
+        repository.save(from, to)
     }) {
         goToDashboard()
     }
@@ -64,6 +63,3 @@ class SettingsViewModel(
         navigation.updateUi(DashboardScreen)
     }
 }
-
-private data class CurrencyPair(var from: String = "", var to: String = "")
-
