@@ -55,7 +55,7 @@ class BaseSettingsRepositoryTest {
         assertEquals(listOf("USD", "EUR", "JPY", "BRL"), availableCurrencies)
 
         availableCurrencies = repository.availableDestinations("USD")
-        assertEquals(listOf<String>(), availableCurrencies)
+        assertEquals(emptyList<String>(), availableCurrencies)
     }
 }
 
