@@ -59,7 +59,7 @@ class BaseSettingsRepositoryTest {
     }
 }
 
-class FakeReadCurrenciesCacheDataSource : CurrenciesCacheDataSource.Read {
+private class FakeReadCurrenciesCacheDataSource : CurrenciesCacheDataSource.Read {
 
     override suspend fun currencies(): List<String> {
         return listOf("USD", "EUR", "JPY", "AUD", "BRL")
