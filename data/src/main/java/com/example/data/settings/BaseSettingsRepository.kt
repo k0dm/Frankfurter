@@ -18,7 +18,8 @@ class BaseSettingsRepository(
 
         val savedCurrencies = favoriteCurrenciesCacheDataSource.favoriteCurrencies()
 
-        val matched = savedCurrencies.filter { it.fromCurrency == from }
+        val matched = savedCurrencies
+            .filter { it.fromCurrency == from }
             .map { it.toCurrency }
 
         allCurrencies.removeAll(matched)
