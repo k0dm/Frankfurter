@@ -9,7 +9,7 @@ import java.net.UnknownHostException
 
 class BaseLoadCurrenciesRepository(
     private val cloudDataSource: LoadCurrenciesCloudDataSource,
-    private val cacheDataSource: CurrenciesCacheDataSource,
+    private val cacheDataSource: CurrenciesCacheDataSource.Mutable,
     private val provideResources: ProvideResources
 ) : LoadCurrenciesRepository {
 

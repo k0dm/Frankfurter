@@ -2,11 +2,19 @@ package com.example.data.loadcurrencies.cache
 
 interface CurrenciesCacheDataSource {
 
-    suspend fun currencies(): List<String>
+    interface Read {
 
-    suspend fun saveCurrencies(currencies: List<String>)
+        suspend fun currencies(): List<String>
+    }
 
-    class Base(private val dao: CurrenciesDao) : CurrenciesCacheDataSource {
+    interface Save {
+
+        suspend fun saveCurrencies(currencies: List<String>)
+    }
+
+    interface Mutable : Read, Save
+
+    class Base(private val dao: CurrenciesDao) : Mutable {
 
         override suspend fun currencies(): List<String> {
             return dao.currencies().map { it.currency }
