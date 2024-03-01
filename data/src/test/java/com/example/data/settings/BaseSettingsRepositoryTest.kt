@@ -26,6 +26,8 @@ class BaseSettingsRepositoryTest {
 
     @Test
     fun testMainScenario(): Unit = runBlocking {
+        assertEquals(listOf("USD", "EUR", "JPY", "AUD", "BRL"), repository.allCurrencies())
+
         var availableCurrencies = repository.availableDestinations("USD")
         assertEquals(listOf("EUR", "JPY", "AUD", "BRL"), availableCurrencies)
 
