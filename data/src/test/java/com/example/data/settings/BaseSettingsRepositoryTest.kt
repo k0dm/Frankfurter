@@ -4,7 +4,6 @@ import com.example.data.dashboard.cache.CurrencyPairEntity
 import com.example.data.dashboard.cache.FavoriteCurrenciesCacheDataSource
 import com.example.data.loadcurrencies.cache.CurrenciesCacheDataSource
 import kotlinx.coroutines.runBlocking
-import org.junit.Assert
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
@@ -26,68 +25,36 @@ class BaseSettingsRepositoryTest {
     }
 
     @Test
-    fun testAllCurrencies(): Unit = runBlocking {
-        val currencies = repository.allCurrencies()
-        assertEquals(listOf("1", "2", "3", "4", "5"), currencies)
-    }
+    fun testMainScenario(): Unit = runBlocking {
+        var availableCurrencies = repository.availableDestinations("USD")
+        assertEquals(listOf("EUR", "JPY", "AUD", "BRL"), availableCurrencies)
 
-    @Test
-    fun testSave(): Unit = runBlocking {
-        repository.save(from = "JPY", to = "EUR")
+        repository.save(from = "USD", to = "BRL")
+        favoriteCurrenciesCacheDataSource.checkSavedCurrencyPairs(
+            pairs = listOf(CurrencyPairEntity(fromCurrency = "USD", toCurrency = "BRL"))
+        )
 
+        repository.save(from = "USD", to = "AUD")
         favoriteCurrenciesCacheDataSource.checkSavedCurrencyPairs(
             pairs = listOf(
-                CurrencyPairEntity(
-                    fromCurrency = "JPY",
-                    toCurrency = "EUR",
-                    rates = -1.0,
-                    date = ""
-                )
+                CurrencyPairEntity(fromCurrency = "USD", toCurrency = "BRL"),
+                CurrencyPairEntity(fromCurrency = "USD", toCurrency = "AUD")
             )
         )
 
-        repository.save(from = "JPY", to = "USD")
+        availableCurrencies = repository.availableDestinations("JPY")
+        assertEquals(listOf("USD", "EUR", "AUD", "BRL"), availableCurrencies)
 
-        favoriteCurrenciesCacheDataSource.checkSavedCurrencyPairs(
-            pairs = listOf(
-                CurrencyPairEntity(
-                    fromCurrency = "JPY",
-                    toCurrency = "EUR",
-                    rates = -1.0,
-                    date = ""
-                ),
-                CurrencyPairEntity(
-                    fromCurrency = "JPY",
-                    toCurrency = "USD",
-                    rates = -1.0,
-                    date = ""
-                )
-            )
-        )
-    }
+        availableCurrencies = repository.availableDestinations("USD")
+        assertEquals(listOf("EUR", "JPY"), availableCurrencies)
 
-    @Test
-    fun testAvailableDestinationsAndSave(): Unit = runBlocking {
-        var availableCurrencies = repository.availableDestinations("1")
-        assertEquals(listOf("2", "3", "4", "5"), availableCurrencies)
+        repository.save(from = "USD", to = "EUR")
+        repository.save(from = "USD", to = "JPY")
 
-        repository.save(from = "1", to = "5")
+        availableCurrencies = repository.availableDestinations("AUD")
+        assertEquals(listOf("USD", "EUR", "JPY", "BRL"), availableCurrencies)
 
-        availableCurrencies = repository.availableDestinations("1")
-        assertEquals(listOf("2", "3", "4"), availableCurrencies)
-
-        availableCurrencies = repository.availableDestinations("2")
-        assertEquals(listOf("1", "3", "4", "5"), availableCurrencies)
-
-        repository.save(from = "2", to = "1")
-        repository.save(from = "2", to = "3")
-        repository.save(from = "2", to = "4")
-        repository.save(from = "2", to = "5")
-
-        availableCurrencies = repository.availableDestinations("1")
-        assertEquals(listOf("2", "3", "4"), availableCurrencies)
-
-        availableCurrencies = repository.availableDestinations("2")
+        availableCurrencies = repository.availableDestinations("USD")
         assertEquals(listOf<String>(), availableCurrencies)
     }
 }
@@ -95,7 +62,7 @@ class BaseSettingsRepositoryTest {
 class FakeReadCurrenciesCacheDataSource : CurrenciesCacheDataSource.Read {
 
     override suspend fun currencies(): List<String> {
-        return listOf("1", "2", "3", "4", "5")
+        return listOf("USD", "EUR", "JPY", "AUD", "BRL")
     }
 }
 
@@ -112,6 +79,6 @@ private class FakeFavoriteCurrenciesCacheDataSource : FavoriteCurrenciesCacheDat
     }
 
     fun checkSavedCurrencyPairs(pairs: List<CurrencyPairEntity>) {
-        Assert.assertEquals(pairs, savedCurrencyPairs)
+        assertEquals(pairs, savedCurrencyPairs)
     }
 }
