@@ -3,4 +3,6 @@
     <string name="retry">Retry</string>
     <string name="go_to_settings_button">Go to settings button</string>
     <string name="go_to_settings_and_add_new_pair">Go to settings and add new pair</string>
+    <string name="save">Save</string>
+    <string name="back_to_dashboard_button">Back to dashboard button</string>
 </resources>
