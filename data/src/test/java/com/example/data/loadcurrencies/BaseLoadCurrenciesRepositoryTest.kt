@@ -98,7 +98,7 @@ private class FakeCloudDataSource : LoadCurrenciesCloudDataSource {
     }
 }
 
-private class FakeCacheDataSource : CurrenciesCacheDataSource {
+private class FakeCacheDataSource : CurrenciesCacheDataSource.Mutable {
 
     private var cacheIsEmpty = true
     private lateinit var cachedCurrencies: List<String>
