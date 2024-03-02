@@ -62,4 +62,6 @@ class SettingsViewModel(
         clearViewModel.clear(SettingsViewModel::class.java)
         navigation.updateUi(DashboardScreen)
     }
+
+    override fun liveData() = communication.liveData()
 }

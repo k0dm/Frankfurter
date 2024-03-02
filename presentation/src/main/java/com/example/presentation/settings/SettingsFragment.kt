@@ -24,6 +24,8 @@ class SettingsFragment
         val currencyToAdapter = CurrencyAdapter { currency ->
             viewModel.chooseTo(currencyFromAdapter.selected(), currency)
         }
+        binding.fromCurrencyRecyclerView.adapter = currencyFromAdapter
+        binding.toCurrencyRecyclerView.adapter = currencyToAdapter
 
         requireActivity().onBackPressedDispatcher.addCallback(
             viewLifecycleOwner,
@@ -33,10 +35,17 @@ class SettingsFragment
                 }
             })
 
-        viewModel.save(currencyFromAdapter.selected(), currencyToAdapter.selected())
+        binding.saveButton.setOnClickListener {
+            viewModel.save(currencyFromAdapter.selected(), currencyToAdapter.selected())
+        }
+
+        binding.backImageButton.setOnClickListener {
+            viewModel.goToDashboard()
+        }
 
         viewModel.liveData().observe(viewLifecycleOwner) { settingsUiState ->
             settingsUiState.show(currencyFromAdapter, currencyToAdapter)
+            settingsUiState.show(binding.saveButton)
         }
 
         viewModel.init()
