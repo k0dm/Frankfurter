@@ -6,7 +6,7 @@ import com.example.domain.dashboard.DashboardRepository
 import com.example.domain.dashboard.DashboardResult
 
 class BaseDashboardRepository(
-    private val favoriteCacheDataSource: FavoriteCurrenciesCacheDataSource.Read,
+    private val favoriteCacheDataSource: FavoriteCurrenciesCacheDataSource.ReadAndDelete,
     private val dashboardItemsDatasource: DashboardItemsDatasource,
     private val handleError: HandleError
 ) : DashboardRepository {
@@ -27,4 +27,9 @@ class BaseDashboardRepository(
             }
         }
     }
+
+    override suspend fun removePair(from: String, to: String) = favoriteCacheDataSource.delete(
+        favoriteCacheDataSource.favoriteCurrencies()
+            .find { it.fromCurrency == from && it.toCurrency == to }!!
+    )
 }

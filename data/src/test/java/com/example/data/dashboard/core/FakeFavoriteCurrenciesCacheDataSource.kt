@@ -6,43 +6,31 @@ import org.junit.Assert
 
 internal class FakeFavoriteCurrenciesCacheDataSource : FavoriteCurrenciesCacheDataSource.Mutable {
 
-    private var hasCache = false
-    private var validData = true
-
     override suspend fun favoriteCurrencies(): List<CurrencyPairEntity> {
-        return if (hasCache) {
-            val dates = if (validData) {
-                Pair("1/1/2024", "1/1/2024")
-            } else {
-                Pair("15/3/2020", "1/1/2024")
-            }
-
-            listOf(
-                CurrencyPairEntity("A", "B", 2.0, dates.first),
-                CurrencyPairEntity("C", "D", 1.3, dates.second)
-            )
-        } else {
-            emptyList()
-        }
+        return savedCurrencyPairs
     }
 
-    fun hasValidCache() {
-        hasCache = true
-        validData = true
+    fun hasValidCache() = with(savedCurrencyPairs) {
+        add(CurrencyPairEntity("A", "B", 2.0, "1/1/2024"))
+        add(CurrencyPairEntity("C", "D", 1.3, "1/1/2024"))
     }
 
-    fun hasInvalidCache() {
-        hasCache = true
-        validData = false
+    fun hasInvalidCache() = with(savedCurrencyPairs) {
+        add(CurrencyPairEntity("A", "B", 2.0, "15/3/2020"))
+        add(CurrencyPairEntity("C", "D", 1.3, "1/1/2024"))
     }
 
-    private var savedCurrencyPairs = mutableListOf<CurrencyPairEntity>()
+    private val savedCurrencyPairs = mutableListOf<CurrencyPairEntity>()
 
     override suspend fun save(currencyPair: CurrencyPairEntity) {
         savedCurrencyPairs.add(currencyPair)
     }
 
-    fun checkSavedCurrencyPairs(pairs: List<CurrencyPairEntity>) {
+    fun checkSavedCurrencyPairs(vararg pairs: CurrencyPairEntity) {
         Assert.assertEquals(pairs, savedCurrencyPairs)
+    }
+
+    override suspend fun delete(currencyPair: CurrencyPairEntity) {
+        savedCurrencyPairs.remove(currencyPair)
     }
 }

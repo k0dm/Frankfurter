@@ -16,7 +16,7 @@ class DashboardViewModel(
     runAsync: RunAsync,
     private val clearViewModel: ClearViewModel,
     private val mapper: DashboardResult.Mapper = BaseDashboardResultMapper(communication)
-) : BaseViewModel(runAsync), ProvideLiveData<DashboardUiState>, RetryClickAction {
+) : BaseViewModel(runAsync), ProvideLiveData<DashboardUiState>, ClickActions {
 
     fun init() {
         communication.updateUi(DashboardUiState.Progress)
@@ -33,6 +33,13 @@ class DashboardViewModel(
     }
 
     override fun retry() = init()
+
+    override fun removePair(from: String, to: String) = runAsync({
+        repository.removePair(from, to)
+        repository.dashboards()
+    }) { dashboardResult ->
+        dashboardResult.map(mapper)
+    }
 
     override fun liveData() = communication.liveData()
 }

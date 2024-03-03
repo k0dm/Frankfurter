@@ -2,7 +2,7 @@ package com.example.presentation.dashboard.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import com.example.presentation.dashboard.RetryClickAction
+import com.example.presentation.dashboard.ClickActions
 import com.example.presentation.databinding.ViewholderCurrencyPairBinding
 import com.example.presentation.databinding.ViewholderEmptyBinding
 import com.example.presentation.databinding.ViewholderErrorBinding
@@ -10,11 +10,11 @@ import com.example.presentation.databinding.ViewholderProgressBinding
 
 interface DashboardTypeUi {
 
-    fun viewHolder(viewGroup: ViewGroup, viewModel: RetryClickAction): DashboardViewHolder
+    fun viewHolder(viewGroup: ViewGroup, viewModel: ClickActions): DashboardViewHolder
 
     object Empty : DashboardTypeUi {
 
-        override fun viewHolder(viewGroup: ViewGroup, viewModel: RetryClickAction) =
+        override fun viewHolder(viewGroup: ViewGroup, viewModel: ClickActions) =
             DashboardViewHolder.Empty(
                 ViewholderEmptyBinding.inflate(
                     LayoutInflater.from(viewGroup.context),
@@ -26,7 +26,7 @@ interface DashboardTypeUi {
 
     object Progress : DashboardTypeUi {
 
-        override fun viewHolder(viewGroup: ViewGroup, viewModel: RetryClickAction) =
+        override fun viewHolder(viewGroup: ViewGroup, viewModel: ClickActions) =
             DashboardViewHolder.Progress(
                 ViewholderProgressBinding.inflate(
                     LayoutInflater.from(viewGroup.context),
@@ -38,7 +38,7 @@ interface DashboardTypeUi {
 
     object Error : DashboardTypeUi {
 
-        override fun viewHolder(viewGroup: ViewGroup, viewModel: RetryClickAction) =
+        override fun viewHolder(viewGroup: ViewGroup, viewModel: ClickActions) =
             DashboardViewHolder.Error(
                 ViewholderErrorBinding.inflate(
                     LayoutInflater.from(viewGroup.context),
@@ -51,7 +51,7 @@ interface DashboardTypeUi {
 
     object CurrencyPair : DashboardTypeUi {
 
-        override fun viewHolder(viewGroup: ViewGroup, viewModel: RetryClickAction) =
+        override fun viewHolder(viewGroup: ViewGroup, viewModel: ClickActions) =
             DashboardViewHolder.CurrencyPair(
                 ViewholderCurrencyPairBinding.inflate(
                     LayoutInflater.from(viewGroup.context),

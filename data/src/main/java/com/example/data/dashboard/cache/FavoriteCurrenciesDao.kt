@@ -1,6 +1,7 @@
 package com.example.data.dashboard.cache
 
 import androidx.room.Dao
+import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
@@ -13,5 +14,8 @@ interface FavoriteCurrenciesDao {
 
     @Query("SELECT * FROM favorite_currencies")
     suspend fun favoriteCurrencies(): List<CurrencyPairEntity>
+
+    @Delete
+    suspend fun delete(currencyPair: CurrencyPairEntity)
 }
 

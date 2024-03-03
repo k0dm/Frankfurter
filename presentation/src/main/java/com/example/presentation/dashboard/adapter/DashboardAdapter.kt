@@ -5,14 +5,14 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.example.presentation.core.UpdateAdapter
-import com.example.presentation.dashboard.RetryClickAction
+import com.example.presentation.dashboard.ClickActions
 import com.example.presentation.databinding.ViewholderCurrencyPairBinding
 import com.example.presentation.databinding.ViewholderEmptyBinding
 import com.example.presentation.databinding.ViewholderErrorBinding
 import com.example.presentation.databinding.ViewholderProgressBinding
 
 class DashboardAdapter(
-    private val viewModel: RetryClickAction,
+    private val viewModel: ClickActions,
     private val types: List<DashboardTypeUi> =
         listOf(
             DashboardTypeUi.Empty,
@@ -31,6 +31,10 @@ class DashboardAdapter(
         diffResult.dispatchUpdatesTo(this)
     }
 
+    fun remove(position: Int) {
+        pairUiList[position].remove(viewModel)
+    }
+
     override fun getItemCount() = pairUiList.size
 
     override fun getItemViewType(position: Int) =
@@ -46,14 +50,13 @@ class DashboardAdapter(
 abstract class DashboardViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 
     open fun bind(dashboardItem: DashboardCurrencyPairUi) = Unit
-
     class Empty(binding: ViewholderEmptyBinding) : DashboardViewHolder(binding.root)
 
     class Progress(binding: ViewholderProgressBinding) : DashboardViewHolder(binding.root)
 
     class Error(
         private val binding: ViewholderErrorBinding,
-        private val viewModel: RetryClickAction
+        private val viewModel: ClickActions
     ) : DashboardViewHolder(binding.root) {
 
         override fun bind(dashboardItem: DashboardCurrencyPairUi) {

@@ -1,6 +1,7 @@
 package com.example.presentation.dashboard.adapter
 
 import com.example.presentation.core.views.ChangeText
+import com.example.presentation.dashboard.ClickActions
 
 interface DashboardCurrencyPairUi {
 
@@ -9,6 +10,7 @@ interface DashboardCurrencyPairUi {
     fun showError(errorTextView: ChangeText) = Unit
 
     fun showCurrencyPair(currencyPairText: ChangeText, ratesTextView: ChangeText) = Unit
+    fun remove(viewModel: ClickActions) = Unit
 
     data class Base(
         private val currencyPair: String,
@@ -20,6 +22,14 @@ interface DashboardCurrencyPairUi {
         override fun showCurrencyPair(currencyPairText: ChangeText, ratesTextView: ChangeText) {
             currencyPairText.changeText(currencyPair)
             ratesTextView.changeText(rates)
+        }
+
+        override fun remove(viewModel: ClickActions) {
+            val dividerIndex = currencyPair.indexOf(" / ")
+            viewModel.removePair(
+                currencyPair.substring(0 until dividerIndex),
+                currencyPair.substring(dividerIndex + 3)
+            )
         }
     }
 

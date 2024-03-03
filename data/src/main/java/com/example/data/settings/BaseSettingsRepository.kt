@@ -7,7 +7,7 @@ import com.example.domain.settings.SettingsRepository
 
 class BaseSettingsRepository(
     private val currenciesCacheDataSource: CurrenciesCacheDataSource.Read,
-    private val favoriteCurrenciesCacheDataSource: FavoriteCurrenciesCacheDataSource.Mutable
+    private val favoriteCurrenciesCacheDataSource: FavoriteCurrenciesCacheDataSource.ReadAndSave
 ) : SettingsRepository {
 
     override suspend fun allCurrencies() = currenciesCacheDataSource.currencies()

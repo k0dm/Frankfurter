@@ -97,6 +97,23 @@ class DashboardViewModelTest {
         clearViewModel.checkClearCalled(listOf(DashboardViewModel::class.java))
         navigation.checkScreen(SettingsScreen)
     }
+
+    @Test
+    fun testRemovePair() {
+        testPairsAvailable()
+
+        viewModel.removePair(from = "A", to = "B")
+
+        dashboardRepository.checkedRemovedPair("A", "B")
+        runAsync.pingResult()
+        dashboardCommunication.checkUiState(
+            DashboardUiState.Success(
+                currencies = listOf(
+                    DashboardCurrencyPairUi.Base("C / D", "2.11")
+                )
+            )
+        )
+    }
 }
 
 private class FakeDashboardCommunication : DashboardCommunication {
@@ -131,5 +148,21 @@ private class FakeDashboardRepository : DashboardRepository {
 
     fun returnError() {
         dashboardResult = DashboardResult.Error(message = "No internet connection")
+    }
+
+    private var removedPair = Pair("", "")
+
+    override suspend fun removePair(from: String, to: String) {
+        removedPair = Pair(from, to)
+        dashboardResult = DashboardResult.Success(
+            listOfItems = listOf(
+                if (from == "C") DashboardItem.Base("A", "B", 1.457)
+                else DashboardItem.Base("C", "D", 2.1132),
+            )
+        )
+    }
+
+    fun checkedRemovedPair(from: String, to: String) {
+        assertEquals(Pair(from, to), removedPair)
     }
 }
