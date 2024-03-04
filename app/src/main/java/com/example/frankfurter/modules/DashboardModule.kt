@@ -12,18 +12,17 @@ import com.example.presentation.dashboard.DashboardViewModel
 
 class DashboardModule(private val core: Core) : Module<DashboardViewModel> {
 
-
     override fun viewModel() = DashboardViewModel(
         navigation = core.navigation(),
         communication = DashboardCommunication.Base(),
         repository = BaseDashboardRepository(
-            favoriteCacheDataSource = core.favoriteCurrenciesCacheDataSource(),
+            favoriteCacheDataSource = core.cacheModule().favoriteCurrenciesCacheDataSource(),
             dashboardItemsDatasource =
             DashboardItemsDatasource.Base(
                 currencyConverterCloudDataSource = CurrencyConverterCloudDataSource.Base(
                     core.retrofit().create(CurrencyConverterService::class.java)
                 ),
-                favoriteCacheDataSource = core.favoriteCurrenciesCacheDataSource(),
+                favoriteCacheDataSource = core.cacheModule().favoriteCurrenciesCacheDataSource(),
                 currentDate = CurrentDate.Base()
             ),
             handleError = HandleError.Base(core.provideResources())

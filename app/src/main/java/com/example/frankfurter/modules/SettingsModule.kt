@@ -10,8 +10,9 @@ class SettingsModule(private val core: Core) : Module<SettingsViewModel> {
         navigation = core.navigation(),
         communication = SettingsCommunication.Base(),
         repository = BaseSettingsRepository(
-            currenciesCacheDataSource = core.currenciesCacheDataSource(),
-            favoriteCurrenciesCacheDataSource = core.favoriteCurrenciesCacheDataSource(),
+            currenciesCacheDataSource = core.cacheModule().currenciesCacheDataSource(),
+            favoriteCurrenciesCacheDataSource = core.cacheModule()
+                .favoriteCurrenciesCacheDataSource(),
         ),
         runAsync = core.runAsync(),
         clearViewModel = core.clearViewModel()

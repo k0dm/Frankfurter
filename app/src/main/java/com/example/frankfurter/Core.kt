@@ -3,8 +3,6 @@ package com.example.frankfurter
 import android.content.Context
 import com.example.data.core.CacheModule
 import com.example.data.core.ProvideResources
-import com.example.data.dashboard.cache.FavoriteCurrenciesCacheDataSource
-import com.example.data.loadcurrencies.cache.CurrenciesCacheDataSource
 import com.example.presentation.core.ClearViewModel
 import com.example.presentation.core.RunAsync
 import com.example.presentation.main.Navigation
@@ -26,10 +24,6 @@ interface Core {
     fun cacheModule(): CacheModule
 
     fun retrofit(): Retrofit
-
-    fun favoriteCurrenciesCacheDataSource(): FavoriteCurrenciesCacheDataSource.Mutable
-
-    fun currenciesCacheDataSource(): CurrenciesCacheDataSource.Mutable
 
     class Base(context: Context, private val clearViewModel: ClearViewModel) : Core {
 
@@ -59,13 +53,5 @@ interface Core {
         override fun cacheModule() = cacheModule
 
         override fun retrofit() = retrofit
-
-        override fun favoriteCurrenciesCacheDataSource() = FavoriteCurrenciesCacheDataSource.Base(
-            cacheModule().database().favoriteCurrenciesDao()
-        )
-
-        override fun currenciesCacheDataSource() = CurrenciesCacheDataSource.Base(
-            cacheModule().database().currenciesDao()
-        )
     }
 }

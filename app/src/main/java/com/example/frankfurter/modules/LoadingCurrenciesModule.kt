@@ -16,7 +16,7 @@ class LoadingCurrenciesModule(private val core: Core) : Module<LoadingCurrencies
             cloudDataSource = LoadCurrenciesCloudDataSource.Base(
                 core.retrofit().create(CurrenciesService::class.java)
             ),
-            cacheDataSource = core.currenciesCacheDataSource(),
+            cacheDataSource = core.cacheModule().currenciesCacheDataSource(),
             provideResources = core.provideResources()
         ),
         runAsync = core.runAsync(),
