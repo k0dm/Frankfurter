@@ -6,7 +6,7 @@ import com.example.domain.dashboard.DashboardRepository
 import com.example.domain.dashboard.DashboardResult
 
 class BaseDashboardRepository(
-    private val favoriteCacheDataSource: FavoriteCurrenciesCacheDataSource.Mutable,
+    private val favoriteCacheDataSource: FavoriteCurrenciesCacheDataSource.Read,
     private val dashboardItemsDatasource: DashboardItemsDatasource,
     private val handleError: HandleError
 ) : DashboardRepository {

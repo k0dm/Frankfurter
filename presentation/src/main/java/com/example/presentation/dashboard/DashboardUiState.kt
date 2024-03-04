@@ -1,16 +1,17 @@
 package com.example.presentation.dashboard
 
+import com.example.presentation.core.UpdateAdapter
 import com.example.presentation.dashboard.adapter.DashboardCurrencyPairUi
-import com.example.presentation.dashboard.adapter.UpdateAdapter
 
 interface DashboardUiState {
 
-    fun show(adapter: UpdateAdapter)
+    fun show(adapter: UpdateAdapter<DashboardCurrencyPairUi>)
 
     abstract class Abstract(
         private val dashboardCurrencyPairUi: DashboardCurrencyPairUi
     ) : DashboardUiState {
-        override fun show(adapter: UpdateAdapter) = adapter.update(listOf(dashboardCurrencyPairUi))
+        override fun show(adapter: UpdateAdapter<DashboardCurrencyPairUi>) =
+            adapter.update(listOf(dashboardCurrencyPairUi))
     }
 
     object Progress : Abstract(DashboardCurrencyPairUi.Progress)
@@ -21,6 +22,7 @@ interface DashboardUiState {
 
     data class Success(private val currencies: List<DashboardCurrencyPairUi>) : DashboardUiState {
 
-        override fun show(adapter: UpdateAdapter) = adapter.update(currencies)
+        override fun show(adapter: UpdateAdapter<DashboardCurrencyPairUi>) =
+            adapter.update(currencies)
     }
 }

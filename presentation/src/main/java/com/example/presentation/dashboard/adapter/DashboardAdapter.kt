@@ -4,6 +4,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
+import com.example.presentation.core.UpdateAdapter
 import com.example.presentation.dashboard.RetryClickAction
 import com.example.presentation.databinding.ViewholderCurrencyPairBinding
 import com.example.presentation.databinding.ViewholderEmptyBinding
@@ -19,7 +20,7 @@ class DashboardAdapter(
             DashboardTypeUi.Error,
             DashboardTypeUi.CurrencyPair
         )
-) : RecyclerView.Adapter<DashboardViewHolder>(), UpdateAdapter {
+) : RecyclerView.Adapter<DashboardViewHolder>(), UpdateAdapter<DashboardCurrencyPairUi> {
 
     private val pairUiList = mutableListOf<DashboardCurrencyPairUi>()
 
