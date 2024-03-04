@@ -1,6 +1,7 @@
 package com.example.frankfurter.modules
 
 import com.example.data.loadcurrencies.BaseLoadCurrenciesRepository
+import com.example.data.loadcurrencies.cache.CurrenciesCacheDataSource
 import com.example.data.loadcurrencies.cloud.CurrenciesService
 import com.example.data.loadcurrencies.cloud.LoadCurrenciesCloudDataSource
 import com.example.frankfurter.Core
@@ -16,10 +17,13 @@ class LoadingCurrenciesModule(private val core: Core) : Module<LoadingCurrencies
             cloudDataSource = LoadCurrenciesCloudDataSource.Base(
                 core.retrofit().create(CurrenciesService::class.java)
             ),
-            cacheDataSource = core.currenciesCacheDataSource(),
+            cacheDataSource = CurrenciesCacheDataSource.Base(
+                core.database().currenciesDao()
+            ),
             provideResources = core.provideResources()
         ),
         runAsync = core.runAsync(),
         clearViewModel = core.clearViewModel()
     )
 }
+
