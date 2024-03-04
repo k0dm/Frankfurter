@@ -31,13 +31,12 @@ class SettingsViewModel(
             fromCurrencies = repository.allCurrencies().map {
                 CurrencyUi.Base(value = it, chosen = it == currency)
             },
-            toCurrencies = currencies.run {
-                if (isEmpty()) listOf(CurrencyUi.Empty)
-                else map { CurrencyUi.Base(value = it) }
-            }
+            toCurrencies = currencies
+                .map { CurrencyUi.Base(value = it) }
+                .ifEmpty { listOf(CurrencyUi.Empty) }
         )
-
     }) { uiState ->
+
         communication.updateUi(uiState)
     }
 
