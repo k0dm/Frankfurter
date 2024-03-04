@@ -34,7 +34,8 @@ class DashboardViewModelTest {
             communication = dashboardCommunication,
             repository = dashboardRepository,
             runAsync = runAsync,
-            clearViewModel = clearViewModel
+            clearViewModel = clearViewModel,
+            concurrencyPairDelimiter = FakeConcurrencyPairDelimiter()
         )
     }
 
@@ -173,4 +174,15 @@ private class FakeDashboardRepository : DashboardRepository {
     fun checkedRemovedPair(from: String, to: String) {
         assertEquals(Pair(from, to), removedPair)
     }
+}
+
+private class FakeConcurrencyPairDelimiter(
+    private val delimeter: String = " / "
+) : ConcurrencyPairDelimiter.Mutable {
+
+    override fun makeDeletePairScreen(concurrencyPair: String): DeletePairScreen =
+        concurrencyPair.split(delimeter).let { DeletePairScreen(it[0], it[1]) }
+
+
+    override fun addDelimiter(from: String, to: String): String = "$from$delimeter$to"
 }

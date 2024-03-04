@@ -5,8 +5,10 @@ import com.example.domain.dashboard.DashboardResult
 import com.example.presentation.dashboard.adapter.DashboardCurrencyPairUi
 
 class BaseDashboardResultMapper(
+    concurrencyPairDelimiter: ConcurrencyPairDelimiter.AddDelimiter,
     private val communication: DashboardCommunication,
-    private val mapper: DashboardItem.Mapper<DashboardCurrencyPairUi> = BaseDashboardItemMapper()
+    private val mapper: DashboardItem.Mapper<DashboardCurrencyPairUi>
+    = BaseDashboardItemMapper(concurrencyPairDelimiter)
 ) : DashboardResult.Mapper {
 
     override fun mapSuccess(listOfItems: List<DashboardItem>) {
