@@ -28,8 +28,12 @@ class BaseDashboardRepository(
         }
     }
 
-    override suspend fun removePair(from: String, to: String) = favoriteCacheDataSource.delete(
-        favoriteCacheDataSource.favoriteCurrencies()
-            .find { it.fromCurrency == from && it.toCurrency == to }!!
-    )
+    override suspend fun removePair(from: String, to: String): DashboardResult {
+        favoriteCacheDataSource.delete(
+            favoriteCacheDataSource.favoriteCurrencies()
+                .find { it.fromCurrency == from && it.toCurrency == to }!!
+
+        )
+        return dashboards()
+    }
 }

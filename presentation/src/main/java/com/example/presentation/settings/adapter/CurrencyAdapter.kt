@@ -1,13 +1,12 @@
 package com.example.presentation.settings.adapter
 
-import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.example.presentation.core.UpdateAdapter
 import com.example.presentation.databinding.ViewholderCurrencyBinding
-import com.example.presentation.databinding.ViewholderEmptyBinding
+import com.example.presentation.databinding.ViewholderNoMoreCurrenciesBinding
 import com.example.presentation.settings.CurrencyUi
 
 class CurrencyAdapter(
@@ -54,7 +53,7 @@ abstract class CurrencyViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         }
     }
 
-    class Empty(binding: ViewholderEmptyBinding) : CurrencyViewHolder(binding.root) {
+    class Empty(binding: ViewholderNoMoreCurrenciesBinding) : CurrencyViewHolder(binding.root) {
         override fun bind(currencyUi: CurrencyUi) = Unit
     }
 }
@@ -74,35 +73,5 @@ private class CurrencyDiffUtil(
 
     override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
         return oldList[oldItemPosition] == newList[newItemPosition]
-    }
-}
-
-interface TypeUi {
-
-    fun viewHolder(parent: ViewGroup, chooseCurrencyBlock: (String) -> Unit): CurrencyViewHolder
-
-    object Currency : TypeUi {
-
-        override fun viewHolder(parent: ViewGroup, chooseCurrencyBlock: (String) -> Unit) =
-            CurrencyViewHolder.Currency(
-                ViewholderCurrencyBinding.inflate(
-                    LayoutInflater.from(parent.context),
-                    parent,
-                    false
-                ),
-                chooseCurrencyBlock
-            )
-    }
-
-    object Empty : TypeUi {
-
-        override fun viewHolder(parent: ViewGroup, chooseCurrencyBlock: (String) -> Unit) =
-            CurrencyViewHolder.Empty(
-                ViewholderEmptyBinding.inflate(
-                    LayoutInflater.from(parent.context),
-                    parent,
-                    false
-                )
-            )
     }
 }

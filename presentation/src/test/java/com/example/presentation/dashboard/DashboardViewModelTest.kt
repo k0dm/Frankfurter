@@ -152,7 +152,7 @@ private class FakeDashboardRepository : DashboardRepository {
 
     private var removedPair = Pair("", "")
 
-    override suspend fun removePair(from: String, to: String) {
+    override suspend fun removePair(from: String, to: String): DashboardResult {
         removedPair = Pair(from, to)
         dashboardResult = DashboardResult.Success(
             listOfItems = listOf(
@@ -160,6 +160,7 @@ private class FakeDashboardRepository : DashboardRepository {
                 else DashboardItem.Base("C", "D", 2.1132),
             )
         )
+        return dashboards()
     }
 
     fun checkedRemovedPair(from: String, to: String) {

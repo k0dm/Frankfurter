@@ -36,7 +36,6 @@ class DashboardViewModel(
 
     fun removePair(from: String, to: String) = runAsync({
         repository.removePair(from, to)
-        repository.dashboards()
     }) { dashboardResult ->
         dashboardResult.map(mapper)
     }

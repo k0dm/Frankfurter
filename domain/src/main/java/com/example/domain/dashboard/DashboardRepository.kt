@@ -5,5 +5,5 @@ interface DashboardRepository {
 
     suspend fun dashboards(): DashboardResult
 
-    suspend fun removePair(from: String, to: String)
+    suspend fun removePair(from: String, to: String): DashboardResult
 }

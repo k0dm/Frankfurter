@@ -38,7 +38,7 @@ class DashboardItemsDatasourceTest {
                 CurrencyPairEntity("3", "4", 1.2, "1/1/2024")
             )
         )
-        favoriteCurrenciesCacheDataSource.checkSavedCurrencyPairs(emptyList())
+        favoriteCurrenciesCacheDataSource.checkSavedCurrencyPairs()
         assertEquals(
             listOf(
                 DashboardItem.Base("1", "2", 2.0),
@@ -56,10 +56,9 @@ class DashboardItemsDatasourceTest {
             )
         )
         favoriteCurrenciesCacheDataSource.checkSavedCurrencyPairs(
-            listOf(
-                CurrencyPairEntity("1", "2", 1.1, "1/1/2024"),
-                CurrencyPairEntity("3", "4", 1.1, "1/1/2024")
-            )
+            CurrencyPairEntity("1", "2", 1.1, "1/1/2024"),
+            CurrencyPairEntity("3", "4", 1.1, "1/1/2024")
+
         )
         assertEquals(
             listOf(

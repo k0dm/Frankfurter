@@ -31,10 +31,6 @@ class DashboardAdapter(
         diffResult.dispatchUpdatesTo(this)
     }
 
-    fun deletePair(position: Int) {
-        pairUiList[position].delete(viewModel)
-    }
-
     override fun getItemCount() = pairUiList.size
 
     override fun getItemViewType(position: Int) =
@@ -67,11 +63,15 @@ abstract class DashboardViewHolder(view: View) : RecyclerView.ViewHolder(view) {
     }
 
     class CurrencyPair(
-        private val binding: ViewholderCurrencyPairBinding
+        private val binding: ViewholderCurrencyPairBinding,
+        private val viewModel: ClickActions
     ) : DashboardViewHolder(binding.root) {
 
         override fun bind(dashboardItem: DashboardCurrencyPairUi) {
             dashboardItem.showCurrencyPair(binding.currencyPairTextView, binding.ratesTextView)
+            binding.root.setOnClickListener {
+                dashboardItem.delete(viewModel)
+            }
         }
     }
 }

@@ -57,7 +57,8 @@ interface DashboardTypeUi {
                     LayoutInflater.from(viewGroup.context),
                     viewGroup,
                     false
-                )
+                ),
+                viewModel
             )
     }
 }
