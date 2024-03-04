@@ -16,7 +16,6 @@ class DashboardFragment :
         container: ViewGroup?
     ) = FragmentDashboardBinding.inflate(inflater, container, false)
 
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 

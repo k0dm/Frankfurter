@@ -16,7 +16,6 @@ class SettingsViewModel(
     private val clearViewModel: ClearViewModel
 ) : BaseViewModel(runAsync), ProvideLiveData<SettingsUiState> {
 
-
     fun init() = runAsync({
         repository.allCurrencies()
     }) { currencies ->
@@ -36,7 +35,6 @@ class SettingsViewModel(
                 .ifEmpty { listOf(CurrencyUi.Empty) }
         )
     }) { uiState ->
-
         communication.updateUi(uiState)
     }
 

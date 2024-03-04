@@ -5,8 +5,10 @@ import com.example.domain.dashboard.DashboardResult
 import com.example.presentation.dashboard.adapter.DashboardCurrencyPairUi
 
 class BaseDashboardResultMapper(
+    currencyPairDelimiter: CurrencyPairDelimiter.AddDelimiter,
     private val communication: DashboardCommunication,
-    private val mapper: DashboardItem.Mapper<DashboardCurrencyPairUi> = BaseDashboardItemMapper()
+    private val mapper: DashboardItem.Mapper<DashboardCurrencyPairUi>
+    = BaseDashboardItemMapper(currencyPairDelimiter)
 ) : DashboardResult.Mapper {
 
     override fun mapSuccess(listOfItems: List<DashboardItem>) {

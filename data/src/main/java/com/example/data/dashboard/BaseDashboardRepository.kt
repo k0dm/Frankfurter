@@ -6,7 +6,7 @@ import com.example.domain.dashboard.DashboardRepository
 import com.example.domain.dashboard.DashboardResult
 
 class BaseDashboardRepository(
-    private val favoriteCacheDataSource: FavoriteCurrenciesCacheDataSource.Read,
+    private val favoriteCacheDataSource: FavoriteCurrenciesCacheDataSource.ReadAndDelete,
     private val dashboardItemsDatasource: DashboardItemsDatasource,
     private val handleError: HandleError
 ) : DashboardRepository {
@@ -26,5 +26,14 @@ class BaseDashboardRepository(
                 DashboardResult.Error(message = handleError.handle(e))
             }
         }
+    }
+
+    override suspend fun removePair(from: String, to: String): DashboardResult {
+        favoriteCacheDataSource.delete(
+            favoriteCacheDataSource.favoriteCurrencies()
+                .find { it.fromCurrency == from && it.toCurrency == to }!!
+
+        )
+        return dashboards()
     }
 }

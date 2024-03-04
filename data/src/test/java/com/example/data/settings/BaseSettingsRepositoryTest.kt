@@ -68,7 +68,8 @@ private class FakeReadCurrenciesCacheDataSource : CurrenciesCacheDataSource.Read
     }
 }
 
-private class FakeFavoriteCurrenciesCacheDataSource : FavoriteCurrenciesCacheDataSource.Mutable {
+private class FakeFavoriteCurrenciesCacheDataSource :
+    FavoriteCurrenciesCacheDataSource.ReadAndSave {
 
     private var savedCurrencyPairs = mutableListOf<CurrencyPairEntity>()
 

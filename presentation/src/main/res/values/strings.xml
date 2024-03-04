@@ -6,4 +6,7 @@
     <string name="save">Save</string>
     <string name="back_to_dashboard_button">Back to dashboard button</string>
     <string name="no_more_currencies">No more currencies</string>
+    <string name="are_you_sure_you_want_to_delete_this_pair">Are you sure you want to delete this pair?</string>
+    <string name="no">No</string>
+    <string name="yes">Yes</string>
 </resources>

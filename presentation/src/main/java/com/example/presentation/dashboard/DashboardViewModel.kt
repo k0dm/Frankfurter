@@ -15,8 +15,11 @@ class DashboardViewModel(
     private val repository: DashboardRepository,
     runAsync: RunAsync,
     private val clearViewModel: ClearViewModel,
-    private val mapper: DashboardResult.Mapper = BaseDashboardResultMapper(communication)
-) : BaseViewModel(runAsync), ProvideLiveData<DashboardUiState>, RetryClickAction {
+    private val currencyPairDelimiter: CurrencyPairDelimiter.Mutable,
+    private val mapper: DashboardResult.Mapper = BaseDashboardResultMapper(
+        currencyPairDelimiter, communication
+    )
+) : BaseViewModel(runAsync), ProvideLiveData<DashboardUiState>, ClickActions {
 
     fun init() {
         communication.updateUi(DashboardUiState.Progress)
@@ -34,5 +37,15 @@ class DashboardViewModel(
 
     override fun retry() = init()
 
+    fun removePair(from: String, to: String) = runAsync({
+        repository.removePair(from, to)
+    }) { dashboardResult ->
+        dashboardResult.map(mapper)
+    }
+
     override fun liveData() = communication.liveData()
+
+    override fun openDeletePairDialog(currencyPair: String) {
+        navigation.updateUi(currencyPairDelimiter.makeDeletePairScreen(currencyPair))
+    }
 }

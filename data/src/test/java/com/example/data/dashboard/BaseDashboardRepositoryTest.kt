@@ -56,10 +56,23 @@ class BaseDashboardRepositoryTest {
         dashboardItemsDatasource.returnFail()
 
         val result = repository.dashboards()
-        favoriteCurrenciesCacheDataSource.checkSavedCurrencyPairs(emptyList())
+        favoriteCurrenciesCacheDataSource.checkSavedCurrencyPairs(
+            CurrencyPairEntity("A", "B", 2.0, "15/3/2020"),
+            CurrencyPairEntity("C", "D", 1.3, "1/1/2024")
+        )
 
         assertEquals(
             DashboardResult.Error(message = IllegalStateException::class.simpleName!!), result
+        )
+    }
+
+    @Test
+    fun testRemovePair(): Unit = runBlocking {
+        favoriteCurrenciesCacheDataSource.hasValidCache()
+
+        repository.removePair(from = "A", to = "B")
+        favoriteCurrenciesCacheDataSource.checkSavedCurrencyPairs(
+            CurrencyPairEntity("C", "D", 1.3, "1/1/2024")
         )
     }
 }

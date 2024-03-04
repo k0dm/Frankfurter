@@ -34,7 +34,8 @@ class DashboardViewModelTest {
             communication = dashboardCommunication,
             repository = dashboardRepository,
             runAsync = runAsync,
-            clearViewModel = clearViewModel
+            clearViewModel = clearViewModel,
+            currencyPairDelimiter = FakeCurrencyPairDelimiter()
         )
     }
 
@@ -97,6 +98,30 @@ class DashboardViewModelTest {
         clearViewModel.checkClearCalled(listOf(DashboardViewModel::class.java))
         navigation.checkScreen(SettingsScreen)
     }
+
+    @Test
+    fun testOpenDeletePairDialog() {
+        viewModel.openDeletePairDialog(currencyPair = "A / B")
+
+        navigation.checkScreen(DeletePairScreen(fromCurrency = "A", toCurrency = "B"))
+    }
+
+    @Test
+    fun testRemovePair() {
+        testPairsAvailable()
+
+        viewModel.removePair(from = "A", to = "B")
+
+        dashboardRepository.checkedRemovedPair("A", "B")
+        runAsync.pingResult()
+        dashboardCommunication.checkUiState(
+            DashboardUiState.Success(
+                currencies = listOf(
+                    DashboardCurrencyPairUi.Base("C / D", "2.11")
+                )
+            )
+        )
+    }
 }
 
 private class FakeDashboardCommunication : DashboardCommunication {
@@ -132,4 +157,32 @@ private class FakeDashboardRepository : DashboardRepository {
     fun returnError() {
         dashboardResult = DashboardResult.Error(message = "No internet connection")
     }
+
+    private var removedPair = Pair("", "")
+
+    override suspend fun removePair(from: String, to: String): DashboardResult {
+        removedPair = Pair(from, to)
+        dashboardResult = DashboardResult.Success(
+            listOfItems = listOf(
+                if (from == "C") DashboardItem.Base("A", "B", 1.457)
+                else DashboardItem.Base("C", "D", 2.1132),
+            )
+        )
+        return dashboards()
+    }
+
+    fun checkedRemovedPair(from: String, to: String) {
+        assertEquals(Pair(from, to), removedPair)
+    }
+}
+
+private class FakeCurrencyPairDelimiter(
+    private val delimeter: String = " / "
+) : CurrencyPairDelimiter.Mutable {
+
+    override fun makeDeletePairScreen(currencyPair: String): DeletePairScreen =
+        currencyPair.split(delimeter).let { DeletePairScreen(it[0], it[1]) }
+
+
+    override fun addDelimiter(from: String, to: String): String = "$from$delimeter$to"
 }
