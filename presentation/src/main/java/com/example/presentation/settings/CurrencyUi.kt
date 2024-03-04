@@ -28,7 +28,7 @@ interface CurrencyUi {
         override fun value() = value
 
         override fun areItemsTheSame(currencyUi: CurrencyUi) =
-            (currencyUi as? Base)?.value == this.value
+            currencyUi.value() == this.value
 
 
         override fun type() = TypeUi.Currency

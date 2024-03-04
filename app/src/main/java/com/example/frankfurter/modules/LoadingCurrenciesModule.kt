@@ -17,10 +17,13 @@ class LoadingCurrenciesModule(private val core: Core) : Module<LoadingCurrencies
             cloudDataSource = LoadCurrenciesCloudDataSource.Base(
                 core.retrofit().create(CurrenciesService::class.java)
             ),
-            cacheDataSource = CurrenciesCacheDataSource.Base(core.database().currenciesDao()),
+            cacheDataSource = CurrenciesCacheDataSource.Base(
+                core.database().currenciesDao()
+            ),
             provideResources = core.provideResources()
         ),
         runAsync = core.runAsync(),
         clearViewModel = core.clearViewModel()
     )
 }
+
