@@ -2,6 +2,7 @@ package com.example.frankfurter
 
 import android.content.Context
 import com.example.data.core.CacheModule
+import com.example.data.core.CurrenciesDatabase
 import com.example.data.core.ProvideResources
 import com.example.presentation.core.ClearViewModel
 import com.example.presentation.core.RunAsync
@@ -21,7 +22,7 @@ interface Core {
 
     fun provideResources(): ProvideResources
 
-    fun cacheModule(): CacheModule
+    fun database(): CurrenciesDatabase
 
     fun retrofit(): Retrofit
 
@@ -50,7 +51,7 @@ interface Core {
 
         override fun provideResources() = provideResources
 
-        override fun cacheModule() = cacheModule
+        override fun database() = cacheModule.database()
 
         override fun retrofit() = retrofit
     }

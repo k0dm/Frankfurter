@@ -13,21 +13,23 @@ import com.example.presentation.dashboard.DashboardViewModel
 
 class DashboardModule(private val core: Core) : Module<DashboardViewModel> {
 
+    override fun viewModel(): DashboardViewModel {
 
-    override fun viewModel() = FavoriteCurrenciesCacheDataSource.Base(
-        core.cacheModule().database().favoriteCurrenciesDao()
-    ).let {
-        DashboardViewModel(
+        val favoriteCacheDataSource = FavoriteCurrenciesCacheDataSource.Base(
+            core.database().favoriteCurrenciesDao()
+        )
+
+        return DashboardViewModel(
             navigation = core.navigation(),
             communication = DashboardCommunication.Base(),
             repository = BaseDashboardRepository(
-                favoriteCacheDataSource = it,
+                favoriteCacheDataSource = favoriteCacheDataSource,
                 dashboardItemsDatasource =
                 DashboardItemsDatasource.Base(
                     currencyConverterCloudDataSource = CurrencyConverterCloudDataSource.Base(
                         core.retrofit().create(CurrencyConverterService::class.java)
                     ),
-                    favoriteCacheDataSource = it,
+                    favoriteCacheDataSource = favoriteCacheDataSource,
                     currentDate = CurrentDate.Base()
                 ),
                 handleError = HandleError.Base(core.provideResources())
