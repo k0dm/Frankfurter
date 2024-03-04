@@ -4,6 +4,7 @@ import com.example.data.dashboard.BaseDashboardRepository
 import com.example.data.dashboard.DashboardItemsDatasource
 import com.example.data.dashboard.HandleError
 import com.example.data.dashboard.cache.CurrentDate
+import com.example.data.dashboard.cache.FavoriteCurrenciesCacheDataSource
 import com.example.data.dashboard.cloud.CurrencyConverterCloudDataSource
 import com.example.data.dashboard.cloud.CurrencyConverterService
 import com.example.frankfurter.Core
@@ -12,22 +13,29 @@ import com.example.presentation.dashboard.DashboardViewModel
 
 class DashboardModule(private val core: Core) : Module<DashboardViewModel> {
 
-    override fun viewModel() = DashboardViewModel(
-        navigation = core.navigation(),
-        communication = DashboardCommunication.Base(),
-        repository = BaseDashboardRepository(
-            favoriteCacheDataSource = core.cacheModule().favoriteCurrenciesCacheDataSource(),
-            dashboardItemsDatasource =
-            DashboardItemsDatasource.Base(
-                currencyConverterCloudDataSource = CurrencyConverterCloudDataSource.Base(
-                    core.retrofit().create(CurrencyConverterService::class.java)
+    override fun viewModel(): DashboardViewModel {
+
+        val favoriteCacheDataSource = FavoriteCurrenciesCacheDataSource.Base(
+            core.database().favoriteCurrenciesDao()
+        )
+
+        return DashboardViewModel(
+            navigation = core.navigation(),
+            communication = DashboardCommunication.Base(),
+            repository = BaseDashboardRepository(
+                favoriteCacheDataSource = favoriteCacheDataSource,
+                dashboardItemsDatasource =
+                DashboardItemsDatasource.Base(
+                    currencyConverterCloudDataSource = CurrencyConverterCloudDataSource.Base(
+                        core.retrofit().create(CurrencyConverterService::class.java)
+                    ),
+                    favoriteCacheDataSource = favoriteCacheDataSource,
+                    currentDate = CurrentDate.Base()
                 ),
-                favoriteCacheDataSource = core.cacheModule().favoriteCurrenciesCacheDataSource(),
-                currentDate = CurrentDate.Base()
+                handleError = HandleError.Base(core.provideResources())
             ),
-            handleError = HandleError.Base(core.provideResources())
-        ),
-        runAsync = core.runAsync(),
-        clearViewModel = core.clearViewModel()
-    )
+            runAsync = core.runAsync(),
+            clearViewModel = core.clearViewModel()
+        )
+    }
 }
