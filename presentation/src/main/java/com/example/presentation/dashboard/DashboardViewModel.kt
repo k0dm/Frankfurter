@@ -42,7 +42,8 @@ class DashboardViewModel(
 
     override fun liveData() = communication.liveData()
 
-    override fun openDeletePairDialog(from: String, to: String) {
-        navigation.updateUi(DeletePairScreen(from, to))
+    override fun openDeletePairDialog(currencyPair: String) {
+        val parts = currencyPair.split(" / ")
+        navigation.updateUi(DeletePairScreen(parts[0], parts[1]))
     }
 }

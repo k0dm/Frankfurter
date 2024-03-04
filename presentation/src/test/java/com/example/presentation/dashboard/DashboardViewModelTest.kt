@@ -99,6 +99,13 @@ class DashboardViewModelTest {
     }
 
     @Test
+    fun testOpenDeletePairDialog() {
+        viewModel.openDeletePairDialog(currencyPair = "A / B")
+
+        navigation.checkScreen(DeletePairScreen(fromCurrency = "A", toCurrency = "B"))
+    }
+
+    @Test
     fun testRemovePair() {
         testPairsAvailable()
 

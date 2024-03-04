@@ -26,11 +26,7 @@ interface DashboardCurrencyPairUi {
         }
 
         override fun delete(viewModel: ClickActions) {
-            val dividerIndex = currencyPair.indexOf(" / ")
-            viewModel.openDeletePairDialog(
-                currencyPair.substring(0 until dividerIndex),
-                currencyPair.substring(dividerIndex + 3),
-            )
+            viewModel.openDeletePairDialog(currencyPair)
         }
     }
 
