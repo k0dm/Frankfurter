@@ -9,7 +9,6 @@ import com.example.presentation.core.ProvideViewModel
 import com.example.presentation.databinding.BottomFragmentDeletePairBinding
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
-import java.io.Serializable
 
 class DeleteBottomSheetFragment() : BottomSheetDialogFragment() {
 
@@ -18,24 +17,17 @@ class DeleteBottomSheetFragment() : BottomSheetDialogFragment() {
     private lateinit var viewModel: DashboardViewModel
 
     companion object {
-        fun newInstance(
-            from: String,
-            to: String,
-            cancelBlock: () -> Unit
-        ): DeleteBottomSheetFragment {
+        fun newInstance(from: String, to: String): DeleteBottomSheetFragment {
             val instance = DeleteBottomSheetFragment()
             instance.arguments = Bundle().apply {
                 putString(FROM_KEY, from)
                 putString(TO_KEY, to)
-                putSerializable(CANCEL_BLOCK_KEY, cancelBlock as Serializable)
             }
             return instance
         }
 
-
         private const val FROM_KEY = "fromKey"
         private const val TO_KEY = "toKey"
-        private const val CANCEL_BLOCK_KEY = "cancelBlockKey"
     }
 
     override fun onCreateView(
@@ -49,13 +41,11 @@ class DeleteBottomSheetFragment() : BottomSheetDialogFragment() {
         return binding.root
     }
 
-    private lateinit var cancelBlock: () -> Unit
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog =
         object : BottomSheetDialog(requireActivity(), theme) {
 
             override fun onBackPressed() {
                 super.onBackPressed()
-                cancelBlock.invoke()
                 dismiss()
             }
         }.apply {
@@ -66,11 +56,9 @@ class DeleteBottomSheetFragment() : BottomSheetDialogFragment() {
         super.onViewCreated(view, savedInstanceState)
         val from = requireArguments().getString(FROM_KEY)!!
         val to = requireArguments().getString(TO_KEY)!!
-        cancelBlock = requireArguments().getSerializable(CANCEL_BLOCK_KEY) as () -> Unit
 
         (dialog as BottomSheetDialog).findViewById<View>(com.google.android.material.R.id.touch_outside)!!
             .setOnClickListener {
-                cancelBlock.invoke()
                 dismiss()
             }
 
@@ -80,7 +68,6 @@ class DeleteBottomSheetFragment() : BottomSheetDialogFragment() {
         }
 
         binding.noButton.setOnClickListener {
-            cancelBlock.invoke()
             dismiss()
         }
     }

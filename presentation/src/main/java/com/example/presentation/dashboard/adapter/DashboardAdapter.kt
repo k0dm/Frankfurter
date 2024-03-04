@@ -32,9 +32,7 @@ class DashboardAdapter(
     }
 
     fun deletePair(position: Int) {
-        pairUiList[position].delete(viewModel) {
-            notifyItemChanged(position)
-        }
+        pairUiList[position].delete(viewModel)
     }
 
     override fun getItemCount() = pairUiList.size

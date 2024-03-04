@@ -4,5 +4,5 @@ interface ClickActions {
 
     fun retry()
 
-    fun openDeletePairDialog(from: String, to: String, function: () -> Unit)
+    fun openDeletePairDialog(from: String, to: String)
 }

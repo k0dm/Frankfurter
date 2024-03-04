@@ -43,7 +43,7 @@ class DashboardViewModel(
 
     override fun liveData() = communication.liveData()
 
-    override fun openDeletePairDialog(from: String, to: String, function: () -> Unit) {
-        navigation.updateUi(DeletePairScreen(from, to, function))
+    override fun openDeletePairDialog(from: String, to: String) {
+        navigation.updateUi(DeletePairScreen(from, to))
     }
 }
