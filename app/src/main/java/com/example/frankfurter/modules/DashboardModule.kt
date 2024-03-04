@@ -8,7 +8,7 @@ import com.example.data.dashboard.cache.FavoriteCurrenciesCacheDataSource
 import com.example.data.dashboard.cloud.CurrencyConverterCloudDataSource
 import com.example.data.dashboard.cloud.CurrencyConverterService
 import com.example.frankfurter.Core
-import com.example.presentation.dashboard.ConcurrencyPairDelimiter
+import com.example.presentation.dashboard.CurrencyPairDelimiter
 import com.example.presentation.dashboard.DashboardCommunication
 import com.example.presentation.dashboard.DashboardViewModel
 
@@ -37,7 +37,7 @@ class DashboardModule(private val core: Core) : Module<DashboardViewModel> {
             ),
             runAsync = core.runAsync(),
             clearViewModel = core.clearViewModel(),
-            concurrencyPairDelimiter = ConcurrencyPairDelimiter.Base()
+            currencyPairDelimiter = CurrencyPairDelimiter.Base()
         )
     }
 }

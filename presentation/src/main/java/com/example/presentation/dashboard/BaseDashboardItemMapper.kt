@@ -4,7 +4,7 @@ import com.example.domain.dashboard.DashboardItem
 import com.example.presentation.dashboard.adapter.DashboardCurrencyPairUi
 
 class BaseDashboardItemMapper(
-    private val concurrencyPairDelimiter: ConcurrencyPairDelimiter.AddDelimiter,
+    private val currencyPairDelimiter: CurrencyPairDelimiter.AddDelimiter,
     private val ratesFormatter: RatesFormatter = RatesFormatter.Base()
 ) : DashboardItem.Mapper<DashboardCurrencyPairUi> {
     override fun map(
@@ -12,7 +12,7 @@ class BaseDashboardItemMapper(
         toCurrency: String,
         rates: Double
     ) = DashboardCurrencyPairUi.Base(
-        concurrencyPairDelimiter.addDelimiter(fromCurrency, toCurrency),
+        currencyPairDelimiter.addDelimiter(fromCurrency, toCurrency),
         ratesFormatter.format(rates)
     )
 }

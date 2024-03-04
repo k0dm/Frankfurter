@@ -15,9 +15,9 @@ class DashboardViewModel(
     private val repository: DashboardRepository,
     runAsync: RunAsync,
     private val clearViewModel: ClearViewModel,
-    private val concurrencyPairDelimiter: ConcurrencyPairDelimiter.Mutable,
+    private val currencyPairDelimiter: CurrencyPairDelimiter.Mutable,
     private val mapper: DashboardResult.Mapper = BaseDashboardResultMapper(
-        concurrencyPairDelimiter, communication
+        currencyPairDelimiter, communication
     )
 ) : BaseViewModel(runAsync), ProvideLiveData<DashboardUiState>, ClickActions {
 
@@ -46,6 +46,6 @@ class DashboardViewModel(
     override fun liveData() = communication.liveData()
 
     override fun openDeletePairDialog(currencyPair: String) {
-        navigation.updateUi(concurrencyPairDelimiter.makeDeletePairScreen(currencyPair))
+        navigation.updateUi(currencyPairDelimiter.makeDeletePairScreen(currencyPair))
     }
 }

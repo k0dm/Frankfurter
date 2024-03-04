@@ -35,7 +35,7 @@ class DashboardViewModelTest {
             repository = dashboardRepository,
             runAsync = runAsync,
             clearViewModel = clearViewModel,
-            concurrencyPairDelimiter = FakeConcurrencyPairDelimiter()
+            currencyPairDelimiter = FakeCurrencyPairDelimiter()
         )
     }
 
@@ -176,12 +176,12 @@ private class FakeDashboardRepository : DashboardRepository {
     }
 }
 
-private class FakeConcurrencyPairDelimiter(
+private class FakeCurrencyPairDelimiter(
     private val delimeter: String = " / "
-) : ConcurrencyPairDelimiter.Mutable {
+) : CurrencyPairDelimiter.Mutable {
 
-    override fun makeDeletePairScreen(concurrencyPair: String): DeletePairScreen =
-        concurrencyPair.split(delimeter).let { DeletePairScreen(it[0], it[1]) }
+    override fun makeDeletePairScreen(currencyPair: String): DeletePairScreen =
+        currencyPair.split(delimeter).let { DeletePairScreen(it[0], it[1]) }
 
 
     override fun addDelimiter(from: String, to: String): String = "$from$delimeter$to"
