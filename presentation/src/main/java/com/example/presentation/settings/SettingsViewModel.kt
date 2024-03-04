@@ -38,7 +38,6 @@ class SettingsViewModel(
         )
 
     }) { uiState ->
-
         communication.updateUi(uiState)
     }
 

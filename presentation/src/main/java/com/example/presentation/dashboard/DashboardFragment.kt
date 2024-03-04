@@ -10,7 +10,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.presentation.core.BaseFragment
 import com.example.presentation.dashboard.adapter.DashboardAdapter
 import com.example.presentation.databinding.FragmentDashboardBinding
-import com.google.android.material.snackbar.Snackbar
 
 class DashboardFragment :
     BaseFragment<FragmentDashboardBinding, DashboardViewModel>(DashboardViewModel::class.java) {
@@ -19,7 +18,6 @@ class DashboardFragment :
         inflater: LayoutInflater,
         container: ViewGroup?
     ) = FragmentDashboardBinding.inflate(inflater, container, false)
-
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -36,8 +34,7 @@ class DashboardFragment :
             ): Boolean = true
 
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-                adapter.remove(viewHolder.adapterPosition)
-                Snackbar.make(binding.root, "Pair deleted", Snackbar.LENGTH_SHORT).show()
+                adapter.deletePair(viewHolder.adapterPosition)
             }
         }).attachToRecyclerView(binding.favoritePairsRecyclerView)
 

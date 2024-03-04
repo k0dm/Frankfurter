@@ -34,7 +34,7 @@ class DashboardViewModel(
 
     override fun retry() = init()
 
-    override fun removePair(from: String, to: String) = runAsync({
+    fun removePair(from: String, to: String) = runAsync({
         repository.removePair(from, to)
         repository.dashboards()
     }) { dashboardResult ->
@@ -42,4 +42,8 @@ class DashboardViewModel(
     }
 
     override fun liveData() = communication.liveData()
+
+    override fun openDeletePairDialog(from: String, to: String, function: () -> Unit) {
+        navigation.updateUi(DeletePairScreen(from, to, function))
+    }
 }

@@ -10,7 +10,8 @@ interface DashboardCurrencyPairUi {
     fun showError(errorTextView: ChangeText) = Unit
 
     fun showCurrencyPair(currencyPairText: ChangeText, ratesTextView: ChangeText) = Unit
-    fun remove(viewModel: ClickActions) = Unit
+
+    fun delete(viewModel: ClickActions, cancelBlock: () -> Unit) = Unit
 
     data class Base(
         private val currencyPair: String,
@@ -24,11 +25,12 @@ interface DashboardCurrencyPairUi {
             ratesTextView.changeText(rates)
         }
 
-        override fun remove(viewModel: ClickActions) {
+        override fun delete(viewModel: ClickActions, cancelBlock: () -> Unit) {
             val dividerIndex = currencyPair.indexOf(" / ")
-            viewModel.removePair(
+            viewModel.openDeletePairDialog(
                 currencyPair.substring(0 until dividerIndex),
-                currencyPair.substring(dividerIndex + 3)
+                currencyPair.substring(dividerIndex + 3),
+                cancelBlock
             )
         }
     }

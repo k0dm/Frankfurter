@@ -31,8 +31,10 @@ class DashboardAdapter(
         diffResult.dispatchUpdatesTo(this)
     }
 
-    fun remove(position: Int) {
-        pairUiList[position].remove(viewModel)
+    fun deletePair(position: Int) {
+        pairUiList[position].delete(viewModel) {
+            notifyItemChanged(position)
+        }
     }
 
     override fun getItemCount() = pairUiList.size
@@ -50,6 +52,7 @@ class DashboardAdapter(
 abstract class DashboardViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 
     open fun bind(dashboardItem: DashboardCurrencyPairUi) = Unit
+
     class Empty(binding: ViewholderEmptyBinding) : DashboardViewHolder(binding.root)
 
     class Progress(binding: ViewholderProgressBinding) : DashboardViewHolder(binding.root)
