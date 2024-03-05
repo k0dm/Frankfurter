@@ -18,6 +18,7 @@ class SettingsViewModelTest {
     private lateinit var repository: FakeSettingsRepository
     private lateinit var runAsync: FakeRunAsync
     private lateinit var clearViewModel: FakeClear
+    private lateinit var bundleWrapper: FakeSettingsBundleWrapper
 
     @Before
     fun setUp() {
@@ -26,6 +27,7 @@ class SettingsViewModelTest {
         repository = FakeSettingsRepository()
         runAsync = FakeRunAsync()
         clearViewModel = FakeClear()
+        bundleWrapper = FakeSettingsBundleWrapper()
         viewModel = SettingsViewModel(
             navigation = navigation,
             communication = communication,
@@ -37,7 +39,7 @@ class SettingsViewModelTest {
 
     @Test
     fun mainScenario() {
-        viewModel.init()
+        viewModel.init(bundleWrapper)
         runAsync.pingResult()
         communication.checkUiState(
             SettingsUiState.Initial(
@@ -86,7 +88,7 @@ class SettingsViewModelTest {
     @Test
     fun testUserAlreadySavedCurrencyPairAndCheckPairAfterComeback() {
         mainScenario()
-        viewModel.init()
+        viewModel.init(bundleWrapper)
         runAsync.pingResult()
         communication.checkUiState(
             SettingsUiState.Initial(
@@ -177,7 +179,7 @@ class SettingsViewModelTest {
     @Test
     fun testEmptyAvailableDestinationCurrencies() {
         testUserAlreadySavedCurrencyPairAndCheckPairAfterComeback()
-        viewModel.init()
+        viewModel.init(bundleWrapper)
         runAsync.pingResult()
         communication.checkUiState(
             SettingsUiState.Initial(
@@ -202,6 +204,93 @@ class SettingsViewModelTest {
             )
         )
     }
+
+    @Test
+    fun testRecreateActivity() {
+        bundleWrapper.recreate()
+
+        viewModel.init(bundleWrapper)
+        runAsync.pingResult()
+        communication.checkUiState(
+            SettingsUiState.Initial(
+                fromCurrencies = listOf(
+                    CurrencyUi.Base(value = "USD"),
+                    CurrencyUi.Base(value = "EUR"),
+                    CurrencyUi.Base(value = "JPY"),
+                )
+            )
+        )
+
+        bundleWrapper.recreateWithFrom()
+        viewModel.init(bundleWrapper)
+        runAsync.pingResult()
+        communication.checkUiState(
+            SettingsUiState.AvailableDestinations(
+                fromCurrencies = listOf(
+                    CurrencyUi.Base(value = "USD", chosen = true),
+                    CurrencyUi.Base(value = "EUR"),
+                    CurrencyUi.Base(value = "JPY"),
+                ),
+                toCurrencies = listOf(
+                    CurrencyUi.Base(value = "EUR"),
+                    CurrencyUi.Base(value = "JPY"),
+                )
+            )
+        )
+
+        bundleWrapper.recreateWithFromAndTo()
+        viewModel.init(bundleWrapper)
+        runAsync.pingResult()
+        communication.checkUiState(
+            SettingsUiState.AvailableDestinations(
+                fromCurrencies = listOf(
+                    CurrencyUi.Base(value = "USD", chosen = true),
+                    CurrencyUi.Base(value = "EUR"),
+                    CurrencyUi.Base(value = "JPY"),
+                ),
+                toCurrencies = listOf(
+                    CurrencyUi.Base(value = "EUR"),
+                    CurrencyUi.Base(value = "JPY"),
+                )
+            )
+        )
+        runAsync.pingResult()
+        communication.checkUiState(
+            SettingsUiState.ReadyToSave(
+                toCurrencies = listOf(
+                    CurrencyUi.Base(value = "EUR", chosen = true),
+                    CurrencyUi.Base(value = "JPY"),
+                )
+            )
+        )
+    }
+}
+
+private class FakeSettingsBundleWrapper() : SettingsBundleWrapper {
+
+    private var isEmpty = true
+
+    override fun isEmpty() = isEmpty
+
+    fun recreate() {
+        isEmpty = false
+    }
+
+    override fun save(from: String, to: String) = Unit
+
+    private var from = ""
+    private var to = ""
+
+    fun recreateWithFrom() {
+        from = "USD"
+    }
+
+    fun recreateWithFromAndTo() {
+        from = "USD"
+        to = "EUR"
+    }
+
+    override fun restore() = Pair(from, to)
 }
 
 private class FakeSettingsRepository : SettingsRepository {

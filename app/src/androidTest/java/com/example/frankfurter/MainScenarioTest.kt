@@ -114,6 +114,8 @@ class MainScenarioTest {
         dashboardPage.clickAtPair(position = 0)
         val deletePairPage = DeletePairPage()
         deletePairPage.checkVisible()
+        activityScenarioRule.scenario.recreate()
+        deletePairPage.checkVisible()
 
         deletePairPage.clickNo()
         deletePairPage.checkNotVisible()
@@ -143,6 +145,8 @@ class MainScenarioTest {
         dashboardPage.checkPair(position = 0, currencyPair = "USD / EUR", rates = "10.1")
 
         dashboardPage.clickAtPair(position = 0)
+        deletePairPage.checkVisible()
+        activityScenarioRule.scenario.recreate()
         deletePairPage.checkVisible()
 
         deletePairPage.clickYes()

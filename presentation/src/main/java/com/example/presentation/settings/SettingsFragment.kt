@@ -51,7 +51,7 @@ class SettingsFragment
             settingsUiState.show(binding.saveButton)
         }
 
-        SettingsBundleWrapper.Base(savedInstanceState).init(viewModel)
+        viewModel.init(SettingsBundleWrapper.Base(savedInstanceState))
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
