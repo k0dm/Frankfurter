@@ -16,13 +16,16 @@ interface ProvideModule {
     fun <T : CustomViewModel> module(clazz: Class<out T>): Module<T>
 
     @Suppress("UNCHECKED_CAST")
-    class Base(private val core: Core) : ProvideModule {
+    class Base(
+        private val core: Core,
+        private val provideInstance: ProvideInstance
+    ) : ProvideModule {
 
         override fun <T : CustomViewModel> module(clazz: Class<out T>) = when (clazz) {
             MainViewModel::class.java -> MainModule(core)
-            LoadingCurrenciesViewModel::class.java -> LoadingCurrenciesModule(core)
-            DashboardViewModel::class.java -> DashboardModule(core)
-            SettingsViewModel::class.java -> SettingsModule(core)
+            LoadingCurrenciesViewModel::class.java -> LoadingCurrenciesModule(core, provideInstance)
+            DashboardViewModel::class.java -> DashboardModule(core, provideInstance)
+            SettingsViewModel::class.java -> SettingsModule(core, provideInstance)
             else -> throw IllegalStateException("No such viewModel with class: $clazz")
         } as Module<T>
     }
