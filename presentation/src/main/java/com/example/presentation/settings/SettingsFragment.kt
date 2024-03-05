@@ -12,16 +12,19 @@ import com.example.presentation.settings.adapter.CurrencyAdapter
 class SettingsFragment
     : BaseFragment<FragmentSettingsBinding, SettingsViewModel>(SettingsViewModel::class.java) {
 
+    private lateinit var currencyFromAdapter: CurrencyAdapter
+    private lateinit var currencyToAdapter: CurrencyAdapter
+
     override fun inflate(inflater: LayoutInflater, container: ViewGroup?) =
         FragmentSettingsBinding.inflate(inflater, container, false)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val currencyFromAdapter = CurrencyAdapter { currency ->
+        currencyFromAdapter = CurrencyAdapter { currency ->
             viewModel.chooseFrom(currency)
         }
-        val currencyToAdapter = CurrencyAdapter { currency ->
+        currencyToAdapter = CurrencyAdapter { currency ->
             viewModel.chooseTo(currencyFromAdapter.selected(), currency)
         }
         binding.fromCurrencyRecyclerView.adapter = currencyFromAdapter
@@ -48,6 +51,13 @@ class SettingsFragment
             settingsUiState.show(binding.saveButton)
         }
 
-        viewModel.init()
+        SettingsBundleWrapper.Base(savedInstanceState).init(viewModel)
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        SettingsBundleWrapper.Base(outState)
+            .save(currencyFromAdapter.selected(), currencyToAdapter.selected())
     }
 }
+

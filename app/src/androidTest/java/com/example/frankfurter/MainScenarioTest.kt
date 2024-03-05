@@ -1,5 +1,6 @@
 package com.example.frankfurter
 
+import androidx.test.espresso.Espresso
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.example.presentation.main.MainActivity
@@ -21,11 +22,16 @@ class MainScenarioTest {
     fun mainScenario() {
         val loadingPage = LoadingPage()
         loadingPage.checkVisible()
+        loadingPage.checkError("No internet connection")
+        activityScenarioRule.scenario.recreate()
+        loadingPage.checkError("No internet connection")
 
         loadingPage.clickRetry()
         loadingPage.checkNotVisible()
         val dashboardPage = DashboardPage()
         dashboardPage.checkVisible()
+        dashboardPage.checkNoAddedPairs()
+        activityScenarioRule.scenario.recreate()
         dashboardPage.checkNoAddedPairs()
 
         dashboardPage.goToSettings()
@@ -37,9 +43,17 @@ class MainScenarioTest {
         settingsPage.chooseFrom(position = 0)
         settingsPage.checkChosenFrom(position = 0)
         settingsPage.checkToCurrencies("EUR", "JPY")
+        activityScenarioRule.scenario.recreate()
+        settingsPage.checkChosenFrom(position = 0)
+        settingsPage.checkToCurrencies("EUR", "JPY")
 
         settingsPage.chooseTo(position = 1)
         settingsPage.checkChosenTo(position = 1)
+        activityScenarioRule.scenario.recreate()
+        settingsPage.checkChosenFrom(position = 0)
+        settingsPage.checkToCurrencies("EUR", "JPY")
+        settingsPage.checkChosenTo(position = 1)
+
 
         settingsPage.clickSave()
         dashboardPage.checkVisible()
@@ -69,7 +83,21 @@ class MainScenarioTest {
         settingsPage.checkVisible()
         settingsPage.checkFromCurrencies("USD", "EUR", "JPY")
 
+        Espresso.pressBack()
+        settingsPage.checkNotVisible()
+        dashboardPage.checkVisible()
+        dashboardPage.checkPair(position = 0, currencyPair = "USD / JPY", rates = "10.1")
+        dashboardPage.checkPair(position = 1, currencyPair = "USD / EUR", rates = "10.1")
+
+        dashboardPage.goToSettings()
+        dashboardPage.checkNotVisible()
+        settingsPage.checkVisible()
+        settingsPage.checkFromCurrencies("USD", "EUR", "JPY")
+
         settingsPage.chooseFrom(position = 0)
+        settingsPage.checkChosenFrom(position = 0)
+        settingsPage.checkNoMoreCurrencies()
+        activityScenarioRule.scenario.recreate()
         settingsPage.checkChosenFrom(position = 0)
         settingsPage.checkNoMoreCurrencies()
 
