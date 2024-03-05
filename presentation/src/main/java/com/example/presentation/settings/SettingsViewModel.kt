@@ -16,15 +16,27 @@ class SettingsViewModel(
     private val clearViewModel: ClearViewModel
 ) : BaseViewModel(runAsync), ProvideLiveData<SettingsUiState> {
 
-    fun init() = runAsync({
-        repository.allCurrencies()
-    }) { currencies ->
-        communication.updateUi(
-            SettingsUiState.Initial(fromCurrencies = currencies.map { CurrencyUi.Base(value = it) })
-        )
+    fun init(bundleWrapper: SettingsBundleWrapper) {
+        if (bundleWrapper.isEmpty() || bundleWrapper.restore().first.isBlank()) {
+            runAsync({
+                repository.allCurrencies()
+            }) { currencies ->
+                communication.updateUi(
+                    SettingsUiState.Initial(fromCurrencies = currencies.map { CurrencyUi.Base(value = it) })
+                )
+            }
+        } else {
+            bundleWrapper.restore().run {
+                chooseFrom(first) {
+                    if (second.isNotBlank()) {
+                        chooseTo(first, second)
+                    }
+                }
+            }
+        }
     }
 
-    fun chooseFrom(currency: String) = runAsync({
+    fun chooseFrom(currency: String, block: () -> Unit = {}) = runAsync({
         val currencies = repository.availableDestinations(currency)
         SettingsUiState.AvailableDestinations(
             fromCurrencies = repository.allCurrencies().map {
@@ -36,6 +48,7 @@ class SettingsViewModel(
         )
     }) { uiState ->
         communication.updateUi(uiState)
+        block.invoke()
     }
 
     fun chooseTo(from: String, to: String) = runAsync({

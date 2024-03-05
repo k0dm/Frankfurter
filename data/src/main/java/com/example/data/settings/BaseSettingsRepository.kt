@@ -13,15 +13,12 @@ class BaseSettingsRepository(
     override suspend fun allCurrencies() = currenciesCacheDataSource.currencies()
 
     override suspend fun availableDestinations(from: String): List<String> {
-
         val allCurrencies = allCurrencies().toMutableList().also { it.remove(from) }
-
         val savedCurrencies = favoriteCurrenciesCacheDataSource.favoriteCurrencies()
 
         val matched = savedCurrencies
             .filter { it.fromCurrency == from }
             .map { it.toCurrency }
-
         allCurrencies.removeAll(matched)
         return allCurrencies
     }
