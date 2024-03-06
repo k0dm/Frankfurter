@@ -9,6 +9,7 @@ import com.example.presentation.core.FakeRunAsync
 import com.example.presentation.core.FakeUpdateNavigation
 import com.example.presentation.dashboard.adapter.DashboardCurrencyPairUi
 import com.example.presentation.settings.SettingsScreen
+import kotlinx.coroutines.CoroutineScope
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
@@ -141,7 +142,7 @@ private class FakeDashboardRepository : DashboardRepository {
 
     private var dashboardResult: DashboardResult = DashboardResult.Empty
 
-    override suspend fun dashboards(): DashboardResult {
+    override suspend fun dashboards(viewModelScope: CoroutineScope): DashboardResult {
         return dashboardResult
     }
 
@@ -160,7 +161,11 @@ private class FakeDashboardRepository : DashboardRepository {
 
     private var removedPair = Pair("", "")
 
-    override suspend fun removePair(from: String, to: String): DashboardResult {
+    override suspend fun removePair(
+        from: String,
+        to: String,
+        viewModelScope: CoroutineScope
+    ): DashboardResult {
         removedPair = Pair(from, to)
         dashboardResult = DashboardResult.Success(
             listOfItems = listOf(
@@ -168,7 +173,7 @@ private class FakeDashboardRepository : DashboardRepository {
                 else DashboardItem.Base("C", "D", 2.1132),
             )
         )
-        return dashboards()
+        return dashboards(viewModelScope)
     }
 
     fun checkedRemovedPair(from: String, to: String) {

@@ -24,7 +24,7 @@ class DashboardViewModel(
     fun init() {
         communication.updateUi(DashboardUiState.Progress)
         runAsync({
-            repository.dashboards()
+            repository.dashboards(viewModelScope)
         }) { dashboardResult ->
             dashboardResult.map(mapper)
         }
@@ -38,7 +38,7 @@ class DashboardViewModel(
     override fun retry() = init()
 
     fun removePair(from: String, to: String) = runAsync({
-        repository.removePair(from, to)
+        repository.removePair(from, to, viewModelScope)
     }) { dashboardResult ->
         dashboardResult.map(mapper)
     }

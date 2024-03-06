@@ -6,7 +6,7 @@ import kotlinx.coroutines.SupervisorJob
 
 abstract class BaseViewModel(private val runAsync: RunAsync) : CustomViewModel {
 
-    private val viewModelScope = CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate)
+    protected val viewModelScope = CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate)
 
     protected fun <T : Any> runAsync(
         backgroundBlock: suspend () -> T,
