@@ -18,4 +18,3 @@ interface FavoriteCurrenciesDao {
     @Delete
     suspend fun delete(currencyPair: CurrencyPairEntity)
 }
-
