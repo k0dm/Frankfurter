@@ -15,6 +15,7 @@ import com.example.domain.dashboard.DashboardResult
 import com.example.domain.loadcurrencies.LoadCurrenciesRepository
 import com.example.domain.loadcurrencies.LoadCurrenciesResult
 import com.example.domain.settings.SettingsRepository
+import kotlinx.coroutines.CoroutineScope
 
 interface ProvideInstance {
 
@@ -71,7 +72,7 @@ interface ProvideInstance {
 
         private class MockDashboardRepository : DashboardRepository {
 
-            override suspend fun dashboards(): DashboardResult {
+            override suspend fun dashboards(viewModelScope: CoroutineScope): DashboardResult {
                 return if (favoriteCurrencies.isEmpty())
                     DashboardResult.Empty
                 else
@@ -84,9 +85,13 @@ interface ProvideInstance {
                     })
             }
 
-            override suspend fun removePair(from: String, to: String): DashboardResult {
+            override suspend fun removePair(
+                from: String,
+                to: String,
+                viewModelScope: CoroutineScope
+            ): DashboardResult {
                 favoriteCurrencies.remove(Pair(from, to))
-                return dashboards()
+                return dashboards(viewModelScope)
             }
         }
 

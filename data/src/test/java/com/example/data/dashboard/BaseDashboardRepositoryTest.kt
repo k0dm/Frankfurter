@@ -31,7 +31,7 @@ class BaseDashboardRepositoryTest {
 
     @Test
     fun testEmptyCache(): Unit = runBlocking {
-        val result = repository.dashboards()
+        val result = repository.dashboards(viewModelScope)
         assertEquals(DashboardResult.Empty, result)
     }
 
@@ -39,7 +39,7 @@ class BaseDashboardRepositoryTest {
     fun testUserHasCache(): Unit = runBlocking {
         favoriteCurrenciesCacheDataSource.hasValidCache()
 
-        val actualResult = repository.dashboards()
+        val actualResult = repository.dashboards(viewModelScope)
         assertEquals(
             DashboardResult.Success(
                 listOfItems = listOf(
@@ -55,7 +55,7 @@ class BaseDashboardRepositoryTest {
         favoriteCurrenciesCacheDataSource.hasInvalidCache()
         dashboardItemsDatasource.returnFail()
 
-        val result = repository.dashboards()
+        val result = repository.dashboards(viewModelScope)
         favoriteCurrenciesCacheDataSource.checkSavedCurrencyPairs(
             CurrencyPairEntity("A", "B", 2.0, "15/3/2020"),
             CurrencyPairEntity("C", "D", 1.3, "1/1/2024")

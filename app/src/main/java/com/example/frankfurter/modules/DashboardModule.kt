@@ -33,7 +33,7 @@ class DashboardModule(
                         core.retrofit().create(CurrencyConverterService::class.java)
                     ),
                     favoriteCacheDataSource = favoriteCacheDataSource,
-                    currentDate = CurrentDate.Base()
+                    currentDate = CurrentDate.Base(),
                 ),
                 handleError = HandleError.Base(core.provideResources())
             ),

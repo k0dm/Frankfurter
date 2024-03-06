@@ -38,7 +38,7 @@ interface Core {
             .client(
                 OkHttpClient.Builder()
                     .addInterceptor(HttpLoggingInterceptor().apply {
-                        setLevel(HttpLoggingInterceptor.Level.BODY)
+                        setLevel(HttpLoggingInterceptor.Level.BASIC)
                     }).build()
             )
             .build()
