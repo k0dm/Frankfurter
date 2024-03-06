@@ -161,7 +161,11 @@ private class FakeDashboardRepository : DashboardRepository {
 
     private var removedPair = Pair("", "")
 
-    override suspend fun removePair(from: String, to: String): DashboardResult {
+    override suspend fun removePair(
+        from: String,
+        to: String,
+        viewModelScope: CoroutineScope
+    ): DashboardResult {
         removedPair = Pair(from, to)
         dashboardResult = DashboardResult.Success(
             listOfItems = listOf(

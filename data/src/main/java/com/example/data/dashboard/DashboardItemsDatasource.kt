@@ -5,6 +5,7 @@ import com.example.data.dashboard.cache.CurrentDate
 import com.example.data.dashboard.cache.FavoriteCurrenciesCacheDataSource
 import com.example.data.dashboard.cloud.CurrencyConverterCloudDataSource
 import com.example.domain.dashboard.DashboardItem
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.joinAll
@@ -23,6 +24,7 @@ interface DashboardItemsDatasource {
         private val currencyConverterCloudDataSource: CurrencyConverterCloudDataSource,
         private val favoriteCacheDataSource: FavoriteCurrenciesCacheDataSource.Save,
         private val currentDate: CurrentDate,
+        private val dispatcherIO: CoroutineDispatcher = Dispatchers.IO
     ) : DashboardItemsDatasource {
 
         private val mutex = Mutex()
@@ -35,7 +37,7 @@ interface DashboardItemsDatasource {
             val resultList = mutableListOf<DashboardItem>()
 
             favoriteCurrencies.map {
-                viewModelScope.launch(Dispatchers.IO) {
+                viewModelScope.launch(dispatcherIO) {
                     val rates = if (it.isInvalidRate(currentDate)) {
                         val newRates = currencyConverterCloudDataSource.exchangeRate(
                             it.fromCurrency,

@@ -5,6 +5,9 @@ import com.example.data.dashboard.core.FakeFavoriteCurrenciesCacheDataSource
 import com.example.domain.dashboard.DashboardItem
 import com.example.domain.dashboard.DashboardRepository
 import com.example.domain.dashboard.DashboardResult
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
 import org.junit.Before
@@ -16,6 +19,7 @@ class BaseDashboardRepositoryTest {
     private lateinit var favoriteCurrenciesCacheDataSource: FakeFavoriteCurrenciesCacheDataSource
     private lateinit var dashboardItemsDatasource: FakeDashboardItemsDatasource
     private lateinit var handleError: FakeHandleError
+    private val viewModelScope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
 
     @Before
     fun setUp() {
@@ -70,7 +74,7 @@ class BaseDashboardRepositoryTest {
     fun testRemovePair(): Unit = runBlocking {
         favoriteCurrenciesCacheDataSource.hasValidCache()
 
-        repository.removePair(from = "A", to = "B")
+        repository.removePair(from = "A", to = "B", viewModelScope)
         favoriteCurrenciesCacheDataSource.checkSavedCurrencyPairs(
             CurrencyPairEntity("C", "D", 1.3, "1/1/2024")
         )
@@ -81,12 +85,14 @@ private class FakeDashboardItemsDatasource : DashboardItemsDatasource {
 
     private var returnSuccess = true
 
-    override suspend fun dashboardItems(favoriteCurrencies: List<CurrencyPairEntity>) =
-        if (returnSuccess) {
-            favoriteCurrencies.map { DashboardItem.Base(it.fromCurrency, it.toCurrency, it.rates) }
-        } else {
-            throw IllegalStateException()
-        }
+    override suspend fun dashboardItems(
+        favoriteCurrencies: List<CurrencyPairEntity>,
+        viewModelScope: CoroutineScope
+    ) = if (returnSuccess) {
+        favoriteCurrencies.map { DashboardItem.Base(it.fromCurrency, it.toCurrency, it.rates) }
+    } else {
+        throw IllegalStateException()
+    }
 
     fun returnFail() {
         returnSuccess = false
