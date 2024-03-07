@@ -36,6 +36,8 @@ interface ProvideInstance {
         favoriteCurrenciesCacheDataSource: FavoriteCurrenciesCacheDataSource.Base
     ): SettingsRepository
 
+    fun provideMaxFreeSavedPairsCount(): Int
+
     class Base : ProvideInstance {
 
         override fun provideLoadCurrenciesRepository(
@@ -54,6 +56,8 @@ interface ProvideInstance {
             currenciesCacheDataSource: CurrenciesCacheDataSource.Base,
             favoriteCurrenciesCacheDataSource: FavoriteCurrenciesCacheDataSource.Base
         ) = BaseSettingsRepository(currenciesCacheDataSource, favoriteCurrenciesCacheDataSource)
+
+        override fun provideMaxFreeSavedPairsCount() = 5
     }
 
     class Mock : ProvideInstance {
@@ -116,6 +120,8 @@ interface ProvideInstance {
             override suspend fun save(from: String, to: String) {
                 favoriteCurrencies.add(Pair(from, to))
             }
+
+            override suspend fun savedPairsCount() = favoriteCurrencies.size
         }
 
         override fun provideLoadCurrenciesRepository(
@@ -134,5 +140,7 @@ interface ProvideInstance {
             currenciesCacheDataSource: CurrenciesCacheDataSource.Base,
             favoriteCurrenciesCacheDataSource: FavoriteCurrenciesCacheDataSource.Base
         ): SettingsRepository = MockSettingsRepository()
+
+        override fun provideMaxFreeSavedPairsCount() = 2
     }
 }

@@ -5,11 +5,13 @@ import com.example.frankfurter.modules.LoadingCurrenciesModule
 import com.example.frankfurter.modules.MainModule
 import com.example.frankfurter.modules.Module
 import com.example.frankfurter.modules.SettingsModule
+import com.example.frankfurter.modules.SubscriptionModule
 import com.example.presentation.core.CustomViewModel
 import com.example.presentation.dashboard.DashboardViewModel
 import com.example.presentation.loadingcurrencies.LoadingCurrenciesViewModel
 import com.example.presentation.main.MainViewModel
 import com.example.presentation.settings.SettingsViewModel
+import com.example.presentation.subscription.SubscriptionViewModel
 
 interface ProvideModule {
 
@@ -26,6 +28,7 @@ interface ProvideModule {
             LoadingCurrenciesViewModel::class.java -> LoadingCurrenciesModule(core, provideInstance)
             DashboardViewModel::class.java -> DashboardModule(core, provideInstance)
             SettingsViewModel::class.java -> SettingsModule(core, provideInstance)
+            SubscriptionViewModel::class.java -> SubscriptionModule(core)
             else -> throw IllegalStateException("No such viewModel with class: $clazz")
         } as Module<T>
     }

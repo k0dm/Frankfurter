@@ -1,6 +1,7 @@
 package com.example.presentation.settings
 
-import com.example.domain.settings.SettingsRepository
+import com.example.domain.settings.SaveResult
+import com.example.domain.settings.SettingsInteractor
 import com.example.presentation.core.BaseViewModel
 import com.example.presentation.core.ClearViewModel
 import com.example.presentation.core.ProvideLiveData
@@ -11,15 +12,16 @@ import com.example.presentation.main.Navigation
 class SettingsViewModel(
     private val navigation: Navigation.Update,
     private val communication: SettingsCommunication,
-    private val repository: SettingsRepository,
+    private val interactor: SettingsInteractor,
     runAsync: RunAsync,
-    private val clearViewModel: ClearViewModel
+    private val clearViewModel: ClearViewModel,
+    private val mapper: SaveResult.Mapper = BaseSaveResultMapper(navigation, clearViewModel)
 ) : BaseViewModel(runAsync), ProvideLiveData<SettingsUiState> {
 
     fun init(bundleWrapper: SettingsBundleWrapper) {
         if (bundleWrapper.isEmpty() || bundleWrapper.restore().first.isBlank()) {
             runAsync({
-                repository.allCurrencies()
+                interactor.allCurrencies()
             }) { currencies ->
                 communication.updateUi(
                     SettingsUiState.Initial(fromCurrencies = currencies.map { CurrencyUi.Base(value = it) })
@@ -37,9 +39,9 @@ class SettingsViewModel(
     }
 
     fun chooseFrom(currency: String, block: () -> Unit = {}) = runAsync({
-        val currencies = repository.availableDestinations(currency)
+        val currencies = interactor.availableDestinations(currency)
         SettingsUiState.AvailableDestinations(
-            fromCurrencies = repository.allCurrencies().map {
+            fromCurrencies = interactor.allCurrencies().map {
                 CurrencyUi.Base(value = it, chosen = it == currency)
             },
             toCurrencies = currencies
@@ -53,7 +55,7 @@ class SettingsViewModel(
 
     fun chooseTo(from: String, to: String) = runAsync({
         SettingsUiState.ReadyToSave(
-            toCurrencies = repository.availableDestinations(from).map {
+            toCurrencies = interactor.availableDestinations(from).map {
                 CurrencyUi.Base(value = it, chosen = it == to)
             }
         )
@@ -62,9 +64,9 @@ class SettingsViewModel(
     }
 
     fun save(from: String, to: String) = runAsync({
-        repository.save(from, to)
-    }) {
-        goToDashboard()
+        interactor.save(from, to)
+    }) { saveResult ->
+        saveResult.map(mapper)
     }
 
     fun goToDashboard() {

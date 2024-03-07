@@ -26,4 +26,7 @@ class BaseSettingsRepository(
     override suspend fun save(from: String, to: String) {
         favoriteCurrenciesCacheDataSource.save(CurrencyPairEntity(from, to))
     }
+
+    override suspend fun savedPairsCount() =
+        favoriteCurrenciesCacheDataSource.favoriteCurrencies().size
 }
