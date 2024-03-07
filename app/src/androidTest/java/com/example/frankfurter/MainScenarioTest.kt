@@ -180,6 +180,35 @@ class MainScenarioTest {
         dashboardPage.checkPair(position = 0, currencyPair = "USD / EUR", rates = "10.1")
         dashboardPage.checkPair(position = 1, currencyPair = "EUR / JPY", rates = "10.1")
 
+        dashboardPage.goToSettings()
+        dashboardPage.checkNotVisible()
+        settingsPage.checkVisible()
+        settingsPage.checkFromCurrencies("USD", "EUR", "JPY")
+
+        settingsPage.chooseFrom(position = 0)
+        settingsPage.checkChosenFrom(position = 0)
+        settingsPage.checkToCurrencies("JPY")
+
+        settingsPage.chooseTo(position = 0)
+        settingsPage.checkChosenTo(position = 0)
+
+        settingsPage.clickSave()
+        settingsPage.checkNotVisible()
+        dashboardPage.checkVisible()
+        dashboardPage.checkPair(position = 0, currencyPair = "USD / EUR", rates = "10.1")
+        dashboardPage.checkPair(position = 1, currencyPair = "EUR / JPY", rates = "10.1")
+        dashboardPage.checkPair(position = 2, currencyPair = "USD / JPY", rates = "10.1")
+
+        dashboardPage.clickAtPair(position = 2)
+        deletePairPage.checkVisible()
+        activityScenarioRule.scenario.recreate()
+        deletePairPage.checkVisible()
+
+        deletePairPage.clickYes()
+        deletePairPage.checkNotVisible()
+        dashboardPage.checkPair(position = 0, currencyPair = "USD / EUR", rates = "10.1")
+        dashboardPage.checkPair(position = 1, currencyPair = "EUR / JPY", rates = "10.1")
+
         dashboardPage.clickAtPair(position = 0)
         deletePairPage.checkVisible()
         activityScenarioRule.scenario.recreate()

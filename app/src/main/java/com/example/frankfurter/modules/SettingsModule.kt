@@ -26,7 +26,7 @@ class SettingsModule(
                 ),
             ),
             premiumStorage = core.premiumStorage(),
-            maxFreeSavedPairsCount = 2
+            maxFreeSavedPairsCount = provideInstance.provideMaxFreeSavedPairsCount()
         ),
         runAsync = core.runAsync(),
         clearViewModel = core.clearViewModel()
