@@ -6,7 +6,7 @@ import com.example.presentation.dashboard.DashboardScreen
 import com.example.presentation.main.Navigation
 import com.example.presentation.subscription.SubscriptionScreen
 
-class BaseSaveMapper(
+class BaseSaveResultMapper(
     private val navigation: Navigation.Update,
     private val clearViewModel: ClearViewModel
 ) : SaveResult.Mapper {

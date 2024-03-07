@@ -15,7 +15,7 @@ class SettingsViewModel(
     private val interactor: SettingsInteractor,
     runAsync: RunAsync,
     private val clearViewModel: ClearViewModel,
-    private val mapper: SaveResult.Mapper = BaseSaveMapper(navigation, clearViewModel)
+    private val mapper: SaveResult.Mapper = BaseSaveResultMapper(navigation, clearViewModel)
 ) : BaseViewModel(runAsync), ProvideLiveData<SettingsUiState> {
 
     fun init(bundleWrapper: SettingsBundleWrapper) {
