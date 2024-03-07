@@ -2,6 +2,7 @@ package com.example.frankfurter.modules
 
 import com.example.data.dashboard.cache.FavoriteCurrenciesCacheDataSource
 import com.example.data.loadcurrencies.cache.CurrenciesCacheDataSource
+import com.example.domain.settings.SettingsInteractor
 import com.example.frankfurter.Core
 import com.example.frankfurter.ProvideInstance
 import com.example.presentation.settings.SettingsCommunication
@@ -15,13 +16,17 @@ class SettingsModule(
     override fun viewModel() = SettingsViewModel(
         navigation = core.navigation(),
         communication = SettingsCommunication.Base(),
-        repository = provideInstance.provideSettingsRepository(
-            currenciesCacheDataSource = CurrenciesCacheDataSource.Base(
-                core.database().currenciesDao()
+        interactor = SettingsInteractor.Base(
+            repository = provideInstance.provideSettingsRepository(
+                currenciesCacheDataSource = CurrenciesCacheDataSource.Base(
+                    core.database().currenciesDao()
+                ),
+                favoriteCurrenciesCacheDataSource = FavoriteCurrenciesCacheDataSource.Base(
+                    core.database().favoriteCurrenciesDao()
+                ),
             ),
-            favoriteCurrenciesCacheDataSource = FavoriteCurrenciesCacheDataSource.Base(
-                core.database().favoriteCurrenciesDao()
-            ),
+            premiumStorage = core.premiumStorage(),
+            maxFreeSavedPairsCount = 2
         ),
         runAsync = core.runAsync(),
         clearViewModel = core.clearViewModel()

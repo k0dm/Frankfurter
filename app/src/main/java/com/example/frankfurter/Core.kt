@@ -4,6 +4,7 @@ import android.content.Context
 import com.example.data.core.CacheModule
 import com.example.data.core.CurrenciesDatabase
 import com.example.data.core.ProvideResources
+import com.example.domain.settings.PremiumStorage
 import com.example.presentation.core.ClearViewModel
 import com.example.presentation.core.RunAsync
 import com.example.presentation.main.Navigation
@@ -26,6 +27,8 @@ interface Core {
 
     fun retrofit(): Retrofit
 
+    fun premiumStorage(): PremiumStorage.Mutable
+
     class Base(context: Context, private val clearViewModel: ClearViewModel) : Core {
 
         private val navigation: Navigation.Mutable = Navigation.Base()
@@ -42,6 +45,7 @@ interface Core {
                     }).build()
             )
             .build()
+        private val premiumStorage: PremiumStorage.Mutable = BasePremiumStorage(context)
 
         override fun navigation() = navigation
 
@@ -54,5 +58,7 @@ interface Core {
         override fun database() = cacheModule.database()
 
         override fun retrofit() = retrofit
+
+        override fun premiumStorage() = premiumStorage
     }
 }

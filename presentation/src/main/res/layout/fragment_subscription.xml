@@ -3,6 +3,9 @@
     android:id="@+id/subscriptionLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/gold"
+    android:clickable="true"
+    android:focusable="true"
     android:orientation="vertical">
 
     <ImageButton
@@ -14,14 +17,43 @@
         android:contentDescription="@string/back_to_settings_button"
         android:src="@drawable/back_arrow" />
 
+    <Space
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
+
     <TextView
-        android:id="@+id/subscriptionInfoTextView"
+        android:id="@+id/subscriptionTitleTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_gravity="center"
         android:text="@string/go_premium"
         android:textColor="@color/black"
         android:textSize="32sp"
         android:textStyle="bold" />
 
+
+    <TextView
+        android:id="@+id/subscriptionInfoTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_margin="32dp"
+        android:gravity="center"
+        android:text="@string/to_add_new_currency_pair_buy_a_premium"
+        android:textColor="@color/black"
+        android:textSize="24sp" />
+
+    <Button
+        android:id="@+id/buyButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="@string/buy" />
+
+    <Space
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
 
 </LinearLayout>

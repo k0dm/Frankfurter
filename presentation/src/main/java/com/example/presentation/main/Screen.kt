@@ -29,4 +29,11 @@ interface Screen {
     object Empty : Screen {
         override fun show(containerId: Int, supportFragmentManager: FragmentManager) = Unit
     }
+
+    object Pop : Screen {
+
+        override fun show(containerId: Int, supportFragmentManager: FragmentManager) {
+            supportFragmentManager.popBackStack()
+        }
+    }
 }

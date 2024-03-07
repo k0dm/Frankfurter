@@ -116,6 +116,8 @@ interface ProvideInstance {
             override suspend fun save(from: String, to: String) {
                 favoriteCurrencies.add(Pair(from, to))
             }
+
+            override suspend fun savedPairsCount() = favoriteCurrencies.size
         }
 
         override fun provideLoadCurrenciesRepository(

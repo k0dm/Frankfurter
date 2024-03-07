@@ -5,7 +5,6 @@ import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.example.presentation.main.MainActivity
 import org.junit.Rule
-
 import org.junit.Test
 import org.junit.runner.RunWith
 
@@ -105,11 +104,45 @@ class MainScenarioTest {
         settingsPage.checkChosenFrom(position = 1)
         settingsPage.checkToCurrencies("USD", "JPY")
 
-        settingsPage.goToDashboard()
+        settingsPage.chooseTo(position = 1)
+        settingsPage.checkChosenTo(position = 1)
+
+        settingsPage.clickSave()
+        val subscriptionPage = SubscriptionPage()
+        subscriptionPage.checkVisible()
+
+        Espresso.pressBack()
+        subscriptionPage.checkNotVisible()
+        settingsPage.checkVisible()
+        settingsPage.checkChosenFrom(position = 1)
+        settingsPage.checkChosenTo(position = 1)
+
+        settingsPage.clickSave()
+        subscriptionPage.checkVisible()
+
+        subscriptionPage.comeback()
+        subscriptionPage.checkNotVisible()
+        settingsPage.checkVisible()
+        settingsPage.checkChosenFrom(position = 1)
+        settingsPage.checkChosenTo(position = 1)
+
+        settingsPage.clickSave()
+        subscriptionPage.checkVisible()
+        activityScenarioRule.scenario.recreate()
+        subscriptionPage.checkVisible()
+
+        subscriptionPage.clickBuyPremium()
+        subscriptionPage.checkNotVisible()
+        settingsPage.checkVisible()
+        settingsPage.checkChosenFrom(position = 1)
+        settingsPage.checkChosenTo(position = 1)
+
+        settingsPage.clickSave()
         settingsPage.checkNotVisible()
         dashboardPage.checkVisible()
         dashboardPage.checkPair(position = 0, currencyPair = "USD / JPY", rates = "10.1")
         dashboardPage.checkPair(position = 1, currencyPair = "USD / EUR", rates = "10.1")
+        dashboardPage.checkPair(position = 2, currencyPair = "EUR / JPY", rates = "10.1")
 
         dashboardPage.clickAtPair(position = 0)
         val deletePairPage = DeletePairPage()
@@ -122,6 +155,7 @@ class MainScenarioTest {
 
         dashboardPage.checkPair(position = 0, currencyPair = "USD / JPY", rates = "10.1")
         dashboardPage.checkPair(position = 1, currencyPair = "USD / EUR", rates = "10.1")
+        dashboardPage.checkPair(position = 2, currencyPair = "EUR / JPY", rates = "10.1")
 
         dashboardPage.clickAtPair(position = 0)
         deletePairPage.checkVisible()
@@ -129,6 +163,7 @@ class MainScenarioTest {
         deletePairPage.clickYes()
         deletePairPage.checkNotVisible()
         dashboardPage.checkPair(position = 0, currencyPair = "USD / EUR", rates = "10.1")
+        dashboardPage.checkPair(position = 1, currencyPair = "EUR / JPY", rates = "10.1")
 
         dashboardPage.goToSettings()
         dashboardPage.checkNotVisible()
@@ -143,6 +178,16 @@ class MainScenarioTest {
         settingsPage.checkNotVisible()
         dashboardPage.checkVisible()
         dashboardPage.checkPair(position = 0, currencyPair = "USD / EUR", rates = "10.1")
+        dashboardPage.checkPair(position = 1, currencyPair = "EUR / JPY", rates = "10.1")
+
+        dashboardPage.clickAtPair(position = 0)
+        deletePairPage.checkVisible()
+        activityScenarioRule.scenario.recreate()
+        deletePairPage.checkVisible()
+
+        deletePairPage.clickYes()
+        deletePairPage.checkNotVisible()
+        dashboardPage.checkPair(position = 0, currencyPair = "EUR / JPY", rates = "10.1")
 
         dashboardPage.clickAtPair(position = 0)
         deletePairPage.checkVisible()

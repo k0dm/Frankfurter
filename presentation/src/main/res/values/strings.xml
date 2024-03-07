@@ -11,4 +11,6 @@
     <string name="yes">Yes</string>
     <string name="back_to_settings_button">Back to settings button</string>
     <string name="go_premium">Go Premium</string>
+    <string name="buy">Buy</string>
+    <string name="to_add_new_currency_pair_buy_a_premium">To add new currency pair buy a premium</string>
 </resources>
