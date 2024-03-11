@@ -4,18 +4,17 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.activityViewModels
 import com.example.presentation.core.BaseFragment
 import com.example.presentation.databinding.FragmentLoadingCurrenciesBinding
 
-class LoadingCurrenciesFragment :
-    BaseFragment<FragmentLoadingCurrenciesBinding, LoadingCurrenciesViewModel>(
-        LoadingCurrenciesViewModel::class.java
-    ) {
+class LoadingCurrenciesFragment : BaseFragment<FragmentLoadingCurrenciesBinding>() {
+
+    private val viewModel: LoadingCurrenciesViewModel by activityViewModels()
 
     override fun inflate(
         inflater: LayoutInflater, container: ViewGroup?
     ) = FragmentLoadingCurrenciesBinding.inflate(inflater, container, false)
-
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)

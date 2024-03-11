@@ -5,41 +5,89 @@ import com.example.data.dashboard.HandleError
 import com.example.data.dashboard.cache.CurrentDate
 import com.example.data.dashboard.cache.FavoriteCurrenciesCacheDataSource
 import com.example.data.dashboard.cloud.CurrencyConverterCloudDataSource
-import com.example.data.dashboard.cloud.CurrencyConverterService
-import com.example.frankfurter.Core
+import com.example.domain.dashboard.DashboardItem
+import com.example.domain.dashboard.DashboardRepository
+import com.example.domain.dashboard.DashboardResult
 import com.example.frankfurter.ProvideInstance
+import com.example.presentation.dashboard.BaseDashboardItemMapper
+import com.example.presentation.dashboard.BaseDashboardResultMapper
 import com.example.presentation.dashboard.CurrencyPairDelimiter
 import com.example.presentation.dashboard.DashboardCommunication
-import com.example.presentation.dashboard.DashboardViewModel
+import com.example.presentation.dashboard.RatesFormatter
+import com.example.presentation.dashboard.adapter.DashboardCurrencyPairUi
+import dagger.Binds
+import dagger.Module
+import dagger.Provides
+import dagger.hilt.InstallIn
+import dagger.hilt.components.SingletonComponent
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
+import javax.inject.Singleton
 
-class DashboardModule(
-    private val core: Core,
-    private val provideInstance: ProvideInstance
-) : Module<DashboardViewModel> {
+@Module
+@InstallIn(SingletonComponent::class)
+abstract class DashboardModule {
 
-    override fun viewModel(): DashboardViewModel {
+    @Binds
+    abstract fun bindCommunication(communication: DashboardCommunication.Base): DashboardCommunication
 
-        val favoriteCacheDataSource = FavoriteCurrenciesCacheDataSource.Base(
-            core.database().favoriteCurrenciesDao()
-        )
+    @Binds
+    abstract fun bindReadAndDeleteCacheDataSource(cacheDataSource: FavoriteCurrenciesCacheDataSource.Base): FavoriteCurrenciesCacheDataSource.ReadAndDelete
 
-        return DashboardViewModel(
-            navigation = core.navigation(),
-            communication = DashboardCommunication.Base(),
-            repository = provideInstance.provideDashboardRepository(
-                favoriteCacheDataSource = favoriteCacheDataSource,
-                dashboardItemsDatasource = DashboardItemsDatasource.Base(
-                    currencyConverterCloudDataSource = CurrencyConverterCloudDataSource.Base(
-                        core.retrofit().create(CurrencyConverterService::class.java)
-                    ),
-                    favoriteCacheDataSource = favoriteCacheDataSource,
-                    currentDate = CurrentDate.Base(),
-                ),
-                handleError = HandleError.Base(core.provideResources())
-            ),
-            runAsync = core.runAsync(),
-            clearViewModel = core.clearViewModel(),
-            currencyPairDelimiter = CurrencyPairDelimiter.Base()
+    @Binds
+    abstract fun bindSaveCacheDataSource(cacheDataSource: FavoriteCurrenciesCacheDataSource.Base): FavoriteCurrenciesCacheDataSource.Save
+
+    @Binds
+    abstract fun bindDataSource(datasource: DashboardItemsDatasource.Base): DashboardItemsDatasource
+
+    @Binds
+    abstract fun bindConverterCloudDataSource(cloudDataSource: CurrencyConverterCloudDataSource.Base): CurrencyConverterCloudDataSource
+
+//    @Binds
+//    abstract fun bindRepository(repository: BaseDashboardRepository): DashboardRepository
+
+    @Binds
+    abstract fun bindAddDelimiter(currencyPairDelimiter: CurrencyPairDelimiter.Base): CurrencyPairDelimiter.AddDelimiter
+
+    @Binds
+    abstract fun bindMutableCurrencyPairDelimiter(currencyPairDelimiter: CurrencyPairDelimiter.Base): CurrencyPairDelimiter.Mutable
+
+    @Binds
+    abstract fun bindDashboardResultMapper(mapper: BaseDashboardResultMapper): DashboardResult.Mapper
+
+    @Binds
+    abstract fun bindDashboardItemMapper(mapper: BaseDashboardItemMapper): DashboardItem.Mapper<DashboardCurrencyPairUi>
+
+    companion object {
+
+        @Provides
+        @Singleton
+        fun provideCurrentDate(): CurrentDate = CurrentDate.Base()
+
+        @Provides
+        @Singleton
+        fun provideDispatcherIO(): CoroutineDispatcher = Dispatchers.IO
+
+        @Provides
+        @Singleton
+        fun provideCurrencyPairDelimiter(): CurrencyPairDelimiter.Base =
+            CurrencyPairDelimiter.Base()
+
+        @Provides
+        @Singleton
+        fun provideRatesFormatter(): RatesFormatter = RatesFormatter.Base()
+
+        @Provides
+        @Singleton
+        fun provideRepository(
+            provideInstance: ProvideInstance,
+            favoriteCacheDataSource: FavoriteCurrenciesCacheDataSource.Base,
+            dashboardItemsDatasource: DashboardItemsDatasource.Base,
+            handleError: HandleError
+        ): DashboardRepository = provideInstance.provideDashboardRepository(
+            favoriteCacheDataSource,
+            dashboardItemsDatasource,
+            handleError
         )
     }
 }

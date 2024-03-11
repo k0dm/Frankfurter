@@ -3,19 +3,20 @@ package com.example.presentation.settings
 import com.example.domain.settings.SaveResult
 import com.example.domain.settings.SettingsInteractor
 import com.example.presentation.core.BaseViewModel
-import com.example.presentation.core.ClearViewModel
 import com.example.presentation.core.ProvideLiveData
 import com.example.presentation.core.RunAsync
 import com.example.presentation.dashboard.DashboardScreen
 import com.example.presentation.main.Navigation
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 
-class SettingsViewModel(
+@HiltViewModel
+class SettingsViewModel @Inject constructor(
     private val navigation: Navigation.Update,
     private val communication: SettingsCommunication,
     private val interactor: SettingsInteractor,
     runAsync: RunAsync,
-    private val clearViewModel: ClearViewModel,
-    private val mapper: SaveResult.Mapper = BaseSaveResultMapper(navigation, clearViewModel)
+    private val mapper: SaveResult.Mapper = BaseSaveResultMapper(navigation)
 ) : BaseViewModel(runAsync), ProvideLiveData<SettingsUiState> {
 
     fun init(bundleWrapper: SettingsBundleWrapper) {
@@ -69,10 +70,7 @@ class SettingsViewModel(
         saveResult.map(mapper)
     }
 
-    fun goToDashboard() {
-        clearViewModel.clear(SettingsViewModel::class.java)
-        navigation.updateUi(DashboardScreen)
-    }
+    fun goToDashboard() = navigation.updateUi(DashboardScreen)
 
     override fun liveData() = communication.liveData()
 }

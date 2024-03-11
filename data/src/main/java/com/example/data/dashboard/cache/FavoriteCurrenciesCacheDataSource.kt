@@ -1,5 +1,8 @@
 package com.example.data.dashboard.cache
 
+import javax.inject.Inject
+import javax.inject.Singleton
+
 interface FavoriteCurrenciesCacheDataSource {
 
     interface Read {
@@ -23,7 +26,8 @@ interface FavoriteCurrenciesCacheDataSource {
 
     interface Mutable : ReadAndSave, ReadAndDelete
 
-    class Base(private val dao: FavoriteCurrenciesDao) : Mutable {
+    @Singleton
+    class Base @Inject constructor(private val dao: FavoriteCurrenciesDao) : Mutable {
 
         override suspend fun favoriteCurrencies() = dao.favoriteCurrencies()
 

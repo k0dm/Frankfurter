@@ -3,6 +3,8 @@ package com.example.presentation.main
 import com.example.presentation.core.LiveDataWrapper
 import com.example.presentation.core.ProvideLiveData
 import com.example.presentation.core.UpdateUi
+import javax.inject.Inject
+import javax.inject.Singleton
 
 interface Navigation {
 
@@ -10,5 +12,6 @@ interface Navigation {
 
     interface Mutable: Update, ProvideLiveData<Screen>
 
-    class Base : Mutable, LiveDataWrapper.Single<Screen>()
+    @Singleton
+    class Base @Inject constructor() : Mutable, LiveDataWrapper.Single<Screen>()
 }

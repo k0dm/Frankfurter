@@ -1,6 +1,5 @@
 package com.example.frankfurter
 
-import com.example.data.core.ProvideResources
 import com.example.data.dashboard.BaseDashboardRepository
 import com.example.data.dashboard.DashboardItemsDatasource
 import com.example.data.dashboard.HandleError
@@ -15,20 +14,21 @@ import com.example.domain.dashboard.DashboardResult
 import com.example.domain.loadcurrencies.LoadCurrenciesRepository
 import com.example.domain.loadcurrencies.LoadCurrenciesResult
 import com.example.domain.settings.SettingsRepository
-import kotlinx.coroutines.CoroutineScope
+import javax.inject.Inject
+import javax.inject.Singleton
 
 interface ProvideInstance {
 
     fun provideLoadCurrenciesRepository(
         cloudDataSource: LoadCurrenciesCloudDataSource,
         cacheDataSource: CurrenciesCacheDataSource.Mutable,
-        provideResources: ProvideResources
+        handleError: HandleError
     ): LoadCurrenciesRepository
 
     fun provideDashboardRepository(
         favoriteCacheDataSource: FavoriteCurrenciesCacheDataSource.Base,
         dashboardItemsDatasource: DashboardItemsDatasource.Base,
-        handleError: HandleError.Base
+        handleError: HandleError
     ): DashboardRepository
 
     fun provideSettingsRepository(
@@ -38,18 +38,19 @@ interface ProvideInstance {
 
     fun provideMaxFreeSavedPairsCount(): Int
 
-    class Base : ProvideInstance {
+    @Singleton
+    class Base @Inject constructor() : ProvideInstance {
 
         override fun provideLoadCurrenciesRepository(
             cloudDataSource: LoadCurrenciesCloudDataSource,
             cacheDataSource: CurrenciesCacheDataSource.Mutable,
-            provideResources: ProvideResources
-        ) = BaseLoadCurrenciesRepository(cloudDataSource, cacheDataSource, provideResources)
+            handleError: HandleError
+        ) = BaseLoadCurrenciesRepository(cloudDataSource, cacheDataSource, handleError)
 
         override fun provideDashboardRepository(
             favoriteCacheDataSource: FavoriteCurrenciesCacheDataSource.Base,
             dashboardItemsDatasource: DashboardItemsDatasource.Base,
-            handleError: HandleError.Base
+            handleError: HandleError
         ) = BaseDashboardRepository(favoriteCacheDataSource, dashboardItemsDatasource, handleError)
 
         override fun provideSettingsRepository(
@@ -60,7 +61,8 @@ interface ProvideInstance {
         override fun provideMaxFreeSavedPairsCount() = 5
     }
 
-    class Mock : ProvideInstance {
+    @Singleton
+    class Mock @Inject constructor() : ProvideInstance {
 
         private class MockLoadCurrenciesRepository : LoadCurrenciesRepository {
 
@@ -76,7 +78,7 @@ interface ProvideInstance {
 
         private class MockDashboardRepository : DashboardRepository {
 
-            override suspend fun dashboards(viewModelScope: CoroutineScope): DashboardResult {
+            override suspend fun dashboards(): DashboardResult {
                 return if (favoriteCurrencies.isEmpty())
                     DashboardResult.Empty
                 else
@@ -92,10 +94,9 @@ interface ProvideInstance {
             override suspend fun removePair(
                 from: String,
                 to: String,
-                viewModelScope: CoroutineScope
             ): DashboardResult {
                 favoriteCurrencies.remove(Pair(from, to))
-                return dashboards(viewModelScope)
+                return dashboards()
             }
         }
 
@@ -127,13 +128,13 @@ interface ProvideInstance {
         override fun provideLoadCurrenciesRepository(
             cloudDataSource: LoadCurrenciesCloudDataSource,
             cacheDataSource: CurrenciesCacheDataSource.Mutable,
-            provideResources: ProvideResources
+            handleError: HandleError
         ): LoadCurrenciesRepository = MockLoadCurrenciesRepository()
 
         override fun provideDashboardRepository(
             favoriteCacheDataSource: FavoriteCurrenciesCacheDataSource.Base,
             dashboardItemsDatasource: DashboardItemsDatasource.Base,
-            handleError: HandleError.Base
+            handleError: HandleError
         ): DashboardRepository = MockDashboardRepository()
 
         override fun provideSettingsRepository(

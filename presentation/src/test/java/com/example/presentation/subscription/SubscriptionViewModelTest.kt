@@ -1,7 +1,6 @@
 package com.example.presentation.subscription
 
 import com.example.domain.settings.PremiumStorage
-import com.example.presentation.core.FakeClear
 import com.example.presentation.core.FakeNavigation
 import com.example.presentation.main.Screen
 import org.junit.Assert.assertEquals
@@ -13,17 +12,14 @@ class SubscriptionViewModelTest {
     private lateinit var viewModel: SubscriptionViewModel
     private lateinit var premiumStorage: FakeSavePremiumStorage
     private lateinit var navigation: FakeNavigation
-    private lateinit var clearViewModel: FakeClear
 
     @Before
     fun setUp() {
         premiumStorage = FakeSavePremiumStorage()
         navigation = FakeNavigation()
-        clearViewModel = FakeClear()
         viewModel = SubscriptionViewModel(
             premiumStorage = premiumStorage,
             navigation = navigation,
-            clearViewModel = clearViewModel
         )
     }
 
@@ -32,7 +28,6 @@ class SubscriptionViewModelTest {
         viewModel.buyPremium()
 
         premiumStorage.checkUserIsPremium()
-        clearViewModel.clear(SubscriptionViewModel::class.java)
         navigation.checkScreen(Screen.Pop)
     }
 
@@ -41,7 +36,6 @@ class SubscriptionViewModelTest {
         viewModel.comeback()
 
         premiumStorage.checkUserIsNotPremium()
-        clearViewModel.clear(SubscriptionViewModel::class.java)
         navigation.checkScreen(Screen.Pop)
     }
 }

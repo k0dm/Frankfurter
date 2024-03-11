@@ -4,12 +4,14 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.activityViewModels
 import com.example.presentation.core.BaseFragment
 import com.example.presentation.dashboard.adapter.DashboardAdapter
 import com.example.presentation.databinding.FragmentDashboardBinding
 
-class DashboardFragment :
-    BaseFragment<FragmentDashboardBinding, DashboardViewModel>(DashboardViewModel::class.java) {
+class DashboardFragment : BaseFragment<FragmentDashboardBinding>() {
+
+    private val viewModel: DashboardViewModel by activityViewModels()
 
     override fun inflate(
         inflater: LayoutInflater,

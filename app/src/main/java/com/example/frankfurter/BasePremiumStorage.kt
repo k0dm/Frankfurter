@@ -2,8 +2,14 @@ package com.example.frankfurter
 
 import android.content.Context
 import com.example.domain.settings.PremiumStorage
+import dagger.hilt.android.qualifiers.ApplicationContext
+import javax.inject.Inject
+import javax.inject.Singleton
 
-class BasePremiumStorage(context: Context) : PremiumStorage.Mutable {
+@Singleton
+class BasePremiumStorage @Inject constructor(
+    @ApplicationContext context: Context
+) : PremiumStorage.Mutable {
 
     private val sharedPreferences =
         context.getSharedPreferences("UserPremiumStorage", Context.MODE_PRIVATE)

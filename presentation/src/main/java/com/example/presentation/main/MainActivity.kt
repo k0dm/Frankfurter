@@ -1,13 +1,15 @@
 package com.example.presentation.main
 
 import android.os.Bundle
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import com.example.presentation.core.CustomViewModel
-import com.example.presentation.core.ProvideViewModel
 import com.example.presentation.databinding.ActivityMainBinding
+import dagger.hilt.android.AndroidEntryPoint
 
-class MainActivity : AppCompatActivity(), ProvideViewModel {
+@AndroidEntryPoint
+class MainActivity : AppCompatActivity() {
 
+    private val viewModel: MainViewModel by viewModels()
     private lateinit var binding: ActivityMainBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -15,17 +17,10 @@ class MainActivity : AppCompatActivity(), ProvideViewModel {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        val viewModel = viewModel(MainViewModel::class.java)
-
         viewModel.liveData().observe(this) {
             it.show(binding.root.id, supportFragmentManager)
         }
 
         viewModel.init(isFirstRun = savedInstanceState == null)
     }
-
-    override fun <T : CustomViewModel> viewModel(clazz: Class<out T>): T {
-        return (application as ProvideViewModel).viewModel(clazz)
-    }
 }
-

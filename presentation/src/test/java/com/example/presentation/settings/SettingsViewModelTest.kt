@@ -2,7 +2,6 @@ package com.example.presentation.settings
 
 import com.example.domain.settings.SaveResult
 import com.example.domain.settings.SettingsInteractor
-import com.example.presentation.core.FakeClear
 import com.example.presentation.core.FakeNavigation
 import com.example.presentation.core.FakeRunAsync
 import com.example.presentation.core.FakeUpdateNavigation
@@ -19,7 +18,6 @@ class SettingsViewModelTest {
     private lateinit var communication: FakeSettingsCommunication
     private lateinit var interactor: FakeSettingsInteractor
     private lateinit var runAsync: FakeRunAsync
-    private lateinit var clearViewModel: FakeClear
     private lateinit var bundleWrapper: FakeSettingsBundleWrapper
 
     @Before
@@ -28,14 +26,12 @@ class SettingsViewModelTest {
         communication = FakeSettingsCommunication()
         interactor = FakeSettingsInteractor(maxFreeSavedPairsCount = 2)
         runAsync = FakeRunAsync()
-        clearViewModel = FakeClear()
         bundleWrapper = FakeSettingsBundleWrapper()
         viewModel = SettingsViewModel(
             navigation = navigation,
             communication = communication,
             interactor = interactor,
             runAsync = runAsync,
-            clearViewModel = clearViewModel
         )
     }
 
@@ -83,7 +79,6 @@ class SettingsViewModelTest {
         viewModel.save(from = "USD", to = "EUR")
         runAsync.pingResult()
         interactor.checkSavedCurrencyPairs(Pair("USD", "EUR"))
-        clearViewModel.checkClearCalled(listOf(SettingsViewModel::class.java))
         navigation.checkScreen(DashboardScreen)
     }
 
@@ -171,9 +166,6 @@ class SettingsViewModelTest {
 
         viewModel.save(from = "USD", to = "JPY")
         runAsync.pingResult()
-        clearViewModel.checkClearCalled(
-            listOf(SettingsViewModel::class.java, SettingsViewModel::class.java)
-        )
         navigation.checkScreen(DashboardScreen)
         interactor.checkSavedCurrencyPairs(Pair("USD", "EUR"), Pair("USD", "JPY"))
     }
@@ -313,12 +305,6 @@ class SettingsViewModelTest {
         viewModel.save(from = "EUR", to = "JPY")
         runAsync.pingResult()
         interactor.checkSavedCurrencyPairs(Pair("USD", "EUR"), Pair("USD", "JPY"))
-        clearViewModel.checkClearCalled(
-            listOf(
-                SettingsViewModel::class.java,
-                SettingsViewModel::class.java,
-            )
-        )
         navigation.checkScreen(SubscriptionScreen)
 
         interactor.userBoughtPremium()
@@ -329,13 +315,6 @@ class SettingsViewModelTest {
             Pair("USD", "EUR"),
             Pair("USD", "JPY"),
             Pair("EUR", "JPY")
-        )
-        clearViewModel.checkClearCalled(
-            listOf(
-                SettingsViewModel::class.java,
-                SettingsViewModel::class.java,
-                SettingsViewModel::class.java
-            )
         )
         navigation.checkScreen(DashboardScreen)
     }

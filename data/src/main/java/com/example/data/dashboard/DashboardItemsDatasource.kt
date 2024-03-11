@@ -6,38 +6,36 @@ import com.example.data.dashboard.cache.FavoriteCurrenciesCacheDataSource
 import com.example.data.dashboard.cloud.CurrencyConverterCloudDataSource
 import com.example.domain.dashboard.DashboardItem
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.joinAll
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
+import javax.inject.Inject
+import javax.inject.Singleton
 
 interface DashboardItemsDatasource {
 
-    suspend fun dashboardItems(
-        favoriteCurrencies: List<CurrencyPairEntity>,
-        viewModelScope: CoroutineScope
-    ): List<DashboardItem>
+    suspend fun dashboardItems(favoriteCurrencies: List<CurrencyPairEntity>): List<DashboardItem>
 
-    class Base(
+    @Singleton
+    class Base @Inject constructor(
         private val currencyConverterCloudDataSource: CurrencyConverterCloudDataSource,
         private val favoriteCacheDataSource: FavoriteCurrenciesCacheDataSource.Save,
         private val currentDate: CurrentDate,
-        private val dispatcherIO: CoroutineDispatcher = Dispatchers.IO
+        private val dispatcherIO: CoroutineDispatcher
     ) : DashboardItemsDatasource {
 
         private val mutex = Mutex()
 
         override suspend fun dashboardItems(
-            favoriteCurrencies: List<CurrencyPairEntity>,
-            viewModelScope: CoroutineScope
-        ): List<DashboardItem> {
+            favoriteCurrencies: List<CurrencyPairEntity>
+        ): List<DashboardItem> = coroutineScope {
 
             val resultList = mutableListOf<DashboardItem>()
 
             favoriteCurrencies.map {
-                viewModelScope.launch(dispatcherIO) {
+                launch(dispatcherIO) {
                     val rates = if (it.isInvalidRate(currentDate)) {
                         val newRates = currencyConverterCloudDataSource.exchangeRate(
                             it.fromCurrency,
@@ -67,7 +65,7 @@ interface DashboardItemsDatasource {
 
                 }
             }.joinAll()
-            return resultList
+            return@coroutineScope resultList
         }
     }
 }
