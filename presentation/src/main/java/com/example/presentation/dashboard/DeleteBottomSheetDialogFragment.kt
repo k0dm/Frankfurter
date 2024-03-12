@@ -5,16 +5,18 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.example.presentation.core.ProvideViewModel
+import androidx.fragment.app.viewModels
 import com.example.presentation.databinding.BottomFragmentDeletePairBinding
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class DeleteBottomSheetDialogFragment() : BottomSheetDialogFragment() {
 
     private var _binding: BottomFragmentDeletePairBinding? = null
     private val binding get() = _binding!!
-    private lateinit var viewModel: DashboardViewModel
+    private val viewModel: DeleteViewModel by viewModels()
 
     companion object {
         fun newInstance(from: String, to: String): DeleteBottomSheetDialogFragment {
@@ -36,8 +38,6 @@ class DeleteBottomSheetDialogFragment() : BottomSheetDialogFragment() {
         savedInstanceState: Bundle?,
     ): View {
         _binding = BottomFragmentDeletePairBinding.inflate(inflater)
-        viewModel =
-            (requireActivity() as ProvideViewModel).viewModel(DashboardViewModel::class.java)
         return binding.root
     }
 

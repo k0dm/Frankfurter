@@ -1,5 +1,6 @@
 package com.example.data.loadcurrencies
 
+import com.example.data.FakeHandleError
 import com.example.data.core.ProvideResources
 import com.example.data.loadcurrencies.cache.CurrenciesCacheDataSource
 import com.example.data.loadcurrencies.cloud.LoadCurrenciesCloudDataSource
@@ -25,7 +26,7 @@ class BaseLoadCurrenciesRepositoryTest {
         repository = BaseLoadCurrenciesRepository(
             cloudDataSource = cloudDataSource,
             cacheDataSource = cacheDataSource,
-            provideResources = FakeProvideResources(),
+            handleError = FakeHandleError(),
         )
     }
 
@@ -58,7 +59,10 @@ class BaseLoadCurrenciesRepositoryTest {
 
         cacheDataSource.checkCurrenciesCalledCount(1)
         cloudDataSource.checkCurrenciesCalledCount(1)
-        assertEquals(LoadCurrenciesResult.Error(message = "No internet connection"), loadingResult)
+        assertEquals(
+            LoadCurrenciesResult.Error(message = UnknownHostException::class.java.simpleName),
+            loadingResult
+        )
     }
 
     @Test
@@ -69,7 +73,10 @@ class BaseLoadCurrenciesRepositoryTest {
 
         cacheDataSource.checkCurrenciesCalledCount(1)
         cloudDataSource.checkCurrenciesCalledCount(1)
-        assertEquals(LoadCurrenciesResult.Error(message = "Service unavailable"), loadingResult)
+        assertEquals(
+            LoadCurrenciesResult.Error(message = RuntimeException::class.java.simpleName),
+            loadingResult
+        )
     }
 }
 

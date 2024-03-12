@@ -1,8 +1,10 @@
 package com.example.presentation.loadingcurrencies
 
 import com.example.presentation.core.LiveDataWrapper
+import javax.inject.Inject
 
-interface LoadingCurrenciesCommunication: LiveDataWrapper<LoadingCurrenciesUiState> {
+interface LoadingCurrenciesCommunication : LiveDataWrapper<LoadingCurrenciesUiState> {
 
-    class Base : LoadingCurrenciesCommunication, LiveDataWrapper.Single<LoadingCurrenciesUiState>()
+    class Base @Inject constructor() : LoadingCurrenciesCommunication,
+        LiveDataWrapper.Single<LoadingCurrenciesUiState>()
 }

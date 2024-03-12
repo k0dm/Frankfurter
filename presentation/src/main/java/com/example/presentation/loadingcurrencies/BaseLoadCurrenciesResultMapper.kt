@@ -1,19 +1,16 @@
 package com.example.presentation.loadingcurrencies
 
 import com.example.domain.loadcurrencies.LoadCurrenciesResult
-import com.example.presentation.core.ClearViewModel
 import com.example.presentation.dashboard.DashboardScreen
 import com.example.presentation.main.Navigation
+import javax.inject.Inject
 
-class BaseLoadCurrenciesResultMapper(
+class BaseLoadCurrenciesResultMapper @Inject constructor(
     private val communication: LoadingCurrenciesCommunication,
     private val navigation: Navigation.Update,
-    private val clearViewModel: ClearViewModel
 ) : LoadCurrenciesResult.Mapper {
 
-
     override fun mapSuccess() {
-        clearViewModel.clear(LoadingCurrenciesViewModel::class.java)
         navigation.updateUi(DashboardScreen)
     }
 

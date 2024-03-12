@@ -1,13 +1,16 @@
 package com.example.frankfurter.modules
 
-import com.example.frankfurter.Core
-import com.example.presentation.subscription.SubscriptionViewModel
+import com.example.domain.settings.PremiumStorage
+import com.example.frankfurter.BasePremiumStorage
+import dagger.Binds
+import dagger.Module
+import dagger.hilt.InstallIn
+import dagger.hilt.components.SingletonComponent
 
-class SubscriptionModule(private val core: Core) : Module<SubscriptionViewModel> {
+@Module
+@InstallIn(SingletonComponent::class)
+abstract class SubscriptionModule {
 
-    override fun viewModel() = SubscriptionViewModel(
-        premiumStorage = core.premiumStorage(),
-        navigation = core.navigation(),
-        clearViewModel = core.clearViewModel()
-    )
+    @Binds
+    abstract fun bindSavePremiumStorage(premiumStorage: BasePremiumStorage): PremiumStorage.Save
 }

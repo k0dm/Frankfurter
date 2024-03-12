@@ -3,21 +3,21 @@ package com.example.presentation.loadingcurrencies
 import com.example.domain.loadcurrencies.LoadCurrenciesRepository
 import com.example.domain.loadcurrencies.LoadCurrenciesResult
 import com.example.presentation.core.BaseViewModel
-import com.example.presentation.core.ClearViewModel
 import com.example.presentation.core.ProvideLiveData
 import com.example.presentation.core.RunAsync
 import com.example.presentation.main.Navigation
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 
-class LoadingCurrenciesViewModel(
+@HiltViewModel
+class LoadingCurrenciesViewModel @Inject constructor(
     private val navigation: Navigation.Update,
     private val communication: LoadingCurrenciesCommunication,
     private val repository: LoadCurrenciesRepository,
     runAsync: RunAsync,
-    private val clearViewModel: ClearViewModel,
     private val mapper: LoadCurrenciesResult.Mapper = BaseLoadCurrenciesResultMapper(
         communication,
         navigation,
-        clearViewModel
     )
 ) : BaseViewModel(runAsync), ProvideLiveData<LoadingCurrenciesUiState> {
 
@@ -36,4 +36,3 @@ class LoadingCurrenciesViewModel(
 
     override fun liveData() = communication.liveData()
 }
-

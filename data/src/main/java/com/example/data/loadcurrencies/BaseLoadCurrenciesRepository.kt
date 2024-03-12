@@ -1,16 +1,18 @@
 package com.example.data.loadcurrencies
 
-import com.example.data.core.ProvideResources
+import com.example.data.dashboard.HandleError
 import com.example.data.loadcurrencies.cache.CurrenciesCacheDataSource
 import com.example.data.loadcurrencies.cloud.LoadCurrenciesCloudDataSource
 import com.example.domain.loadcurrencies.LoadCurrenciesRepository
 import com.example.domain.loadcurrencies.LoadCurrenciesResult
-import java.net.UnknownHostException
+import javax.inject.Inject
+import javax.inject.Singleton
 
-class BaseLoadCurrenciesRepository(
+@Singleton
+class BaseLoadCurrenciesRepository @Inject constructor(
     private val cloudDataSource: LoadCurrenciesCloudDataSource,
     private val cacheDataSource: CurrenciesCacheDataSource.Mutable,
-    private val provideResources: ProvideResources
+    private val handleError: HandleError
 ) : LoadCurrenciesRepository {
 
     override suspend fun loadCurrencies(): LoadCurrenciesResult {
@@ -20,12 +22,7 @@ class BaseLoadCurrenciesRepository(
             }
             LoadCurrenciesResult.Success
         } catch (e: Exception) {
-            val message = if (e is UnknownHostException) {
-                provideResources.noInternetConnectionMessage()
-            } else {
-                provideResources.serviceUnavailableMessage()
-            }
-            LoadCurrenciesResult.Error(message = message)
+            LoadCurrenciesResult.Error(message = handleError.handle(e))
         }
     }
 }

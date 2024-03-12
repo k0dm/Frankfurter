@@ -1,5 +1,7 @@
 package com.example.data.loadcurrencies.cache
 
+import javax.inject.Inject
+
 interface CurrenciesCacheDataSource {
 
     interface Read {
@@ -14,7 +16,7 @@ interface CurrenciesCacheDataSource {
 
     interface Mutable : Read, Save
 
-    class Base(private val dao: CurrenciesDao) : Mutable {
+    class Base @Inject constructor(private val dao: CurrenciesDao) : Mutable {
 
         override suspend fun currencies(): List<String> {
             return dao.currencies().map { it.currency }

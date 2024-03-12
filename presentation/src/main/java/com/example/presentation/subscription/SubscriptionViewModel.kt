@@ -1,25 +1,22 @@
 package com.example.presentation.subscription
 
+import androidx.lifecycle.ViewModel
 import com.example.domain.settings.PremiumStorage
-import com.example.presentation.core.ClearViewModel
-import com.example.presentation.core.CustomViewModel
 import com.example.presentation.main.Navigation
 import com.example.presentation.main.Screen
-import com.example.presentation.settings.SettingsViewModel
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 
-class SubscriptionViewModel(
+@HiltViewModel
+class SubscriptionViewModel @Inject constructor(
     private val premiumStorage: PremiumStorage.Save,
     private val navigation: Navigation.Update,
-    private val clearViewModel: ClearViewModel
-) : CustomViewModel {
+) : ViewModel() {
 
     fun buyPremium() {
         premiumStorage.savePremium()
         comeback()
     }
 
-    fun comeback() {
-        clearViewModel.clear(SettingsViewModel::class.java)
-        navigation.updateUi(Screen.Pop)
-    }
+    fun comeback() = navigation.updateUi(Screen.Pop)
 }

@@ -4,15 +4,15 @@ import com.example.data.dashboard.cache.FavoriteCurrenciesCacheDataSource
 import com.example.domain.dashboard.DashboardItem
 import com.example.domain.dashboard.DashboardRepository
 import com.example.domain.dashboard.DashboardResult
-import kotlinx.coroutines.CoroutineScope
+import javax.inject.Inject
 
-class BaseDashboardRepository(
+class BaseDashboardRepository @Inject constructor(
     private val favoriteCacheDataSource: FavoriteCurrenciesCacheDataSource.ReadAndDelete,
     private val dashboardItemsDatasource: DashboardItemsDatasource,
     private val handleError: HandleError
 ) : DashboardRepository {
 
-    override suspend fun dashboards(viewModelScope: CoroutineScope): DashboardResult {
+    override suspend fun dashboards(): DashboardResult {
 
         val favoriteCurrencies = favoriteCacheDataSource.favoriteCurrencies()
 
@@ -21,7 +21,7 @@ class BaseDashboardRepository(
         } else {
             try {
                 val listOfItems: List<DashboardItem> =
-                    dashboardItemsDatasource.dashboardItems(favoriteCurrencies, viewModelScope)
+                    dashboardItemsDatasource.dashboardItems(favoriteCurrencies)
                 DashboardResult.Success(listOfItems = listOfItems)
             } catch (e: Exception) {
                 DashboardResult.Error(message = handleError.handle(e))
@@ -32,13 +32,11 @@ class BaseDashboardRepository(
     override suspend fun removePair(
         from: String,
         to: String,
-        viewModelScope: CoroutineScope
     ): DashboardResult {
         favoriteCacheDataSource.delete(
             favoriteCacheDataSource.favoriteCurrencies()
                 .find { it.fromCurrency == from && it.toCurrency == to }!!
-
         )
-        return dashboards(viewModelScope)
+        return dashboards()
     }
 }

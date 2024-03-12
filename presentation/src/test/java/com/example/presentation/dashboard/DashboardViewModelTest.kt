@@ -3,13 +3,11 @@ package com.example.presentation.dashboard
 import com.example.domain.dashboard.DashboardItem
 import com.example.domain.dashboard.DashboardRepository
 import com.example.domain.dashboard.DashboardResult
-import com.example.presentation.core.FakeClear
 import com.example.presentation.core.FakeNavigation
 import com.example.presentation.core.FakeRunAsync
 import com.example.presentation.core.FakeUpdateNavigation
 import com.example.presentation.dashboard.adapter.DashboardCurrencyPairUi
 import com.example.presentation.settings.SettingsScreen
-import kotlinx.coroutines.CoroutineScope
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
@@ -21,7 +19,6 @@ class DashboardViewModelTest {
     private lateinit var dashboardCommunication: FakeDashboardCommunication
     private lateinit var dashboardRepository: FakeDashboardRepository
     private lateinit var runAsync: FakeRunAsync
-    private lateinit var clearViewModel: FakeClear
 
     @Before
     fun setUp() {
@@ -29,13 +26,11 @@ class DashboardViewModelTest {
         dashboardCommunication = FakeDashboardCommunication()
         dashboardRepository = FakeDashboardRepository()
         runAsync = FakeRunAsync()
-        clearViewModel = FakeClear()
         viewModel = DashboardViewModel(
             navigation = navigation,
             communication = dashboardCommunication,
             repository = dashboardRepository,
             runAsync = runAsync,
-            clearViewModel = clearViewModel,
             currencyPairDelimiter = FakeCurrencyPairDelimiter()
         )
     }
@@ -96,7 +91,6 @@ class DashboardViewModelTest {
     @Test
     fun testNavigateToSettings() {
         viewModel.goToSettings()
-        clearViewModel.checkClearCalled(listOf(DashboardViewModel::class.java))
         navigation.checkScreen(SettingsScreen)
     }
 
@@ -142,7 +136,7 @@ private class FakeDashboardRepository : DashboardRepository {
 
     private var dashboardResult: DashboardResult = DashboardResult.Empty
 
-    override suspend fun dashboards(viewModelScope: CoroutineScope): DashboardResult {
+    override suspend fun dashboards(): DashboardResult {
         return dashboardResult
     }
 
@@ -161,11 +155,7 @@ private class FakeDashboardRepository : DashboardRepository {
 
     private var removedPair = Pair("", "")
 
-    override suspend fun removePair(
-        from: String,
-        to: String,
-        viewModelScope: CoroutineScope
-    ): DashboardResult {
+    override suspend fun removePair(from: String, to: String): DashboardResult {
         removedPair = Pair(from, to)
         dashboardResult = DashboardResult.Success(
             listOfItems = listOf(
@@ -173,7 +163,7 @@ private class FakeDashboardRepository : DashboardRepository {
                 else DashboardItem.Base("C", "D", 2.1132),
             )
         )
-        return dashboards(viewModelScope)
+        return dashboards()
     }
 
     fun checkedRemovedPair(from: String, to: String) {

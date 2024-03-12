@@ -1,12 +1,15 @@
 package com.example.presentation.main
 
-import com.example.presentation.core.CustomViewModel
+import androidx.lifecycle.ViewModel
 import com.example.presentation.core.ProvideLiveData
 import com.example.presentation.loadingcurrencies.LoadingCurrenciesScreen
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 
-class MainViewModel(
+@HiltViewModel
+class MainViewModel @Inject constructor(
     private val navigation: Navigation.Mutable
-) : CustomViewModel, ProvideLiveData<Screen> {
+) : ViewModel(), ProvideLiveData<Screen> {
 
     fun init(isFirstRun: Boolean) {
         if (isFirstRun) {
