@@ -1,18 +1,29 @@
 package com.example.data.dashboard
 
 import com.example.data.dashboard.cache.FavoriteCurrenciesCacheDataSource
+import com.example.data.loadcurrencies.cache.CurrenciesCacheDataSource
+import com.example.data.loadcurrencies.cloud.LoadCurrenciesCloudDataSource
 import com.example.domain.dashboard.DashboardItem
 import com.example.domain.dashboard.DashboardRepository
 import com.example.domain.dashboard.DashboardResult
 import javax.inject.Inject
 
 class BaseDashboardRepository @Inject constructor(
+    private val cloudDataSource: LoadCurrenciesCloudDataSource,
+    private val cacheDataSource: CurrenciesCacheDataSource.Mutable,
     private val favoriteCacheDataSource: FavoriteCurrenciesCacheDataSource.ReadAndDelete,
     private val dashboardItemsDatasource: DashboardItemsDatasource,
     private val handleError: HandleError
 ) : DashboardRepository {
 
     override suspend fun dashboards(): DashboardResult {
+        if (cacheDataSource.currencies().isEmpty()) {
+            try {
+                cacheDataSource.saveCurrencies(cloudDataSource.currencies())
+            } catch (e: Exception) {
+                return DashboardResult.Error(message = handleError.handle(e))
+            }
+        }
 
         val favoriteCurrencies = favoriteCacheDataSource.favoriteCurrencies()
 
