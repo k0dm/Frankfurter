@@ -25,7 +25,7 @@ import dagger.hilt.android.scopes.ViewModelScoped
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 
-@SuppressWarnings
+@SuppressWarnings("unused")
 @Module
 @InstallIn(ViewModelComponent::class)
 abstract class DashboardModule {
@@ -45,7 +45,6 @@ abstract class DashboardModule {
     @Binds
     @ViewModelScoped
     abstract fun bindMutableCacheDataSource(cacheDataSource: CurrenciesCacheDataSource.Base): CurrenciesCacheDataSource.Mutable
-
 
     @Binds
     @ViewModelScoped
