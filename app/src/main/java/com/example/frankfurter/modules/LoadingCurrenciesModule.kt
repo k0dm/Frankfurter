@@ -12,29 +12,33 @@ import dagger.Binds
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
-import dagger.hilt.components.SingletonComponent
-import javax.inject.Singleton
+import dagger.hilt.android.components.ViewModelComponent
+import dagger.hilt.android.scopes.ViewModelScoped
 
 @Module
-@InstallIn(SingletonComponent::class)
+@InstallIn(ViewModelComponent::class)
 abstract class LoadingCurrenciesModule {
 
     @Binds
+    @ViewModelScoped
     abstract fun bindCommunication(communication: LoadingCurrenciesCommunication.Base): LoadingCurrenciesCommunication
 
     @Binds
+    @ViewModelScoped
     abstract fun bindCloudDataSource(cloudDataSource: LoadCurrenciesCloudDataSource.Base): LoadCurrenciesCloudDataSource
 
     @Binds
+    @ViewModelScoped
     abstract fun bindMutableCacheDataSource(cacheDataSource: CurrenciesCacheDataSource.Base): CurrenciesCacheDataSource.Mutable
 
     @Binds
+    @ViewModelScoped
     abstract fun bindMapper(mapper: BaseLoadCurrenciesResultMapper): LoadCurrenciesResult.Mapper
 
     companion object {
 
         @Provides
-        @Singleton
+        @ViewModelScoped
         fun provideRepository(
             provideInstance: ProvideInstance,
             cloudDataSource: LoadCurrenciesCloudDataSource,

@@ -5,9 +5,7 @@ import com.example.presentation.dashboard.DashboardScreen
 import com.example.presentation.main.Navigation
 import com.example.presentation.subscription.SubscriptionScreen
 import javax.inject.Inject
-import javax.inject.Singleton
 
-@Singleton
 class BaseSaveResultMapper @Inject constructor(
     private val navigation: Navigation.Update,
 ) : SaveResult.Mapper {

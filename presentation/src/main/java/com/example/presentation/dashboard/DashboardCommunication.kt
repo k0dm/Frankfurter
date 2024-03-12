@@ -1,12 +1,15 @@
 package com.example.presentation.dashboard
 
+import android.util.Log
 import com.example.presentation.core.LiveDataWrapper
 import javax.inject.Inject
-import javax.inject.Singleton
 
 interface DashboardCommunication : LiveDataWrapper<DashboardUiState> {
 
-    @Singleton
     class Base @Inject constructor() : DashboardCommunication,
-        LiveDataWrapper.Single<DashboardUiState>()
+        LiveDataWrapper.Single<DashboardUiState>() {
+        init {
+            Log.d("k0dm", "DashboardCommunication ${hashCode()}")
+        }
+    }
 }

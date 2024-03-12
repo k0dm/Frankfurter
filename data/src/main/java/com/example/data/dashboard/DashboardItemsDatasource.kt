@@ -12,13 +12,11 @@ import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
-import javax.inject.Singleton
 
 interface DashboardItemsDatasource {
 
     suspend fun dashboardItems(favoriteCurrencies: List<CurrencyPairEntity>): List<DashboardItem>
 
-    @Singleton
     class Base @Inject constructor(
         private val currencyConverterCloudDataSource: CurrencyConverterCloudDataSource,
         private val favoriteCacheDataSource: FavoriteCurrenciesCacheDataSource.Save,

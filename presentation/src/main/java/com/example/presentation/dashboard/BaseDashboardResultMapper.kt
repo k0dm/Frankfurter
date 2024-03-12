@@ -4,9 +4,7 @@ import com.example.domain.dashboard.DashboardItem
 import com.example.domain.dashboard.DashboardResult
 import com.example.presentation.dashboard.adapter.DashboardCurrencyPairUi
 import javax.inject.Inject
-import javax.inject.Singleton
 
-@Singleton
 class BaseDashboardResultMapper @Inject constructor(
     currencyPairDelimiter: CurrencyPairDelimiter.AddDelimiter,
     private val communication: DashboardCommunication,

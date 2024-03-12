@@ -13,32 +13,37 @@ import dagger.Binds
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
-import dagger.hilt.components.SingletonComponent
-import javax.inject.Singleton
+import dagger.hilt.android.components.ViewModelComponent
+import dagger.hilt.android.scopes.ViewModelScoped
 
 @Module
-@InstallIn(SingletonComponent::class)
+@InstallIn(ViewModelComponent::class)
 abstract class SettingsModule {
 
     @Binds
+    @ViewModelScoped
     abstract fun bindCommunication(communication: SettingsCommunication.Base): SettingsCommunication
 
     @Binds
+    @ViewModelScoped
     abstract fun bindCurrenciesCacheDataSource(cacheDataSource: CurrenciesCacheDataSource.Base): CurrenciesCacheDataSource.Read
 
     @Binds
+    @ViewModelScoped
     abstract fun bindFavoriteCurrenciesCacheDataSource(cacheDataSource: FavoriteCurrenciesCacheDataSource.Base): FavoriteCurrenciesCacheDataSource.ReadAndSave
 
     @Binds
+    @ViewModelScoped
     abstract fun bindInteractor(interactor: SettingsInteractor.Base): SettingsInteractor
 
     @Binds
+    @ViewModelScoped
     abstract fun bindMapper(mapper: BaseSaveResultMapper): SaveResult.Mapper
 
     companion object {
 
         @Provides
-        @Singleton
+        @ViewModelScoped
         fun provideRepository(
             provideInstance: ProvideInstance,
             currenciesCacheDataSource: CurrenciesCacheDataSource.Base,
@@ -49,7 +54,7 @@ abstract class SettingsModule {
         )
 
         @Provides
-        @Singleton
+        @ViewModelScoped
         fun provideInteractor(
             provideInstance: ProvideInstance,
             repository: SettingsRepository,

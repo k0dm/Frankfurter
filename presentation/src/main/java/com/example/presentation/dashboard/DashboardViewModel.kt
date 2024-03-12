@@ -1,5 +1,6 @@
 package com.example.presentation.dashboard
 
+import android.util.Log
 import com.example.domain.dashboard.DashboardRepository
 import com.example.domain.dashboard.DashboardResult
 import com.example.presentation.core.BaseViewModel
@@ -21,6 +22,10 @@ class DashboardViewModel @Inject constructor(
         currencyPairDelimiter, communication
     )
 ) : BaseViewModel(runAsync), ProvideLiveData<DashboardUiState>, ClickActions {
+
+    init {
+        Log.d("k0dm", "DashboardViewModel ${hashCode()}")
+    }
 
     fun init() {
         communication.updateUi(DashboardUiState.Progress)
