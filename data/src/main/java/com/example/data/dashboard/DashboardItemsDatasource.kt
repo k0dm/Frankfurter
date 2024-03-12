@@ -6,11 +6,11 @@ import com.example.data.dashboard.cache.FavoriteCurrenciesCacheDataSource
 import com.example.data.dashboard.cloud.CurrencyConverterCloudDataSource
 import com.example.domain.dashboard.DashboardItem
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.joinAll
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -30,12 +30,12 @@ interface DashboardItemsDatasource {
 
         override suspend fun dashboardItems(
             favoriteCurrencies: List<CurrencyPairEntity>
-        ): List<DashboardItem> = coroutineScope {
+        ): List<DashboardItem> = withContext(dispatcherIO) {
 
             val resultList = mutableListOf<DashboardItem>()
 
             favoriteCurrencies.map {
-                launch(dispatcherIO) {
+                launch {
                     val rates = if (it.isInvalidRate(currentDate)) {
                         val newRates = currencyConverterCloudDataSource.exchangeRate(
                             it.fromCurrency,
@@ -65,7 +65,7 @@ interface DashboardItemsDatasource {
 
                 }
             }.joinAll()
-            return@coroutineScope resultList
+            return@withContext resultList
         }
     }
 }

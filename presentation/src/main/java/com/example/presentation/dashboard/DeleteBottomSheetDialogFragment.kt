@@ -5,7 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import com.example.presentation.databinding.BottomFragmentDeletePairBinding
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
@@ -14,7 +14,7 @@ class DeleteBottomSheetDialogFragment() : BottomSheetDialogFragment() {
 
     private var _binding: BottomFragmentDeletePairBinding? = null
     private val binding get() = _binding!!
-    private val viewModel: DashboardViewModel by activityViewModels()
+    private val viewModel: DashboardViewModel by viewModels(ownerProducer = { requireActivity() })
 
     companion object {
         fun newInstance(from: String, to: String): DeleteBottomSheetDialogFragment {

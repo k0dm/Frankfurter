@@ -43,9 +43,6 @@ abstract class DashboardModule {
     @Binds
     abstract fun bindConverterCloudDataSource(cloudDataSource: CurrencyConverterCloudDataSource.Base): CurrencyConverterCloudDataSource
 
-//    @Binds
-//    abstract fun bindRepository(repository: BaseDashboardRepository): DashboardRepository
-
     @Binds
     abstract fun bindAddDelimiter(currencyPairDelimiter: CurrencyPairDelimiter.Base): CurrencyPairDelimiter.AddDelimiter
 

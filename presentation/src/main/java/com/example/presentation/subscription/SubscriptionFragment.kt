@@ -5,13 +5,15 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
-import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import com.example.presentation.core.BaseFragment
 import com.example.presentation.databinding.FragmentSubscriptionBinding
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class SubscriptionFragment : BaseFragment<FragmentSubscriptionBinding>() {
 
-    private val viewModel: SubscriptionViewModel by activityViewModels()
+    private val viewModel: SubscriptionViewModel by viewModels()
 
     override fun inflate(
         inflater: LayoutInflater,

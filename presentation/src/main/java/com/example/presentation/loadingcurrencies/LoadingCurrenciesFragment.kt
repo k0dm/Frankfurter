@@ -4,13 +4,15 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import com.example.presentation.core.BaseFragment
 import com.example.presentation.databinding.FragmentLoadingCurrenciesBinding
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class LoadingCurrenciesFragment : BaseFragment<FragmentLoadingCurrenciesBinding>() {
 
-    private val viewModel: LoadingCurrenciesViewModel by activityViewModels()
+    private val viewModel: LoadingCurrenciesViewModel by viewModels()
 
     override fun inflate(
         inflater: LayoutInflater, container: ViewGroup?

@@ -5,14 +5,16 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
-import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import com.example.presentation.core.BaseFragment
 import com.example.presentation.databinding.FragmentSettingsBinding
 import com.example.presentation.settings.adapter.CurrencyAdapter
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class SettingsFragment : BaseFragment<FragmentSettingsBinding>() {
 
-    private val viewModel: SettingsViewModel by activityViewModels()
+    private val viewModel: SettingsViewModel by viewModels()
     private lateinit var currencyFromAdapter: CurrencyAdapter
     private lateinit var currencyToAdapter: CurrencyAdapter
 
