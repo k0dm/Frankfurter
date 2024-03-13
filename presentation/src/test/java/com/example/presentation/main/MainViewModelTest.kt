@@ -1,7 +1,7 @@
 package com.example.presentation.main
 
 import com.example.presentation.core.FakeNavigation
-import com.example.presentation.loadingcurrencies.LoadingCurrenciesScreen
+import com.example.presentation.dashboard.DashboardScreen
 import org.junit.Before
 import org.junit.Test
 
@@ -19,7 +19,7 @@ class MainViewModelTest {
     @Test
     fun testFirstRun() {
         viewModel.init(isFirstRun = true)
-        navigation.checkScreen(LoadingCurrenciesScreen)
+        navigation.checkScreen(DashboardScreen)
     }
 
     @Test

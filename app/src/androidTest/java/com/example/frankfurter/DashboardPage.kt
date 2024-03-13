@@ -57,4 +57,14 @@ class DashboardPage {
         check(matches(DrawableMatcher(R.drawable.settings_icon)))
         perform(click())
     }
+
+    fun checkError(message: String) {
+        onView(RecyclerViewMatcher(position = 0, R.id.errorTextView, recyclerViewId))
+            .check(matches(withText(message)))
+    }
+
+    fun clickRetry() {
+        onView(RecyclerViewMatcher(position = 0, R.id.retryButton, recyclerViewId))
+            .perform(click())
+    }
 }

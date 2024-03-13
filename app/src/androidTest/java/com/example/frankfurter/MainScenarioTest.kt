@@ -19,16 +19,11 @@ class MainScenarioTest {
 
     @Test
     fun mainScenario() {
-        val loadingPage = LoadingPage()
-        loadingPage.checkVisible()
-        loadingPage.checkError("No internet connection")
-        activityScenarioRule.scenario.recreate()
-        loadingPage.checkError("No internet connection")
-
-        loadingPage.clickRetry()
-        loadingPage.checkNotVisible()
         val dashboardPage = DashboardPage()
         dashboardPage.checkVisible()
+
+        dashboardPage.checkError("No internet connection")
+        dashboardPage.clickRetry()
         dashboardPage.checkNoAddedPairs()
         activityScenarioRule.scenario.recreate()
         dashboardPage.checkNoAddedPairs()
