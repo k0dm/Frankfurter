@@ -16,28 +16,20 @@ class BaseDashboardRepository @Inject constructor(
     private val handleError: HandleError
 ) : DashboardRepository {
 
-    override suspend fun dashboards(): DashboardResult {
+    override suspend fun dashboards(): DashboardResult = try {
         if (cacheDataSource.currencies().isEmpty()) {
-            try {
-                cacheDataSource.saveCurrencies(cloudDataSource.currencies())
-            } catch (e: Exception) {
-                return DashboardResult.Error(message = handleError.handle(e))
-            }
+            cacheDataSource.saveCurrencies(cloudDataSource.currencies())
         }
-
         val favoriteCurrencies = favoriteCacheDataSource.favoriteCurrencies()
-
-        return if (favoriteCurrencies.isEmpty()) {
+        if (favoriteCurrencies.isEmpty()) {
             DashboardResult.Empty
         } else {
-            try {
-                val listOfItems: List<DashboardItem> =
-                    dashboardItemsDatasource.dashboardItems(favoriteCurrencies)
-                DashboardResult.Success(listOfItems = listOfItems)
-            } catch (e: Exception) {
-                DashboardResult.Error(message = handleError.handle(e))
-            }
+            val listOfItems: List<DashboardItem> =
+                dashboardItemsDatasource.dashboardItems(favoriteCurrencies)
+            DashboardResult.Success(listOfItems = listOfItems)
         }
+    } catch (e: Exception) {
+        DashboardResult.Error(message = handleError.handle(e))
     }
 
     override suspend fun removePair(
