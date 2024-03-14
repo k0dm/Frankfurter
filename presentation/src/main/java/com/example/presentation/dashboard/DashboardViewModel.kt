@@ -15,6 +15,7 @@ class DashboardViewModel @Inject constructor(
     private val navigation: Navigation.Update,
     private val communication: DashboardCommunication,
     private val repository: DashboardRepository,
+    private val foregroundWrapper: ForegroundDownloadWorkManagerWrapper,
     runAsync: RunAsync,
     private val currencyPairDelimiter: CurrencyPairDelimiter.Mutable,
     private val mapper: DashboardResult.Mapper = BaseDashboardResultMapper(
@@ -25,10 +26,8 @@ class DashboardViewModel @Inject constructor(
     fun init() {
         communication.updateUi(DashboardUiState.Progress)
         runAsync({
-            repository.dashboards()
-        }) { dashboardResult ->
-            dashboardResult.map(mapper)
-        }
+            foregroundWrapper.start()
+        }) {}
     }
 
     fun goToSettings() = navigation.updateUi(SettingsScreen)
