@@ -18,9 +18,7 @@ class DashboardViewModel @Inject constructor(
     private val foregroundWrapper: ForegroundDownloadWorkManagerWrapper,
     runAsync: RunAsync,
     private val currencyPairDelimiter: CurrencyPairDelimiter.Mutable,
-    private val mapper: DashboardResult.Mapper = BaseDashboardResultMapper(
-        currencyPairDelimiter, communication
-    )
+    private val mapper: DashboardResult.Mapper
 ) : BaseViewModel(runAsync), ProvideLiveData<DashboardUiState>, ClickActions {
 
     fun init() {

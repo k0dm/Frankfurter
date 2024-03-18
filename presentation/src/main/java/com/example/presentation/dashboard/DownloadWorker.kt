@@ -21,10 +21,6 @@ import com.example.presentation.R
 import com.example.presentation.main.MainActivity
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
-import dagger.hilt.EntryPoint
-import dagger.hilt.InstallIn
-import dagger.hilt.android.EntryPointAccessors
-import dagger.hilt.components.SingletonComponent
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
@@ -32,6 +28,8 @@ import kotlinx.coroutines.withContext
 class DownloadWorker @AssistedInject constructor(
     @Assisted private val context: Context,
     @Assisted parameters: WorkerParameters,
+    private val repository: DashboardRepository,
+    private val mapper: DashboardResult.Mapper
 ) : CoroutineWorker(context, parameters) {
 
     override suspend fun doWork(): Result {
@@ -42,14 +40,6 @@ class DownloadWorker @AssistedInject constructor(
             )
         )
         Log.d("k0dm", "DownloadWorker do the thing")
-        val repository = EntryPointAccessors.fromApplication(
-            context,
-            ProvideDashboardRepositoryEntryPoint::class.java
-        ).repository()
-        val mapper = EntryPointAccessors.fromApplication(
-            context,
-            ProvideDashboardMapperEntryPoint::class.java
-        ).mapper()
         val result = repository.dashboards()
         Log.d("k0dm", result.toString())
 
@@ -91,19 +81,4 @@ class DownloadWorker @AssistedInject constructor(
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
             ForegroundInfo(9999999, notification(title, text), FOREGROUND_SERVICE_TYPE_DATA_SYNC)
         } else ForegroundInfo(9999999, notification(title, text))
-
-}
-
-@EntryPoint
-@InstallIn(SingletonComponent::class)
-interface ProvideDashboardRepositoryEntryPoint {
-
-    fun repository(): DashboardRepository
-}
-
-@EntryPoint
-@InstallIn(SingletonComponent::class)
-interface ProvideDashboardMapperEntryPoint {
-
-    fun mapper(): DashboardResult.Mapper
 }

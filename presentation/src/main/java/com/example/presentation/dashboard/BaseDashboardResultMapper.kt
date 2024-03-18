@@ -1,5 +1,6 @@
 package com.example.presentation.dashboard
 
+import android.util.Log
 import com.example.domain.dashboard.DashboardItem
 import com.example.domain.dashboard.DashboardResult
 import com.example.presentation.dashboard.adapter.DashboardCurrencyPairUi
@@ -11,6 +12,10 @@ class BaseDashboardResultMapper @Inject constructor(
     private val mapper: DashboardItem.Mapper<DashboardCurrencyPairUi>
     = BaseDashboardItemMapper(currencyPairDelimiter)
 ) : DashboardResult.Mapper {
+
+    init {
+        Log.d("k0dm", "BaseDashboardResultMapper ${hashCode()}")
+    }
 
     override fun mapSuccess(listOfItems: List<DashboardItem>) {
         communication.updateUi(DashboardUiState.Success(listOfItems.map { it.map(mapper) }))
