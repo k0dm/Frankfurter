@@ -13,7 +13,7 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "furter"
+rootProject.name = "Frankfurter"
 include(":app")
 include(":domain")
 include(":data")
