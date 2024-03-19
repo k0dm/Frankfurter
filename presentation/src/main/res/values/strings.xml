@@ -13,4 +13,6 @@
     <string name="go_premium">Go Premium</string>
     <string name="buy">Buy</string>
     <string name="to_add_new_currency_pair_buy_a_premium">To add new currency pair buy a premium</string>
+    <string name="title">FRANKFURTER</string>
+    <string name="loading_dashboard_items">Loading dashboard items...</string>
 </resources>

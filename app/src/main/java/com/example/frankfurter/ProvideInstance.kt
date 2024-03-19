@@ -10,6 +10,7 @@ import com.example.data.settings.BaseSettingsRepository
 import com.example.domain.dashboard.DashboardItem
 import com.example.domain.dashboard.DashboardRepository
 import com.example.domain.dashboard.DashboardResult
+import com.example.domain.dashboard.ForegroundDownloadWorkManagerWrapper
 import com.example.domain.settings.SettingsRepository
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -21,7 +22,8 @@ interface ProvideInstance {
         cacheDataSource: CurrenciesCacheDataSource.Mutable,
         favoriteCacheDataSource: FavoriteCurrenciesCacheDataSource.Base,
         dashboardItemsDatasource: DashboardItemsDatasource.Base,
-        handleError: HandleError
+        handleError: HandleError,
+        foregroundWrapper: ForegroundDownloadWorkManagerWrapper
     ): DashboardRepository
 
     fun provideSettingsRepository(
@@ -39,13 +41,15 @@ interface ProvideInstance {
             cacheDataSource: CurrenciesCacheDataSource.Mutable,
             favoriteCacheDataSource: FavoriteCurrenciesCacheDataSource.Base,
             dashboardItemsDatasource: DashboardItemsDatasource.Base,
-            handleError: HandleError
+            handleError: HandleError,
+            foregroundWrapper: ForegroundDownloadWorkManagerWrapper
         ) = BaseDashboardRepository(
             cloudDataSource,
             cacheDataSource,
             favoriteCacheDataSource,
             dashboardItemsDatasource,
-            handleError
+            handleError,
+            foregroundWrapper
         )
 
         override fun provideSettingsRepository(
@@ -75,6 +79,10 @@ interface ProvideInstance {
                             rates = 10.10
                         )
                     })
+            }
+
+            override suspend fun downloadDashboards(): DashboardResult {
+                throw IllegalStateException("No need in UI test")
             }
 
             override suspend fun removePair(
@@ -117,7 +125,8 @@ interface ProvideInstance {
             cacheDataSource: CurrenciesCacheDataSource.Mutable,
             favoriteCacheDataSource: FavoriteCurrenciesCacheDataSource.Base,
             dashboardItemsDatasource: DashboardItemsDatasource.Base,
-            handleError: HandleError
+            handleError: HandleError,
+            foregroundWrapper: ForegroundDownloadWorkManagerWrapper
         ): DashboardRepository = MockDashboardRepository()
 
         override fun provideSettingsRepository(

@@ -8,6 +8,7 @@ import com.example.data.loadcurrencies.cloud.LoadCurrenciesCloudDataSource
 import com.example.domain.dashboard.DashboardItem
 import com.example.domain.dashboard.DashboardRepository
 import com.example.domain.dashboard.DashboardResult
+import com.example.domain.dashboard.ForegroundDownloadWorkManagerWrapper
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
 import org.junit.Before
@@ -22,6 +23,7 @@ class BaseDashboardRepositoryTest {
     private lateinit var favoriteCurrenciesCacheDataSource: FakeFavoriteCurrenciesCacheDataSource
     private lateinit var dashboardItemsDatasource: FakeDashboardItemsDatasource
     private lateinit var handleError: FakeHandleError
+    private lateinit var foregroundWrapper: FakeForegroundDownloadWorkManagerWrapper
 
     @Before
     fun setUp() {
@@ -30,12 +32,14 @@ class BaseDashboardRepositoryTest {
         favoriteCurrenciesCacheDataSource = FakeFavoriteCurrenciesCacheDataSource()
         dashboardItemsDatasource = FakeDashboardItemsDatasource()
         handleError = FakeHandleError()
+        foregroundWrapper = FakeForegroundDownloadWorkManagerWrapper()
         repository = BaseDashboardRepository(
             cloudDataSource = cloudDataSource,
             cacheDataSource = cacheDataSource,
             favoriteCacheDataSource = favoriteCurrenciesCacheDataSource,
             dashboardItemsDatasource = dashboardItemsDatasource,
-            handleError = handleError
+            handleError = handleError,
+            foregroundWrapper = foregroundWrapper
         )
     }
 
@@ -45,6 +49,7 @@ class BaseDashboardRepositoryTest {
         cacheDataSource.checkCurrenciesCalledCount(1)
         cloudDataSource.checkCurrenciesCalledCount(1)
         cacheDataSource.checkCurrencies(listOf("A", "B", "C", "D"))
+        foregroundWrapper.checkStartCalledCount(0)
         assertEquals(DashboardResult.Empty, result)
     }
 
@@ -57,9 +62,10 @@ class BaseDashboardRepositoryTest {
         cacheDataSource.checkCurrenciesCalledCount(1)
         cloudDataSource.checkCurrenciesCalledCount(1)
         cacheDataSource.checkCurrencies(listOf())
+        foregroundWrapper.checkStartCalledCount(0)
+
         assertEquals(
-            DashboardResult.Error(message = UnknownHostException::class.java.simpleName),
-            result
+            DashboardResult.Error(message = UnknownHostException::class.java.simpleName), result
         )
     }
 
@@ -71,6 +77,7 @@ class BaseDashboardRepositoryTest {
         cacheDataSource.checkCurrenciesCalledCount(1)
         cloudDataSource.checkCurrenciesCalledCount(0)
         cacheDataSource.checkCurrencies(listOf("A", "B", "C", "D"))
+        foregroundWrapper.checkStartCalledCount(0)
         assertEquals(DashboardResult.Empty, result)
     }
 
@@ -78,8 +85,10 @@ class BaseDashboardRepositoryTest {
     fun testUserHasSavedPairs(): Unit = runBlocking {
         cacheDataSource.setCacheIsNotEmpty()
         favoriteCurrenciesCacheDataSource.hasValidCache()
+        dashboardItemsDatasource.doNotNeedToDownloadData()
 
         val actualResult = repository.dashboards()
+        foregroundWrapper.checkStartCalledCount(0)
         assertEquals(
             DashboardResult.Success(
                 listOfItems = listOf(
@@ -96,14 +105,41 @@ class BaseDashboardRepositoryTest {
         favoriteCurrenciesCacheDataSource.hasInvalidCache()
         dashboardItemsDatasource.returnFail()
 
-        val result = repository.dashboards()
+        var actualResult = repository.dashboards()
+        foregroundWrapper.checkStartCalledCount(1)
+        assertEquals(DashboardResult.NoDataYet, actualResult)
+
+        actualResult = repository.downloadDashboards()
         favoriteCurrenciesCacheDataSource.checkSavedCurrencyPairs(
             CurrencyPairEntity("A", "B", 2.0, "15/3/2020"),
             CurrencyPairEntity("C", "D", 1.3, "1/1/2024")
         )
-
         assertEquals(
-            DashboardResult.Error(message = IllegalStateException::class.simpleName!!), result
+            DashboardResult.Error(message = IllegalStateException::class.simpleName!!), actualResult
+        )
+    }
+
+    @Test
+    fun testInvalidCurrencyPairAndSuccess(): Unit = runBlocking {
+        cacheDataSource.setCacheIsNotEmpty()
+        favoriteCurrenciesCacheDataSource.hasInvalidCache()
+
+        var actualResult = repository.dashboards()
+        foregroundWrapper.checkStartCalledCount(1)
+        assertEquals(DashboardResult.NoDataYet, actualResult)
+
+        actualResult = repository.downloadDashboards()
+        favoriteCurrenciesCacheDataSource.checkSavedCurrencyPairs(
+            CurrencyPairEntity("A", "B", 2.0, "15/3/2020"),
+            CurrencyPairEntity("C", "D", 1.3, "1/1/2024")
+        )
+        assertEquals(
+            DashboardResult.Success(
+                listOfItems = listOf(
+                    DashboardItem.Base("A", "B", 2.0),
+                    DashboardItem.Base("C", "D", 1.3)
+                )
+            ), actualResult
         )
     }
 
@@ -184,5 +220,28 @@ private class FakeDashboardItemsDatasource : DashboardItemsDatasource {
 
     fun returnFail() {
         returnSuccess = false
+    }
+
+    private var needToDownloadData = true
+
+    override suspend fun needToDownloadData(favoriteCurrencies: List<CurrencyPairEntity>): Boolean {
+        return needToDownloadData
+    }
+
+    fun doNotNeedToDownloadData() {
+        needToDownloadData = false
+    }
+}
+
+private class FakeForegroundDownloadWorkManagerWrapper : ForegroundDownloadWorkManagerWrapper {
+
+    private var actualStartCalledCount = 0
+
+    override fun start() {
+        actualStartCalledCount++
+    }
+
+    fun checkStartCalledCount(expectedTimes: Int) {
+        assertEquals(expectedTimes, actualStartCalledCount)
     }
 }

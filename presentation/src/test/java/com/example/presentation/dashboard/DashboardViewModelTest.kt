@@ -19,19 +19,22 @@ class DashboardViewModelTest {
     private lateinit var dashboardCommunication: FakeDashboardCommunication
     private lateinit var dashboardRepository: FakeDashboardRepository
     private lateinit var runAsync: FakeRunAsync
+    private lateinit var mapper: FakeMapper
 
     @Before
     fun setUp() {
         navigation = FakeNavigation()
         dashboardCommunication = FakeDashboardCommunication()
         dashboardRepository = FakeDashboardRepository()
+        mapper = FakeMapper(communication = dashboardCommunication)
         runAsync = FakeRunAsync()
         viewModel = DashboardViewModel(
             navigation = navigation,
             communication = dashboardCommunication,
             repository = dashboardRepository,
             runAsync = runAsync,
-            currencyPairDelimiter = FakeCurrencyPairDelimiter()
+            currencyPairDelimiter = FakeCurrencyPairDelimiter(),
+            mapper = mapper
         )
     }
 
@@ -41,7 +44,7 @@ class DashboardViewModelTest {
         dashboardCommunication.checkUiState(DashboardUiState.Progress)
 
         runAsync.pingResult()
-        dashboardCommunication.checkUiState(DashboardUiState.Empty)
+        dashboardCommunication.checkUiState(DashboardUiState.Progress, DashboardUiState.Empty)
     }
 
     @Test
@@ -53,7 +56,7 @@ class DashboardViewModelTest {
 
         runAsync.pingResult()
         dashboardCommunication.checkUiState(
-            DashboardUiState.Success(
+            DashboardUiState.Progress, DashboardUiState.Success(
                 currencies = listOf(
                     DashboardCurrencyPairUi.Base("A / B", "1.46"),
                     DashboardCurrencyPairUi.Base("C / D", "2.11")
@@ -70,15 +73,20 @@ class DashboardViewModelTest {
         dashboardCommunication.checkUiState(DashboardUiState.Progress)
 
         runAsync.pingResult()
-        dashboardCommunication.checkUiState(DashboardUiState.Error(message = "No internet connection"))
+        dashboardCommunication.checkUiState(
+            DashboardUiState.Progress,
+            DashboardUiState.Error(message = "No internet connection")
+        )
 
         dashboardRepository.returnSuccess()
 
         viewModel.retry()
-        dashboardCommunication.checkUiState(DashboardUiState.Progress)
 
         runAsync.pingResult()
         dashboardCommunication.checkUiState(
+            DashboardUiState.Progress,
+            DashboardUiState.Error(message = "No internet connection"),
+            DashboardUiState.Progress,
             DashboardUiState.Success(
                 currencies = listOf(
                     DashboardCurrencyPairUi.Base("A / B", "1.46"),
@@ -97,14 +105,11 @@ class DashboardViewModelTest {
     @Test
     fun testOpenDeletePairDialog() {
         viewModel.openDeletePairDialog(currencyPair = "A / B")
-
         navigation.checkScreen(DeletePairScreen(fromCurrency = "A", toCurrency = "B"))
     }
 
     @Test
     fun testRemovePair() {
-        testPairsAvailable()
-
         viewModel.removePair(from = "A", to = "B")
 
         dashboardRepository.checkedRemovedPair("A", "B")
@@ -121,14 +126,14 @@ class DashboardViewModelTest {
 
 private class FakeDashboardCommunication : DashboardCommunication {
 
-    private var actualUiState: DashboardUiState = DashboardUiState.Empty
+    private val actualUiStateList: MutableList<DashboardUiState> = mutableListOf()
 
     override fun updateUi(value: DashboardUiState) {
-        actualUiState = value
+        actualUiStateList.add(value)
     }
 
-    fun checkUiState(expectedUiState: DashboardUiState) {
-        assertEquals(expectedUiState, actualUiState)
+    fun checkUiState(vararg expectedUiState: DashboardUiState) {
+        assertEquals(expectedUiState.toList(), actualUiStateList)
     }
 }
 
@@ -138,6 +143,10 @@ private class FakeDashboardRepository : DashboardRepository {
 
     override suspend fun dashboards(): DashboardResult {
         return dashboardResult
+    }
+
+    override suspend fun downloadDashboards(): DashboardResult {
+        return DashboardResult.NoDataYet
     }
 
     fun returnSuccess() {
@@ -180,4 +189,24 @@ private class FakeCurrencyPairDelimiter(
 
 
     override fun addDelimiter(from: String, to: String): String = "$from$delimeter$to"
+}
+
+private class FakeMapper(
+    private val communication: FakeDashboardCommunication,
+    private val mapper: DashboardItem.Mapper<DashboardCurrencyPairUi> = BaseDashboardItemMapper(
+        FakeCurrencyPairDelimiter()
+    )
+) : DashboardResult.Mapper {
+
+    override fun mapSuccess(listOfItems: List<DashboardItem>) {
+        communication.updateUi(DashboardUiState.Success(currencies = listOfItems.map { it.map(mapper) }))
+    }
+
+    override fun mapError(message: String) {
+        communication.updateUi(DashboardUiState.Error(message = message))
+    }
+
+    override fun mapEmpty() {
+        communication.updateUi(DashboardUiState.Empty)
+    }
 }

@@ -17,6 +17,8 @@ interface DashboardItemsDatasource {
 
     suspend fun dashboardItems(favoriteCurrencies: List<CurrencyPairEntity>): List<DashboardItem>
 
+    suspend fun needToDownloadData(favoriteCurrencies: List<CurrencyPairEntity>): Boolean
+
     class Base @Inject constructor(
         private val currencyConverterCloudDataSource: CurrencyConverterCloudDataSource,
         private val favoriteCacheDataSource: FavoriteCurrenciesCacheDataSource.Save,
@@ -65,5 +67,8 @@ interface DashboardItemsDatasource {
             }.joinAll()
             return@withContext resultList
         }
+
+        override suspend fun needToDownloadData(favoriteCurrencies: List<CurrencyPairEntity>) =
+            favoriteCurrencies.find { it.isInvalidRate(currentDate) } != null
     }
 }

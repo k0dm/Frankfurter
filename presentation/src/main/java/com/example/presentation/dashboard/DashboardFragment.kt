@@ -1,9 +1,13 @@
 package com.example.presentation.dashboard
 
+import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.viewModels
 import com.example.presentation.core.BaseFragment
 import com.example.presentation.dashboard.adapter.DashboardAdapter
@@ -35,5 +39,22 @@ class DashboardFragment : BaseFragment<FragmentDashboardBinding>() {
         }
 
         viewModel.init()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            val result = ContextCompat.checkSelfPermission(
+                requireContext(),
+                android.Manifest.permission.POST_NOTIFICATIONS
+            )
+            if (result != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(
+                    requireActivity(),
+                    arrayOf(android.Manifest.permission.POST_NOTIFICATIONS),
+                    200
+                )
+            }
+        }
     }
 }
