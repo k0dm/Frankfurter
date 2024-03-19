@@ -92,6 +92,10 @@ private class FakeDashboardRepository : DashboardRepository {
         return dashboardResult
     }
 
+    override suspend fun downloadDashboards(): DashboardResult {
+        return dashboardResult
+    }
+
     fun returnSuccess() {
         dashboardResult = DashboardResult.Success(
             listOfItems = listOf(

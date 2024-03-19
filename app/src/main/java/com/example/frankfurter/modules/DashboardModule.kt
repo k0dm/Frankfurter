@@ -10,11 +10,12 @@ import com.example.data.loadcurrencies.cloud.LoadCurrenciesCloudDataSource
 import com.example.domain.dashboard.DashboardItem
 import com.example.domain.dashboard.DashboardRepository
 import com.example.domain.dashboard.DashboardResult
+import com.example.domain.dashboard.ForegroundDownloadWorkManagerWrapper
 import com.example.frankfurter.ProvideInstance
 import com.example.presentation.dashboard.BaseDashboardItemMapper
 import com.example.presentation.dashboard.BaseDashboardResultMapper
+import com.example.presentation.dashboard.BaseForegroundDownloadWorkManagerWrapper
 import com.example.presentation.dashboard.CurrencyPairDelimiter
-import com.example.presentation.dashboard.ForegroundDownloadWorkManagerWrapper
 import com.example.presentation.dashboard.RatesFormatter
 import com.example.presentation.dashboard.adapter.DashboardCurrencyPairUi
 import dagger.Binds
@@ -72,7 +73,7 @@ abstract class DashboardModule {
 
     @Binds
     @Singleton
-    abstract fun bindForegroundWrapper(foregroundWrapper: ForegroundDownloadWorkManagerWrapper.Base): ForegroundDownloadWorkManagerWrapper
+    abstract fun bindForegroundWrapper(foregroundWrapper: BaseForegroundDownloadWorkManagerWrapper): ForegroundDownloadWorkManagerWrapper
 
     companion object {
         @Provides
@@ -83,13 +84,15 @@ abstract class DashboardModule {
             cacheDataSource: CurrenciesCacheDataSource.Mutable,
             favoriteCacheDataSource: FavoriteCurrenciesCacheDataSource.Base,
             dashboardItemsDatasource: DashboardItemsDatasource.Base,
-            handleError: HandleError
+            handleError: HandleError,
+            foregroundWrapper: ForegroundDownloadWorkManagerWrapper
         ): DashboardRepository = provideInstance.provideDashboardRepository(
             cloudDataSource,
             cacheDataSource,
             favoriteCacheDataSource,
             dashboardItemsDatasource,
-            handleError
+            handleError,
+            foregroundWrapper
         )
 
         @Provides

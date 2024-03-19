@@ -8,7 +8,6 @@ import com.example.presentation.core.FakeRunAsync
 import com.example.presentation.core.FakeUpdateNavigation
 import com.example.presentation.dashboard.adapter.DashboardCurrencyPairUi
 import com.example.presentation.settings.SettingsScreen
-import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
@@ -19,7 +18,6 @@ class DashboardViewModelTest {
     private lateinit var navigation: FakeUpdateNavigation
     private lateinit var dashboardCommunication: FakeDashboardCommunication
     private lateinit var dashboardRepository: FakeDashboardRepository
-    private lateinit var foregroundWrapper: FakeForegroundWrapper
     private lateinit var runAsync: FakeRunAsync
     private lateinit var mapper: FakeMapper
 
@@ -29,13 +27,11 @@ class DashboardViewModelTest {
         dashboardCommunication = FakeDashboardCommunication()
         dashboardRepository = FakeDashboardRepository()
         mapper = FakeMapper(communication = dashboardCommunication)
-        foregroundWrapper = FakeForegroundWrapper(dashboardRepository, mapper)
         runAsync = FakeRunAsync()
         viewModel = DashboardViewModel(
             navigation = navigation,
             communication = dashboardCommunication,
             repository = dashboardRepository,
-            foregroundWrapper = foregroundWrapper,
             runAsync = runAsync,
             currencyPairDelimiter = FakeCurrencyPairDelimiter(),
             mapper = mapper
@@ -45,6 +41,9 @@ class DashboardViewModelTest {
     @Test
     fun testNoData() {
         viewModel.init()
+        dashboardCommunication.checkUiState(DashboardUiState.Progress)
+
+        runAsync.pingResult()
         dashboardCommunication.checkUiState(DashboardUiState.Progress, DashboardUiState.Empty)
     }
 
@@ -53,9 +52,11 @@ class DashboardViewModelTest {
         dashboardRepository.returnSuccess()
 
         viewModel.init()
+        dashboardCommunication.checkUiState(DashboardUiState.Progress)
+
+        runAsync.pingResult()
         dashboardCommunication.checkUiState(
-            DashboardUiState.Progress,
-            DashboardUiState.Success(
+            DashboardUiState.Progress, DashboardUiState.Success(
                 currencies = listOf(
                     DashboardCurrencyPairUi.Base("A / B", "1.46"),
                     DashboardCurrencyPairUi.Base("C / D", "2.11")
@@ -69,6 +70,9 @@ class DashboardViewModelTest {
         dashboardRepository.returnError()
 
         viewModel.init()
+        dashboardCommunication.checkUiState(DashboardUiState.Progress)
+
+        runAsync.pingResult()
         dashboardCommunication.checkUiState(
             DashboardUiState.Progress,
             DashboardUiState.Error(message = "No internet connection")
@@ -77,6 +81,8 @@ class DashboardViewModelTest {
         dashboardRepository.returnSuccess()
 
         viewModel.retry()
+
+        runAsync.pingResult()
         dashboardCommunication.checkUiState(
             DashboardUiState.Progress,
             DashboardUiState.Error(message = "No internet connection"),
@@ -139,6 +145,10 @@ private class FakeDashboardRepository : DashboardRepository {
         return dashboardResult
     }
 
+    override suspend fun downloadDashboards(): DashboardResult {
+        return DashboardResult.NoDataYet
+    }
+
     fun returnSuccess() {
         dashboardResult = DashboardResult.Success(
             listOfItems = listOf(
@@ -167,16 +177,6 @@ private class FakeDashboardRepository : DashboardRepository {
 
     fun checkedRemovedPair(from: String, to: String) {
         assertEquals(Pair(from, to), removedPair)
-    }
-}
-
-private class FakeForegroundWrapper(
-    private val repository: DashboardRepository,
-    private val mapper: FakeMapper
-) : ForegroundDownloadWorkManagerWrapper {
-
-    override fun start(): Unit = runBlocking {
-        repository.dashboards().map(mapper)
     }
 }
 

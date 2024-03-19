@@ -9,7 +9,6 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.ServiceInfo.FOREGROUND_SERVICE_TYPE_DATA_SYNC
 import android.os.Build
-import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.hilt.work.HiltWorker
 import androidx.work.CoroutineWorker
@@ -39,9 +38,7 @@ class DownloadWorker @AssistedInject constructor(
                 text = "Loading dashboard items..."
             )
         )
-        Log.d("k0dm", "DownloadWorker do the thing")
-        val result = repository.dashboards()
-        Log.d("k0dm", result.toString())
+        val result = repository.downloadDashboards()
 
         withContext(Dispatchers.Main) {
             result.map(mapper)

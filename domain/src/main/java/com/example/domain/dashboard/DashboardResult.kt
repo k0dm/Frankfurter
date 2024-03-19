@@ -32,4 +32,8 @@ interface DashboardResult {
             mapper.mapSuccess(listOfItems)
         }
     }
+
+    object NoDataYet : DashboardResult {
+        override fun map(mapper: Mapper) = Unit
+    }
 }

@@ -69,4 +69,26 @@ class DashboardItemsDatasourceTest {
             ), actualList
         )
     }
+
+    @Test
+    fun testNeedToDownloadData(): Unit = runBlocking {
+        val actualResult = dashboardItemsDatasource.needToDownloadData(
+            listOf(
+                CurrencyPairEntity("1", "2", 2.0, "1/1/2024"),
+                CurrencyPairEntity("3", "4", 1.2, "1/1/2024")
+            )
+        )
+        assertEquals(false, actualResult)
+    }
+
+    @Test
+    fun testDoNotNeedToDownloadData(): Unit = runBlocking {
+        val actualResult = dashboardItemsDatasource.needToDownloadData(
+            listOf(
+                CurrencyPairEntity("1", "2", 2.0, "4/2/1999"),
+                CurrencyPairEntity("3", "4", 1.2, "1/1/2024")
+            )
+        )
+        assertEquals(true, actualResult)
+    }
 }
