@@ -34,8 +34,8 @@ class DownloadWorker @AssistedInject constructor(
     override suspend fun doWork(): Result {
         setForeground(
             createForegroundInfo(
-                title = "FRANKFURTER",
-                text = "Loading dashboard items..."
+                title = context.getString(R.string.title),
+                text = context.getString(R.string.loading_dashboard_items)
             )
         )
         val result = repository.downloadDashboards()
